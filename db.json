@@ -1,0 +1,203 @@
+{
+  "regions": [
+    {
+      "id": 1,
+      "name": "Gabala"
+    }
+  ],
+  "hotels": [
+    {
+      "id": 1,
+      "name": "Ganja b",
+      "regionId": 1,
+      "stars": 4,
+      "extraBedPricePerNight": 40,
+      "roomTypes": [
+        {
+          "id": 1,
+          "name": "standart",
+          "pricePerNight": 20
+        }
+      ],
+      "mealPlans": []
+    },
+    {
+      "id": 2,
+      "name": "Lsnkaran",
+      "regionId": 1,
+      "stars": 3,
+      "extraBedPricePerNight": 0,
+      "roomTypes": [
+        {
+          "id": 1,
+          "name": "sa",
+          "pricePerNight": 5
+        }
+      ],
+      "mealPlans": []
+    }
+  ],
+  "operations": [
+    {
+      "id": 1,
+      "name": "Hotel transfer",
+      "price": 20
+    }
+  ],
+  "reservations": [
+    {
+      "id": 1,
+      "date": "2025-12-05T08:18:05.754Z",
+      "summary": {
+        "checkIn": "2025-12-05",
+        "checkOut": "2025-12-06",
+        "nights": 1,
+        "adults": 2,
+        "children": 0,
+        "hotels": [
+          {
+            "id": 1,
+            "name": "Ganja b",
+            "totalPrice": 20
+          }
+        ],
+        "totalPrice": 20,
+        "totalTravelers": 2,
+        "hotelNames": "Ganja b"
+      },
+      "travelers": [
+        {
+          "type": "adult",
+          "name": "hj",
+          "surname": "mç",
+          "dob": "2025-12-05",
+          "nationality": "TR"
+        },
+        {
+          "type": "adult",
+          "name": "j",
+          "surname": "k",
+          "dob": "2025-12-06",
+          "nationality": "RU"
+        }
+      ],
+      "flightInfo": {
+        "arrival": "2025-12-05T12:18",
+        "departure": "2025-12-13T12:18"
+      },
+      "dateBooked": "2025-12-05T08:18:05.721Z"
+    },
+    {
+      "id": 2,
+      "date": "2025-12-05T08:21:25.047Z",
+      "summary": {
+        "checkIn": "2025-12-05",
+        "checkOut": "2025-12-07",
+        "nights": 2,
+        "adults": 2,
+        "children": 0,
+        "hotels": [
+          {
+            "id": 1,
+            "name": "Ganja b",
+            "totalPrice": 62
+          }
+        ],
+        "totalPrice": 62,
+        "totalTravelers": 2,
+        "hotelNames": "Ganja b"
+      },
+      "travelers": [
+        {
+          "type": "adult",
+          "name": "hj",
+          "surname": "mç",
+          "dob": "2025-12-05",
+          "nationality": "TR"
+        },
+        {
+          "type": "adult",
+          "name": "j",
+          "surname": "k",
+          "dob": "2025-12-06",
+          "nationality": "RU"
+        }
+      ],
+      "flightInfo": {
+        "arrival": "",
+        "departure": ""
+      },
+      "dateBooked": "2025-12-05T08:21:25.041Z"
+    },
+    {
+      "id": 3,
+      "date": "2025-12-05T09:43:05.506Z",
+      "summary": {
+        "checkIn": "2025-12-05",
+        "checkOut": "2025-12-08",
+        "nights": 3,
+        "adults": 2,
+        "children": 0,
+        "hotels": [
+          {
+            "id": 1,
+            "name": "Ganja b",
+            "totalPrice": 60
+          }
+        ],
+        "totalPrice": 60,
+        "totalTravelers": 2,
+        "hotelNames": "Ganja b"
+      },
+      "travelers": [
+        {
+          "type": "adult",
+          "name": "c",
+          "surname": "c",
+          "dob": "2025-12-05",
+          "nationality": "TR"
+        },
+        {
+          "type": "adult",
+          "name": "j",
+          "surname": "k",
+          "dob": "2025-12-06",
+          "nationality": "RU"
+        }
+      ],
+      "flightInfo": {
+        "arrival": "2025-12-06T13:42",
+        "departure": "2025-12-11T13:42"
+      },
+      "dateBooked": "2025-12-05T09:43:05.486Z"
+    }
+  ],
+  "agents": [
+    {
+      "id": 1,
+      "username": "agent",
+      "password": "password123",
+      "name": "Əsas Agent",
+      "company": "Default Company",
+      "role": "Agent"
+    },
+    {
+      "id": 2,
+      "username": "admin",
+      "password": "adminpassword",
+      "name": "Administrator",
+      "company": "System Admin",
+      "role": "Admin"
+    },
+    {
+      "id": 3,
+      "username": "said",
+      "password": "owner123",
+      "name": "Şirvan Telegram",
+      "company": "Clasna",
+      "role": "Agent",
+      "registeredAt": "2025-12-05T12:48:18.659Z"
+    }
+  ],
+  "pending_agents": []
+}

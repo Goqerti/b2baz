@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>B2B Booking Console</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* Global Styles & Base */
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8; /* Açıq, yumşaq fon */
+      color: #1f2937;
+    }
+    .page {
+      max-width: 1500px; /* Daha geniş iş sahəsi */
+      margin: 30px auto 60px;
+      padding: 16px;
+    }
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #111827;
+    }
+    .subtitle {
+      font-size: 16px;
+      color: #6b7280;
+      margin-bottom: 25px;
+    }
+    
+    /* Card Container */
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      padding: 20px;
+      margin-bottom: 20px;
+      border: 1px solid #e5e7eb;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #111827;
+      margin: 25px 0 15px;
+      border-left: 4px solid #3b82f6; /* Accent color */
+      padding-left: 12px;
+    }
+    
+    /* Forms & Inputs */
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #374151;
+    }
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="datetime-local"],
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      outline: none;
+      font-size: 14px;
+      background: #ffffff;
+      transition: all 0.3s ease;
+    }
+    input:focus, select:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .pill {
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: #e0f2fe; /* Light blue */
+      font-size: 14px;
+      color: #0c4a6e;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    .checkbox-row input {
+      margin: 0;
+      accent-color: #3b82f6;
+    }
+
+    /* Main Layout */
+    .main-content-grid {
+        display: grid;
+        grid-template-columns: 280px 1fr 350px; /* Filter | Main | Summary */
+        gap: 25px;
+        margin-top: 25px;
+    }
+    .sticky-sidebar {
+        position: sticky;
+        top: 20px;
+        height: fit-content;
+    }
+
+    /* Filters */
+    .filter-column {
+      font-size: 14px;
+    }
+    .filter-header {
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #1f2937;
+    }
+    .filter-box {
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      max-height: 200px;
+      overflow-y: auto;
+      padding: 8px 12px;
+    }
+    .filter-item, .hotel-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 0;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .hotel-name {
+      flex: 1;
+      font-weight: 500;
+    }
+    .hotel-stars {
+      font-size: 12px;
+      color: #f59e0b;
+      white-space: nowrap;
+    }
+    .tag {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      background: #f3f4f6;
+      color: #4b5563;
+      font-weight: 500;
+    }
+    
+    /* Hotel Blocks */
+    .hotel-block {
+      border: 1px solid #c7d2fe; /* Soft blue border */
+      background: #f8fafc; /* Very light background for contrast */
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    }
+    .hotel-block-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1f2937;
+    }
+    .hotel-totals-line {
+      font-size: 15px;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px dashed #d1d5db;
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      color: #1d4ed8; /* Blue for subtotal */
+    }
+
+    /* Room Configuration */
+    .room-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+    }
+    .qty-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid #9ca3af;
+      background: #f9fafb;
+    }
+    .qty-btn {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      color: #374151;
+    }
+    .qty-value {
+      min-width: 20px;
+      text-align: center;
+      font-weight: 600;
+      color: #1f2937;
+    }
+    .room-remove {
+      margin-left: auto;
+      color: #ef4444;
+      font-size: 18px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .add-room-btn {
+      margin-top: 10px;
+      border: 1px solid #d1d5db;
+      padding: 8px 16px;
+      border-radius: 8px;
+      background: #f3f4f6;
+      font-size: 13px;
+      cursor: pointer;
+      color: #4b5563;
+      font-weight: 600;
+    }
+    
+    /* Operations */
+    .operations-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .operation-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      border-radius: 8px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    
+    /* Totals Summary (Right Column) */
+    .totals-card {
+        background: #111827; /* Dark background for emphasis */
+        color: #ffffff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+    .totals-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    .totals-row strong {
+      font-weight: 700;
+    }
+    .grand {
+      font-size: 28px;
+      font-weight: 800;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: #34d399; /* Green accent for Grand Total */
+    }
+    #reserveBtn {
+        padding: 15px 16px; 
+        background: #10b981; 
+        font-size: 18px; 
+        font-weight: 700; 
+        border-radius: 8px; 
+        cursor: pointer; 
+        width: 100%; 
+        margin-top: 20px;
+        border: none;
+        color: white;
+        transition: background 0.3s;
+    }
+    #reserveBtn:disabled {
+        background: #6b7280;
+        cursor: not-allowed;
+    }
+    #reserveBtn:not(:disabled):hover {
+        background: #059669;
+    }
+
+    /* Modal Styles */
+    #reservationModal > div {
+        max-width: 900px; 
+    }
+    #reservationSummary {
+        background: #eff6ff; 
+        border: 1px solid #bfdbfe;
+        color: #1e40af;
+        padding: 18px;
+        border-radius: 10px;
+    }
+    #confirmReserveBtn {
+        background: #1d4ed8; 
+    }
+    #confirmReserveBtn:hover {
+        background: #2563eb; 
+    }
+    .alert, .success {
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: 600;
+        margin-top: 15px;
+    }
+    .alert {
+      background-color: #fef2f2; color: #b91c1c; border: 1px solid #fca5a5;
+    }
+    .success {
+      background-color: #d1fae5; color: #059669; border: 1px solid #34d399;
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="page">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h1 style="margin: 0;">B2B Booking Console</h1>
+        <div id="agentInfo" style="display: flex; align-items: center; gap: 15px; font-size: 15px; font-weight: 600;">
+            <span id="agentNameDisplay" style="color: #1d4ed8;"></span>
+            <button onclick="logout()" style="padding: 8px 12px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer;">Çıxış</button>
+        </div>
+    </div>
+    <div class="subtitle">
+      Çoxsaylı otel konfiqurasiyası, dəqiq qiymətləndirmə və dərhal rezervasiya imkanı.
+    </div>
+    
+    <div class="card">
+        <div class="section-title" style="margin-top: 0;">🗓️ Səyahət Tarixi & Qonaqlar</div>
+        <div class="row" style="flex-wrap: wrap; align-items: flex-end;">
+            <div style="flex:1; min-width: 150px;">
+                <label>Check-in</label>
+                <input type="date" id="checkIn" />
+            </div>
+            <div style="flex:1; min-width: 150px;">
+                <label>Check-out</label>
+                <input type="date" id="checkOut" />
+            </div>
+            <div style="flex:1; min-width: 100px;">
+                <label>Adults</label>
+                <input type="number" id="adults" min="1" value="2" />
+            </div>
+            <div style="flex:1; min-width: 100px;">
+                <label>Children</label>
+                <input type="number" id="children" min="0" value="0" />
+            </div>
+            <div style="min-width: 150px; margin-left: auto; display: flex; justify-content: flex-end;">
+                <div class="pill">
+                    Gecə sayı: <span id="nights">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="checkbox-row">
+            <input type="checkbox" id="extraBed" />
+            <label for="extraBed" style="margin:0; font-weight: 500;">Uşaq üçün extra bed tətbiq et (bütün hotellərə)</label>
+        </div>
+    </div>
+
+    <div class="main-content-grid">
+        
+        <div class="sticky-sidebar">
+            <div class="card" style="margin-bottom: 25px;">
+                <div class="section-title" style="margin-top: 0; margin-bottom: 15px; border-left-color: #9333ea;">🔍 Hotelləri Filtirlə</div>
+                
+                <div class="filter-header">Regionlar</div>
+                <div class="filter-box" id="regionsBox" style="margin-bottom: 20px;"></div>
+
+                <div class="filter-header">Ulduz Sayı</div>
+                <div class="filter-box" id="starsBox"></div>
+            </div>
+        </div>
+
+        <div>
+            <div class="card">
+                <div class="section-title" style="margin-top: 0; border-left-color: #f59e0b;">🏨 Filterlənmiş Hotellərin Seçimi</div>
+                <div class="filter-box" id="hotelsBox" style="max-height: 250px; border: none; background: transparent; padding: 0;"></div>
+            </div>
+
+            <div class="section-title" style="margin-top: 25px;">⚙️ Seçilmiş Hotellərin Konfiqurasiyası</div>
+            <div id="hotelsCalcs">
+                <p style="color: #6b7280; font-style: italic; font-size: 15px; padding-left: 15px;">Zəhmət olmasa, yuxarıdakı siyahıdan otel seçin.</p>
+            </div>
+        </div>
+        
+        <div class="sticky-sidebar">
+            <div class="totals-card">
+                <div class="totals-row" style="font-size: 14px; font-weight: 500; margin-bottom: 15px; color: #9ca3af;">
+                    <span>Seçilmiş hotel sayı:</span>
+                    <span id="selectedHotelsCount" style="font-weight: 700;">0</span>
+                </div>
+
+                <div class="totals-row">
+                    <span>Rooms subtotal (toplam)</span>
+                    <span id="roomsSubtotal">0 $</span>
+                </div>
+                <div class="totals-row">
+                    <span>Extra beds (toplam)</span>
+                    <span id="extraBedsTotal">0 $</span>
+                </div>
+                <div class="totals-row">
+                    <span>Meals (toplam)</span>
+                    <span id="mealsTotal">0 $</span>
+                </div>
+                
+                <hr style="border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 10px 0;">
+
+                <div class="totals-row">
+                    <strong>Hotels subtotal (cəmi)</strong>
+                    <strong id="hotelSubtotal">0 $</strong>
+                </div>
+                <div class="totals-row" style="margin-bottom: 20px;">
+                    <span>Operations (hamıya eyni)</span>
+                    <span id="operationsTotal">0 $</span>
+                </div>
+                
+                <div class="grand">
+                    Grand Total: <span id="grandTotal">0 $</span>
+                </div>
+                
+                <button id="reserveBtn" disabled>Rezervasiyanı Göndər</button>
+            </div>
+            
+            <div class="card" style="margin-top: 25px; padding: 18px;">
+                <div class="section-title" style="margin-top: 0; margin-bottom: 12px; border-left-color: #f59e0b;">✈️ Operations / Transfer</div>
+                <div class="operations-list" id="operationsContainer"></div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <div id="reservationModal" style="
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    background: rgba(0,0,0,0.7); 
+    display: none; 
+    justify-content: center; 
+    align-items: center; 
+    z-index: 100;
+  ">
+    <div style="
+      background: white; 
+      padding: 24px; 
+      border-radius: 18px; 
+      max-width: 900px; 
+      width: 90%; 
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    ">
+      <h2 style="margin: 0 0 16px; font-size: 24px; color: #111827;">Rezervasiyanın Təsdiqlənməsi</h2>
+      <button onclick="closeReservationModal()" style="
+        position: absolute; 
+        top: 10px; 
+        right: 15px; 
+        background: none; 
+        border: none; 
+        font-size: 24px; 
+        cursor: pointer; 
+        color: #6b7280;
+      ">×</button>
+
+      <div id="reservationSummary" style="
+        background: #eff6ff; 
+        border: 1px solid #bfdbfe;
+        color: #1e40af;
+        padding: 18px; 
+        border-radius: 10px; 
+        margin-bottom: 20px; 
+        font-size: 15px;
+      "></div>
+      
+      <form id="reservationForm">
+        <div id="travelersForm">
+          <div class="section-title" style="margin-top: 0; border-left-color: #3b82f6;">👤 Səyahətçi Məlumatları</div>
+          </div>
+
+        <hr style="margin: 20px 0;">
+
+        <div class="section-title" style="border-left-color: #f59e0b;">✈️ Uçuş Məlumatları (Flight Information)</div>
+        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div>
+            <label>Arrival Time (Gəliş vaxtı)</label>
+            <input type="datetime-local" id="flightArrival" name="flightArrival" />
+          </div>
+          <div>
+            <label>Departure Time (Gediş vaxtı)</label>
+            <input type="datetime-local" id="flightDeparture" name="flightDeparture" />
+          </div>
+        </div>
+        
+        <button type="submit" id="confirmReserveBtn" style="
+            border: none; 
+            padding: 12px 16px; 
+            background: #1d4ed8; 
+            color: white; 
+            font-size: 16px; 
+            font-weight: 700; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            width: 100%; 
+            margin-top: 25px;
+            transition: background 0.3s;
+        ">Rezervasiyanı Təsdiqlə</button>
+        <div id="reservationMsg" style="margin-top: 15px; font-size: 14px;"></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    
+    // --- Login Control ---
+    const LOGGED_IN_AGENT = JSON.parse(localStorage.getItem('b2b_agent_auth'));
+
+    if (!LOGGED_IN_AGENT || !LOGGED_IN_AGENT.success) {
+        window.location.href = 'login.html'; 
+    } else {
+        document.getElementById('agentNameDisplay').textContent = LOGGED_IN_AGENT.name + ' (' + LOGGED_IN_AGENT.role + ')';
+    }
+
+    function logout() {
+        localStorage.removeItem('b2b_agent_auth');
+        window.location.href = 'login.html';
+    }
+    // --- End Login Control ---
+    
+    const TAX_RATE = 0; // VERGİ LƏĞV EDİLDİ: 0-a bərabərdir
+    let dbData = { regions: [], hotels: [], operations: [] };
+
+    function fetchData() {
+      fetch('/api/data')
+        .then(r => r.json())
+        .then(data => {
+          dbData = data;
+          renderRegions();
+          renderStars();
+          renderHotelsFilter();
+          renderOperations();
+        })
+        .catch(err => console.error('Error loading data', err));
+    }
+
+    function renderRegions() {
+      const box = document.getElementById('regionsBox');
+      box.innerHTML = '';
+      dbData.regions.forEach(region => {
+        const label = document.createElement('label');
+        label.className = 'filter-item';
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.value = region.id;
+        input.name = 'regionFilter';
+        input.addEventListener('change', onFilterChange);
+        label.appendChild(input);
+        label.appendChild(document.createTextNode(region.name));
+        box.appendChild(label);
+      });
+    }
+
+    function renderStars() {
+      const box = document.getElementById('starsBox');
+      box.innerHTML = '';
+      const stars = [
+        { value: 2, label: '2*' },
+        { value: 3, label: '3*' },
+        { value: 4, label: '4*' },
+        { value: 5, label: '5*' },
+        { value: 'others', label: 'Others' }
+      ];
+      stars.forEach(s => {
+        const label = document.createElement('label');
+        label.className = 'filter-item';
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.value = s.value;
+        input.name = 'starFilter';
+        input.addEventListener('change', onFilterChange);
+        label.appendChild(input);
+        const text = '★'.repeat(s.value > 0 ? s.value : 1) + ' ' + s.label;
+        label.appendChild(document.createTextNode(text));
+        box.appendChild(label);
+      });
+    }
+
+    function selectedRegionIds() {
+      return Array.from(document.querySelectorAll('input[name="regionFilter"]:checked')).map(el => el.value);
+    }
+
+    function selectedStarFilters() {
+      return Array.from(document.querySelectorAll('input[name="starFilter"]:checked')).map(el => el.value);
+    }
+
+    function filterHotels() {
+      const regions = selectedRegionIds();
+      const starFilters = selectedStarFilters();
+      return dbData.hotels.filter(h => {
+        const regionMatch = regions.length === 0 || regions.includes(String(h.regionId));
+        let starMatch = true;
+        if (starFilters.length > 0) {
+          starMatch = false;
+          starFilters.forEach(sf => {
+            if (sf === 'others') {
+              if (![2,3,4,5].includes(Number(h.stars))) starMatch = true;
+            } else {
+              if (Number(sf) === Number(h.stars)) starMatch = true;
+            }
+          });
+        }
+        return regionMatch && starMatch;
+      });
+    }
+
+    function renderHotelsFilter() {
+      const box = document.getElementById('hotelsBox');
+      box.innerHTML = '';
+      const filtered = filterHotels();
+      filtered.forEach(hotel => {
+        const label = document.createElement('label');
+        label.className = 'hotel-item';
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.name = 'hotelFilter';
+        input.value = hotel.id;
+        input.addEventListener('change', onHotelsSelectionChange);
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'hotel-name';
+        nameSpan.textContent = hotel.name;
+        const starsSpan = document.createElement('span');
+        starsSpan.className = 'hotel-stars';
+        starsSpan.textContent = '★'.repeat(hotel.stars || 0);
+        label.appendChild(input);
+        label.appendChild(nameSpan);
+        label.appendChild(starsSpan);
+        box.appendChild(label);
+      });
+    }
+
+    function onFilterChange() {
+      renderHotelsFilter();
+      renderHotelBlocks();
+      recalcTotals();
+    }
+
+    function getSelectedHotelIds() {
+      return Array.from(document.querySelectorAll('input[name="hotelFilter"]:checked')).map(el => el.value);
+    }
+
+    function onHotelsSelectionChange() {
+      renderHotelBlocks();
+      recalcTotals();
+    }
+
+    function renderHotelBlocks() {
+      const container = document.getElementById('hotelsCalcs');
+      const selectedIds = getSelectedHotelIds();
+      container.innerHTML = '';
+      document.getElementById('selectedHotelsCount').textContent = selectedIds.length;
+      
+      if (selectedIds.length === 0) {
+          container.innerHTML = '<p style="color: #6b7280; font-style: italic; font-size: 15px; padding-left: 15px;">Zəhmət olmasa, yuxarıdakı siyahıdan otel seçin.</p>';
+      }
+
+      selectedIds.forEach(id => {
+        const hotel = dbData.hotels.find(h => String(h.id) === String(id));
+        if (!hotel) return;
+        const block = document.createElement('div');
+        block.className = 'hotel-block';
+        block.dataset.hotelId = hotel.id;
+
+        const header = document.createElement('div');
+        header.className = 'hotel-block-header';
+
+        const title = document.createElement('div');
+        title.className = 'hotel-block-title';
+        title.textContent = hotel.name;
+
+        const meta = document.createElement('div');
+        meta.className = 'hotel-block-meta';
+        const region = dbData.regions.find(r => String(r.id) === String(hotel.regionId));
+        const regionTag = document.createElement('span');
+        regionTag.className = 'tag';
+        regionTag.textContent = region ? region.name : 'No region';
+
+        const stars = document.createElement('span');
+        stars.className = 'stars';
+        stars.textContent = '★'.repeat(hotel.stars || 0);
+
+        const extra = document.createElement('span');
+        extra.className = 'tag';
+        extra.textContent = 'Extra bed: ' + (hotel.extraBedPricePerNight || 0) + ' $ / night';
+
+        meta.appendChild(regionTag);
+        meta.appendChild(stars);
+        meta.appendChild(extra);
+
+        header.appendChild(title);
+        header.appendChild(meta);
+
+        const body = document.createElement('div');
+
+        // Rooms
+        const roomsTitle = document.createElement('div');
+        roomsTitle.style.fontSize = '14px';
+        roomsTitle.style.fontWeight = '600';
+        roomsTitle.style.margin = '6px 0 6px';
+        roomsTitle.textContent = 'Otaq Seçimi';
+        body.appendChild(roomsTitle);
+
+        const roomsContainer = document.createElement('div');
+        roomsContainer.id = 'rooms_h' + hotel.id;
+        body.appendChild(roomsContainer);
+
+        const addRoomBtn = document.createElement('button');
+        addRoomBtn.type = 'button';
+        addRoomBtn.className = 'add-room-btn';
+        addRoomBtn.textContent = '+ Otaq tipi əlavə et';
+        addRoomBtn.addEventListener('click', () => {
+          createRoomRowForHotel(hotel, roomsContainer);
+        });
+        body.appendChild(addRoomBtn);
+
+        // Meal
+        const mealTitle = document.createElement('div');
+        mealTitle.style.fontSize = '14px';
+        mealTitle.style.fontWeight = '600';
+        mealTitle.style.margin = '15px 0 8px';
+        mealTitle.textContent = 'Qidalanma Planı';
+        body.appendChild(mealTitle);
+
+        const mealsBox = document.createElement('div');
+        mealsBox.id = 'meals_h' + hotel.id;
+        body.appendChild(mealsBox);
+
+        // Per-hotel total line
+        const totalsLine = document.createElement('div');
+        totalsLine.className = 'hotel-totals-line';
+        totalsLine.innerHTML = '<span>Bu hotel üçün total (Operations daxil):</span> <span id="hotelTotal_h' + hotel.id + '">0 $</span>';
+        body.appendChild(totalsLine);
+
+        block.appendChild(header);
+        block.appendChild(body);
+        container.appendChild(block);
+
+        // initial one room row + meal plans
+        createRoomRowForHotel(hotel, roomsContainer);
+        renderMealsForHotel(hotel, mealsBox);
+      });
+    }
+
+    function createRoomRowForHotel(hotel, container) {
+      const row = document.createElement('div');
+      row.className = 'room-row';
+
+      const roomSelect = document.createElement('select');
+      roomSelect.className = 'room-type-select';
+      
+      roomSelect.innerHTML = '<option value="">Room type seç...</option>'; 
+      
+      (hotel.roomTypes || []).forEach((rt, index) => {
+        const opt = document.createElement('option');
+        opt.value = rt.id;
+        opt.textContent = rt.name + ' (' + rt.pricePerNight + ' $ / night)';
+        if (index === 0 && !container.querySelector('.room-row')) {
+          opt.selected = true; // Əgər ilk otaq sırasıdırsa, ilk room type-ı avtomatik seç
+        }
+        roomSelect.appendChild(opt);
+      });
+
+      const qtyControls = document.createElement('div');
+      qtyControls.className = 'qty-controls';
+      const minusBtn = document.createElement('button');
+      minusBtn.type = 'button';
+      minusBtn.className = 'qty-btn';
+      minusBtn.textContent = '—';
+      const qtyValue = document.createElement('span');
+      qtyValue.className = 'qty-value';
+      qtyValue.textContent = '1';
+      const plusBtn = document.createElement('button');
+      plusBtn.type = 'button';
+      plusBtn.className = 'qty-btn';
+      plusBtn.textContent = '+';
+      qtyControls.appendChild(minusBtn);
+      qtyControls.appendChild(qtyValue);
+      qtyControls.appendChild(plusBtn);
+
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'room-remove';
+      removeBtn.textContent = '×';
+
+      row.appendChild(roomSelect);
+      row.appendChild(qtyControls);
+      row.appendChild(removeBtn);
+      container.appendChild(row);
+
+      roomSelect.addEventListener('change', recalcTotals);
+      minusBtn.addEventListener('click', () => {
+        let v = parseInt(qtyValue.textContent || '1', 10);
+        if (v > 1) {
+          qtyValue.textContent = String(v - 1);
+          recalcTotals();
+        }
+      });
+      plusBtn.addEventListener('click', () => {
+        let v = parseInt(qtyValue.textContent || '1', 10);
+        qtyValue.textContent = String(v + 1);
+        recalcTotals();
+      });
+      removeBtn.addEventListener('click', () => {
+        row.remove();
+        recalcTotals();
+      });
+      
+      // Əgər ilk room type seçilibsə, dərhal hesablamanı yeniləyin
+      if (hotel.roomTypes && hotel.roomTypes.length > 0 && roomSelect.value) {
+          recalcTotals();
+      }
+    }
+
+    function renderMealsForHotel(hotel, container) {
+      container.innerHTML = '';
+      if (!hotel.mealPlans || hotel.mealPlans.length === 0) {
+        container.innerHTML = '<span style="font-size:13px;color:#6b7280;">Bu hotel üçün meal plan yoxdur.</span>';
+        return;
+      }
+      hotel.mealPlans.forEach((mp, idx) => {
+        const label = document.createElement('label');
+        label.className = 'meal-item';
+        const input = document.createElement('input');
+        input.type = 'radio';
+        input.name = 'mealPlan_h' + hotel.id;
+        input.value = mp.id;
+        if (idx === 0) input.checked = true;
+        input.addEventListener('change', recalcTotals);
+        const text = document.createElement('span');
+        text.textContent = mp.name;
+        const price = document.createElement('span');
+        price.style.fontSize = '12px';
+        price.style.color = '#6b7280';
+        price.textContent = ' ' + mp.pricePerPersonPerNight + ' $ / person / night';
+        label.appendChild(input);
+        label.appendChild(text);
+        label.appendChild(price);
+        container.appendChild(label);
+      });
+    }
+
+    function renderOperations() {
+      const container = document.getElementById('operationsContainer');
+      container.innerHTML = '';
+      if (!dbData.operations || dbData.operations.length === 0) {
+        container.innerHTML = '<span style="font-size:14px;color:#6b7280; font-style: italic;">Əməliyyatlar əlavə edilməyib.</span>';
+        return;
+      }
+      dbData.operations.forEach(op => {
+        const id = 'op_' + op.id;
+        const row = document.createElement('label');
+        row.className = 'operation-item';
+        const left = document.createElement('span');
+        left.innerHTML = '<input type="checkbox" id="' + id + '" data-price="' + op.price + '" /> ' + op.name;
+        const right = document.createElement('span');
+        right.className = 'price';
+        right.textContent = op.price + ' $';
+        row.appendChild(left);
+        row.appendChild(right);
+        container.appendChild(row);
+      });
+
+      container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', recalcTotals);
+      });
+    }
+
+    function calcNights() {
+      const inEl = document.getElementById('checkIn');
+      const outEl = document.getElementById('checkOut');
+      const nightsEl = document.getElementById('nights');
+      const inDate = inEl.value ? new Date(inEl.value) : null;
+      const outDate = outEl.value ? new Date(outEl.value) : null;
+      let nights = 0;
+      if (inDate && outDate && outDate > inDate) {
+        const diffMs = outDate - inDate;
+        nights = diffMs / (1000 * 60 * 60 * 24);
+      }
+      nightsEl.textContent = nights;
+      return nights;
+    }
+
+    function recalcTotals(getTotalsOnly = false) {
+      const nights = calcNights();
+      const adults = parseInt(document.getElementById('adults').value || '0', 10);
+      const children = parseInt(document.getElementById('children').value || '0', 10);
+      const extraBedChecked = document.getElementById('extraBed').checked;
+
+      const selectedIds = getSelectedHotelIds();
+      let totalRooms = 0;
+      let totalExtraBeds = 0;
+      let totalMeals = 0;
+      let totalHotelSubtotal = 0;
+      const totalTaxes = 0; 
+
+      let operationsTotal = 0;
+      document.querySelectorAll('#operationsContainer input[type="checkbox"]:checked').forEach(cb => {
+        const price = parseFloat(cb.getAttribute('data-price') || '0');
+        operationsTotal += price;
+      });
+
+      selectedIds.forEach(id => {
+        const hotel = dbData.hotels.find(h => String(h.id) === String(id));
+        if (!hotel) return;
+
+        let roomsSubtotal = 0;
+        const roomsContainer = document.getElementById('rooms_h' + hotel.id);
+        if (roomsContainer) {
+          const rows = roomsContainer.querySelectorAll('.room-row');
+          const roomTypesMap = {};
+          (hotel.roomTypes || []).forEach(rt => { roomTypesMap[rt.id] = rt; });
+          rows.forEach(row => {
+            const sel = row.querySelector('select');
+            const qtyVal = row.querySelector('.qty-value');
+            if (!sel || !qtyVal) return;
+            const rt = roomTypesMap[sel.value];
+            if (!rt) return; 
+            const qty = parseInt(qtyVal.textContent || '1', 10);
+            roomsSubtotal += rt.pricePerNight * nights * qty;
+          });
+        }
+
+        let extraBedsTotal = 0;
+        if (extraBedChecked && children > 0 && hotel.extraBedPricePerNight && nights > 0) {
+          extraBedsTotal = children * hotel.extraBedPricePerNight * nights;
+        }
+
+        let mealsTotal = 0;
+        const mealRadio = document.querySelector('input[name="mealPlan_h' + hotel.id + '"]:checked');
+        if (mealRadio) {
+          const mealId = mealRadio.value;
+          const mp = (hotel.mealPlans || []).find(m => String(m.id) === String(mealId));
+          if (mp && nights > 0) {
+            const guests = adults + children;
+            mealsTotal = mp.pricePerPersonPerNight * guests * nights;
+          }
+        }
+
+        const hotelSubtotal = roomsSubtotal + extraBedsTotal + mealsTotal;
+        const hotelTotalWithOps = hotelSubtotal + operationsTotal; 
+
+        totalRooms += roomsSubtotal;
+        totalExtraBeds += extraBedsTotal;
+        totalMeals += mealsTotal;
+        totalHotelSubtotal += hotelSubtotal;
+
+        if (!getTotalsOnly) {
+            const hotelTotalEl = document.getElementById('hotelTotal_h' + hotel.id);
+            if (hotelTotalEl) {
+              hotelTotalEl.textContent = formatMoney(hotelTotalWithOps);
+            }
+        }
+      });
+
+      const grandTotal = totalHotelSubtotal + operationsTotal; 
+
+      if (!getTotalsOnly) {
+          updateTotals(totalRooms, totalExtraBeds, totalMeals, totalHotelSubtotal, totalTaxes, operationsTotal, grandTotal);
+          
+          const reserveBtn = document.getElementById('reserveBtn');
+          const isReadyToReserve = nights > 0 && selectedIds.length > 0 && (adults + children) > 0 && totalRooms > 0;
+          
+          reserveBtn.disabled = !isReadyToReserve;
+          if (isReadyToReserve) {
+              reserveBtn.textContent = 'Rezervasiyanı Göndər';
+          } else if (selectedIds.length === 0) {
+              reserveBtn.textContent = 'Hotel seçin';
+          } else if (nights === 0) {
+              reserveBtn.textContent = 'Tarixləri seçin';
+          } else if (totalRooms === 0) {
+              reserveBtn.textContent = 'Otaq seçin';
+          } else {
+              reserveBtn.textContent = 'Rezervasiyanı Göndər';
+          }
+      }
+      
+      return {
+          roomsSubtotal: totalRooms,
+          extraBedsTotal: totalExtraBeds,
+          mealsTotal: totalMeals,
+          hotelSubtotal: totalHotelSubtotal,
+          taxes: totalTaxes,
+          operationsTotal: operationsTotal,
+          grandTotal: grandTotal,
+          nights: nights
+      };
+    }
+
+
+    function updateTotals(roomsSubtotal, extraBedsTotal, mealsTotal, hotelSubtotal, taxes, operationsTotal, grandTotal) {
+      document.getElementById('roomsSubtotal').textContent = formatMoney(roomsSubtotal || 0);
+      document.getElementById('extraBedsTotal').textContent = formatMoney(extraBedsTotal || 0);
+      document.getElementById('mealsTotal').textContent = formatMoney(mealsTotal || 0);
+      document.getElementById('hotelSubtotal').textContent = formatMoney(hotelSubtotal || 0);
+      document.getElementById('operationsTotal').textContent = formatMoney(operationsTotal || 0);
+      document.getElementById('grandTotal').textContent = formatMoney(grandTotal || 0);
+    }
+
+    function formatMoney(v) {
+      v = Math.round((v + Number.EPSILON) * 100) / 100;
+      return v.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + ' $';
+    }
+
+    function getBookingSummary() {
+        const checkIn = document.getElementById('checkIn').value;
+        const checkOut = document.getElementById('checkOut').value;
+        const adults = parseInt(document.getElementById('adults').value || '0', 10);
+        const children = parseInt(document.getElementById('children').value || '0', 10);
+        const selectedHotelIds = getSelectedHotelIds();
+        
+        const totals = recalcTotals(true);
+
+        const selectedHotels = dbData.hotels.filter(h => selectedHotelIds.includes(String(h.id)));
+        const hotelNames = selectedHotels.map(h => h.name).join(', ');
+
+        return {
+            checkIn,
+            checkOut,
+            nights: totals.nights,
+            adults,
+            children,
+            hotels: selectedHotels.map(h => ({ 
+                id: h.id, 
+                name: h.name, 
+                totalPrice: parseFloat(document.getElementById('hotelTotal_h' + h.id)?.textContent.replace(/[^0-9.]/g, '') || 0)
+            })),
+            totalPrice: totals.grandTotal,
+            totalTravelers: adults + children,
+            hotelNames: hotelNames,
+        };
+    }
+
+    function generateTravelerForm(type, index) {
+        const id = `${type}${index}`;
+        const typeLabel = type === 'adult' ? 'Böyük (Adult)' : 'Uşaq (Child)';
+        const typeColor = type === 'adult' ? '#111827' : '#b91c1c';
+        const typeBg = type === 'adult' ? '#ffffff' : '#fef2f2';
+
+        return `
+            <div style="
+                border: 1px solid #d1d5db; 
+                padding: 12px; 
+                border-radius: 10px; 
+                margin-bottom: 10px;
+                background: ${typeBg};
+            ">
+                <div style="font-size: 14px; font-weight: 600; margin-bottom: 8px; color: ${typeColor};">
+                    ${typeLabel} \#${index + 1}
+                </div>
+                <div class="grid" style="grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label>Ad (First Name) *</label>
+                        <input type="text" name="travelerName_${id}" required>
+                    </div>
+                    <div>
+                        <label>Soyad (Last Name) *</label>
+                        <input type="text" name="travelerSurname_${id}" required>
+                    </div>
+                    <div>
+                        <label>Doğum günü (Date of Birth) *</label>
+                        <input type="date" name="travelerDOB_${id}" required>
+                    </div>
+                    <div>
+                        <label>Vətəndaşlıq (Nationality) *</label>
+                        <input type="text" name="travelerNationality_${id}" placeholder="AZ, TR, RU,..." required>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function openReservationModal() {
+        const summary = getBookingSummary();
+        const modal = document.getElementById('reservationModal');
+        const travelersFormEl = document.getElementById('travelersForm');
+        const reservationSummaryEl = document.getElementById('reservationSummary');
+        
+        if (summary.hotels.length === 0 || summary.nights <= 0 || summary.totalTravelers === 0) {
+            alert("Rezervasiya etmək üçün ən azı bir hotel seçilməli, check-in/out tarixləri və qonaq sayı daxil edilməlidir.");
+            return;
+        }
+
+        // 1. Ümumi məlumatları göstər
+        reservationSummaryEl.innerHTML = `
+            <p style="margin: 0 0 5px;"><strong>Hotellər:</strong> ${summary.hotelNames || '—'}</p>
+            <p style="margin: 0 0 5px;"><strong>Tarix:</strong> ${summary.checkIn} — ${summary.checkOut} (${summary.nights} gecə)</p>
+            <p style="margin: 0 0 5px;"><strong>Qonaqlar:</strong> ${summary.adults} böyük, ${summary.children} uşaq (Cəmi: ${summary.totalTravelers} nəfər)</p>
+            <h3 style="margin: 8px 0 0; color: #1e40af;">YEKUN QİYMƏT (GRAND TOTAL): ${formatMoney(summary.totalPrice)}</h3>
+        `;
+
+        // 2. Səyahətçi formalarını yarat
+        let formsHtml = '';
+        for (let i = 0; i < summary.adults; i++) {
+            formsHtml += generateTravelerForm('adult', i);
+        }
+        for (let i = 0; i < summary.children; i++) {
+            formsHtml += generateTravelerForm('child', i);
+        }
+
+        travelersFormEl.innerHTML = `<div class="section-title" style="margin-top: 0; border-left-color: #3b82f6;">👤 Səyahətçi Məlumatları (${summary.totalTravelers} nəfər)</div>${formsHtml}`;
+
+        // 3. Modalı göstər və formu təmizlə
+        document.getElementById('reservationMsg').textContent = '';
+        document.getElementById('reservationForm').reset();
+        modal.style.display = 'flex';
+    }
+
+    function closeReservationModal() {
+        document.getElementById('reservationModal').style.display = 'none';
+    }
+
+    function submitReservation(e) {
+        e.preventDefault();
+        const msgEl = document.getElementById('reservationMsg');
+        msgEl.textContent = 'Rezervasiya göndərilir...';
+        msgEl.className = ''; 
+
+        const summary = getBookingSummary();
+        const form = e.target;
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        const travelers = [];
+        const totalTravelers = summary.adults + summary.children;
+        
+        let allTravelersValid = true;
+        for (let i = 0; i < totalTravelers; i++) {
+            const type = i < summary.adults ? 'adult' : 'child';
+            const index = i < summary.adults ? i : i - summary.adults;
+            const id = `${type}${index}`;
+            
+            const travelerData = {
+                type: type,
+                name: data[`travelerName_${id}`],
+                surname: data[`travelerSurname_${id}`],
+                dob: data[`travelerDOB_${id}`],
+                nationality: data[`travelerNationality_${id}`]
+            };
+
+            if (!travelerData.name || !travelerData.surname || !travelerData.dob || !travelerData.nationality) {
+                allTravelersValid = false;
+                break;
+            }
+            
+            travelers.push(travelerData);
+        }
+        
+        if (!allTravelersValid) {
+            msgEl.textContent = '❌ Zəhmət olmasa, bütün səyahətçi məlumatlarını (Ad, Soyad, Doğum günü, Vətəndaşlıq) tam daxil edin.';
+            msgEl.className = 'alert';
+            return;
+        }
+
+        const flightInfo = {
+            arrival: data.flightArrival,
+            departure: data.flightDeparture
+        };
+
+        const reservationPayload = {
+            summary: summary,
+            travelers: travelers,
+            flightInfo: flightInfo,
+            dateBooked: new Date().toISOString()
+        };
+
+        fetch('/api/reservations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(reservationPayload)
+        })
+        .then(r => r.json())
+        .then(res => {
+            if (res.error) throw new Error(res.error);
+            msgEl.textContent = '✅ Rezervasiya uğurla saxlanıldı! ID: ' + res.id;
+            msgEl.className = 'success';
+            setTimeout(() => {
+                closeReservationModal();
+                window.location.reload(); 
+            }, 3000);
+        })
+        .catch(err => {
+            console.error(err);
+            msgEl.textContent = '❌ Rezervasiya saxlanılarkən xəta: ' + (err.message || 'Server xətası');
+            msgEl.className = 'alert';
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchData();
+
+      document.getElementById('checkIn').addEventListener('change', recalcTotals);
+      document.getElementById('checkOut').addEventListener('change', recalcTotals);
+      document.getElementById('adults').addEventListener('input', recalcTotals);
+      document.getElementById('children').addEventListener('input', recalcTotals);
+      document.getElementById('extraBed').addEventListener('change', recalcTotals);
+      
+      document.getElementById('reserveBtn').addEventListener('click', openReservationModal);
+      document.getElementById('reservationForm').addEventListener('submit', submitReservation);
+    });
+  </script>
+</body>
+</html>

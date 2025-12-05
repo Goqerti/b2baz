@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Agent Login / Register - B2B Hotels</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f4f8;
+            color: #374151;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px; /* Bir az genişləndi */
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            position: relative;
+        }
+        h2 {
+            font-size: 26px;
+            color: #111827;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+        p {
+            color: #6b7280;
+            margin-bottom: 30px;
+            font-size: 15px;
+        }
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #1f2937;
+        }
+        input[type="text"], 
+        input[type="password"],
+        input[type="email"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+        button[type="submit"] {
+            width: 100%;
+            padding: 14px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button[type="submit"]:hover {
+            background: #2563eb;
+        }
+        .toggle-link {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #3b82f6;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        #message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+            text-align: left;
+        }
+        .error {
+            color: #ef4444;
+            background: #fef2f2;
+            border: 1px solid #fca5a5;
+        }
+        .success {
+            color: #10b981;
+            background: #d1fae5;
+            border: 1px solid #34d399;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <div id="loginView">
+            <h2>B2B Agent Daxilolması</h2>
+            <p>Məlumatlarınızı daxil edin (Test Agent: **agent/password123**)</p>
+            <form id="loginForm">
+                <div>
+                    <label for="username">İstifadəçi Adı</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div>
+                    <label for="password">Şifrə</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit">Daxil ol</button>
+            </form>
+            <a class="toggle-link" onclick="showView('register')">Qeydiyyatdan keç</a>
+        </div>
+
+        <div id="registerView" style="display: none;">
+            <h2>Agent Qeydiyyatı</h2>
+            <p>Təsdiq üçün administratora göndəriləcək məlumatları daxil edin.</p>
+            <form id="registerForm">
+                <div class="row">
+                    <div style="flex: 1;">
+                        <label for="regFirstName">Ad</label>
+                        <input type="text" id="regFirstName" required>
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="regLastName">Soyad</label>
+                        <input type="text" id="regLastName" required>
+                    </div>
+                </div>
+                
+                <label for="regUsername">İstifadəçi Adı (Login üçün)</label>
+                <input type="text" id="regUsername" required>
+
+                <label for="regCompany">Şirkət</label>
+                <input type="text" id="regCompany" required>
+
+                <label for="regPassword">Şifrə</label>
+                <input type="password" id="regPassword" required>
+                
+                <button type="submit">Qeydiyyatı Göndər</button>
+            </form>
+            <a class="toggle-link" onclick="showView('login')">Daxilolmaya qayıt</a>
+        </div>
+
+        <div id="message"></div>
+    </div>
+
+    <script>
+        const messageEl = document.getElementById('message');
+
+        function showView(viewId) {
+            document.getElementById('loginView').style.display = 'none';
+            document.getElementById('registerView').style.display = 'none';
+            document.getElementById(viewId + 'View').style.display = 'block';
+            messageEl.style.display = 'none';
+        }
+
+        // --- Login Logic ---
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            messageEl.textContent = 'Yoxlanılır...';
+            messageEl.className = '';
+            messageEl.style.display = 'block';
+
+            fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            })
+            .then(response => response.json().then(data => ({ status: response.status, body: data })))
+            .then(result => {
+                if (result.status === 200 && result.body.success) {
+                    messageEl.textContent = 'Daxilolma uğurlu! Yönləndirilir...';
+                    messageEl.className = 'success';
+                    
+                    // Daxilolma məlumatlarını localStorage-da saxla
+                    localStorage.setItem('b2b_agent_auth', JSON.stringify({
+                        success: true,
+                        name: result.body.name,
+                        role: result.body.role,
+                        timestamp: Date.now()
+                    }));
+
+                    // Yönləndirmə
+                    if (result.body.role === 'Admin') {
+                        setTimeout(() => { window.location.href = 'admin.html'; }, 500);
+                    } else {
+                        setTimeout(() => { window.location.href = 'index.html'; }, 500);
+                    }
+                } else {
+                    messageEl.textContent = result.body.error || 'İstifadəçi adı və ya şifrə yanlışdır.';
+                    messageEl.className = 'error';
+                }
+            })
+            .catch(error => {
+                console.error('Login error:', error);
+                messageEl.textContent = 'Server ilə əlaqə qurularkən xəta baş verdi.';
+                messageEl.className = 'error';
+            });
+        });
+
+        // --- Registration Logic ---
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('regFirstName').value.trim();
+            const lastName = document.getElementById('regLastName').value.trim();
+            const username = document.getElementById('regUsername').value.trim();
+            const company = document.getElementById('regCompany').value.trim();
+            const password = document.getElementById('regPassword').value;
+
+            if (password.length < 6) {
+                messageEl.textContent = 'Şifrə ən azı 6 simvol olmalıdır.';
+                messageEl.className = 'error';
+                messageEl.style.display = 'block';
+                return;
+            }
+            
+            messageEl.textContent = 'Qeydiyyat göndərilir...';
+            messageEl.className = '';
+            messageEl.style.display = 'block';
+
+            fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ firstName, lastName, username, company, password })
+            })
+            .then(response => response.json().then(data => ({ status: response.status, body: data })))
+            .then(result => {
+                if (result.status === 200 && result.body.success) {
+                    messageEl.textContent = result.body.message;
+                    messageEl.className = 'success';
+                    document.getElementById('registerForm').reset();
+                    
+                } else if (result.status === 409) {
+                    messageEl.textContent = result.body.error;
+                    messageEl.className = 'error';
+                } else {
+                    messageEl.textContent = result.body.error || 'Naməlum qeydiyyat xətası.';
+                    messageEl.className = 'error';
+                }
+            })
+            .catch(error => {
+                console.error('Registration error:', error);
+                messageEl.textContent = 'Server ilə əlaqə qurularkən xəta baş verdi.';
+                messageEl.className = 'error';
+            });
+        });
+        
+        // Ensure default view is Login
+        document.addEventListener('DOMContentLoaded', () => {
+            showView('login');
+        });
+    </script>
+</body>
+</html>

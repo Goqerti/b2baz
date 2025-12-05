@@ -1,0 +1,12 @@
+{
+  "name": "b2b-hotel-app-final",
+  "version": "1.0.0",
+  "description": "B2B hotel booking + admin panel with JSON DB",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
