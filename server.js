@@ -25,8 +25,8 @@ const initialDB = {
             stars: 4,
             extraBedPricePerNight: 15,
             roomTypes: [
-                { id: 1, name: "Standard Double", pricePerNight: 50 },
-                { id: 2, name: "Deluxe Double", pricePerNight: 70 }
+                { id: 1, name: "Standard Double", pricePerNight: 50, isExtraBedAllowed: true }, // YENİ: isExtraBedAllowed
+                { id: 2, name: "Deluxe Double", pricePerNight: 70, isExtraBedAllowed: false } // YENİ: isExtraBedAllowed
             ],
             mealPlans: [
                 { id: 1, name: "BB", pricePerPersonPerNight: 10 },
@@ -89,6 +89,11 @@ app.get("/api/data", (req, res) => {
     res.json(readDB());
 });
 
+// ----------------------------------------------------------------------
+// REGIONS CRUD (CREATE, READ, UPDATE, DELETE)
+// ----------------------------------------------------------------------
+
+// POST: Region əlavə et (CREATE)
 app.post("/api/regions", (req, res) => {
     const db = readDB();
     const name = req.body.name?.trim();
@@ -101,6 +106,47 @@ app.post("/api/regions", (req, res) => {
     res.json({ regions: db.regions });
 });
 
+// PUT: Region Yenilənməsi (UPDATE)
+app.put("/api/regions/:id", (req, res) => {
+    const db = readDB();
+    const id = Number(req.params.id);
+    const name = req.body.name?.trim();
+
+    if (!name) return res.status(400).json({ error: "Region name required" });
+
+    const regionIndex = db.regions.findIndex(r => r.id === id);
+    if (regionIndex === -1) {
+        return res.status(404).json({ error: "Region tapılmadı." });
+    }
+
+    db.regions[regionIndex].name = name;
+    writeDB(db);
+
+    res.json({ success: true, regions: db.regions });
+});
+
+// DELETE: Region Silinməsi (DELETE)
+app.delete("/api/regions/:id", (req, res) => {
+    const db = readDB();
+    const id = Number(req.params.id);
+    const initialLength = db.regions.length;
+    
+    db.regions = db.regions.filter(r => r.id !== id);
+    db.hotels = db.hotels.filter(h => h.regionId !== id); 
+
+    if (db.regions.length === initialLength) {
+        return res.status(404).json({ error: "Region tapılmadı." });
+    }
+
+    writeDB(db);
+    res.json({ success: true, regions: db.regions, hotels: db.hotels });
+});
+
+// ----------------------------------------------------------------------
+// OPERATIONS CRUD (CREATE, READ, UPDATE, DELETE)
+// ----------------------------------------------------------------------
+
+// POST: Operation əlavə et (CREATE)
 app.post("/api/operations", (req, res) => {
     const db = readDB();
     const name = req.body.name?.trim();
@@ -114,6 +160,48 @@ app.post("/api/operations", (req, res) => {
     res.json({ operations: db.operations });
 });
 
+// PUT: Operation Yenilənməsi (UPDATE)
+app.put("/api/operations/:id", (req, res) => {
+    const db = readDB();
+    const id = Number(req.params.id);
+    const name = req.body.name?.trim();
+    const price = Number(req.body.price || 0);
+
+    const operationIndex = db.operations.findIndex(o => o.id === id);
+    if (operationIndex === -1) {
+        return res.status(404).json({ error: "Operation tapılmadı." });
+    }
+
+    db.operations[operationIndex].name = name;
+    db.operations[operationIndex].price = price;
+    writeDB(db);
+
+    res.json({ success: true, operations: db.operations });
+});
+
+
+// DELETE: Operation Silinməsi (DELETE)
+app.delete("/api/operations/:id", (req, res) => {
+    const db = readDB();
+    const id = Number(req.params.id);
+    const initialLength = db.operations.length;
+    
+    db.operations = db.operations.filter(o => o.id !== id);
+    
+    if (db.operations.length === initialLength) {
+        return res.status(404).json({ error: "Operation tapılmadı." });
+    }
+
+    writeDB(db);
+    res.json({ success: true, operations: db.operations });
+});
+
+
+// ----------------------------------------------------------------------
+// HOTELS CRUD (CREATE, READ, UPDATE, DELETE)
+// ----------------------------------------------------------------------
+
+// POST: Hotel əlavə et (CREATE)
 app.post("/api/hotels", (req, res) => {
     const db = readDB();
     const { name, regionId, stars, extraBedPricePerNight } = req.body;
@@ -125,10 +213,12 @@ app.post("/api/hotels", (req, res) => {
 
     const id = db.hotels.length ? Math.max(...db.hotels.map(h => h.id)) + 1 : 1;
 
+    // YENİLƏNİB: isExtraBedAllowed qəbul edilir
     roomTypes = (roomTypes || []).map((rt, i) => ({
         id: i + 1,
         name: rt.name,
-        pricePerNight: Number(rt.pricePerNight || 0)
+        pricePerNight: Number(rt.pricePerNight || 0),
+        isExtraBedAllowed: rt.isExtraBedAllowed || false 
     }));
 
     mealPlans = (mealPlans || []).map((mp, i) => ({
@@ -152,6 +242,72 @@ app.post("/api/hotels", (req, res) => {
     res.json({ hotels: db.hotels, regions: db.regions });
 });
 
+// PUT: Hotel Yenilənməsi (UPDATE)
+app.put("/api/hotels/:id", (req, res) => {
+    const db = readDB();
+    const id = Number(req.params.id);
+    const { name, regionId, stars, extraBedPricePerNight } = req.body;
+    let { roomTypes, mealPlans } = req.body;
+
+    if (!name || !regionId) {
+        return res.status(400).json({ error: "Hotel name & region required" });
+    }
+
+    const hotelIndex = db.hotels.findIndex(h => h.id === id);
+    if (hotelIndex === -1) {
+        return res.status(404).json({ error: "Hotel tapılmadı." });
+    }
+
+    // YENİLƏNİB: isExtraBedAllowed qəbul edilir
+    roomTypes = (roomTypes || []).map((rt, i) => ({
+        id: i + 1,
+        name: rt.name,
+        pricePerNight: Number(rt.pricePerNight || 0),
+        isExtraBedAllowed: rt.isExtraBedAllowed || false
+    }));
+
+    mealPlans = (mealPlans || []).map((mp, i) => ({
+        id: i + 1,
+        name: mp.name,
+        pricePerPersonPerNight: Number(mp.pricePerPersonPerNight || 0)
+    }));
+    
+    db.hotels[hotelIndex] = {
+        id, 
+        name,
+        regionId: Number(regionId),
+        stars: Number(stars),
+        extraBedPricePerNight: Number(extraBedPricePerNight || 0),
+        roomTypes,
+        mealPlans
+    };
+
+    writeDB(db);
+
+    res.json({ success: true, hotels: db.hotels, regions: db.regions });
+});
+
+
+// DELETE: Hotel Silinməsi (DELETE)
+app.delete("/api/hotels/:id", (req, res) => {
+    const db = readDB();
+    const id = Number(req.params.id);
+    const initialLength = db.hotels.length;
+    
+    db.hotels = db.hotels.filter(h => h.id !== id);
+    
+    if (db.hotels.length === initialLength) {
+         return res.status(404).json({ error: "Hotel tapılmadı." });
+    }
+    
+    writeDB(db);
+    res.json({ success: true, hotels: db.hotels, regions: db.regions });
+});
+
+// ----------------------------------------------------------------------
+// RESERVATIONS
+// ----------------------------------------------------------------------
+
 app.post("/api/reservations", (req, res) => {
     const db = readDB();
     const reservationData = req.body;
@@ -169,7 +325,11 @@ app.post("/api/reservations", (req, res) => {
     res.json({ message: "Reservation saved successfully", id });
 });
 
-// YENİ MARŞRUT: Agent qeydiyyatı
+// ----------------------------------------------------------------------
+// AGENTS / AUTH
+// ----------------------------------------------------------------------
+
+// POST: Agent qeydiyyatı
 app.post("/api/register", (req, res) => {
     const db = readDB();
     const { firstName, lastName, username, company, password } = req.body;
@@ -178,7 +338,6 @@ app.post("/api/register", (req, res) => {
         return res.status(400).json({ error: "Tələb olunan sahələr boşdur." });
     }
     
-    // Agent adının unikal olub olmadığını yoxla
     const isUsernameTaken = db.agents.some(a => a.username === username) || db.pending_agents.some(a => a.username === username);
     if (isUsernameTaken) {
         return res.status(409).json({ error: "Bu istifadəçi adı artıq qeydiyyatdan keçib." });
@@ -207,7 +366,7 @@ app.post("/api/register", (req, res) => {
     res.json({ success: true, message: "Qeydiyyat uğurlu oldu. Administrator təsdiqini gözləyin." });
 });
 
-// YENİ MARŞRUT: Agent Təsdiqlənməsi
+// POST: Agent Təsdiqlənməsi
 app.post("/api/agents/confirm/:id", (req, res) => {
     const db = readDB();
     const agentId = Number(req.params.id);
@@ -220,10 +379,7 @@ app.post("/api/agents/confirm/:id", (req, res) => {
 
     const agentToConfirm = db.pending_agents[agentIndex];
     
-    // Təsdiqlənən agenti "agents" massivinə əlavə et
     db.agents.push(agentToConfirm);
-    
-    // "pending_agents" massivindən sil
     db.pending_agents.splice(agentIndex, 1);
     
     writeDB(db);
@@ -231,15 +387,12 @@ app.post("/api/agents/confirm/:id", (req, res) => {
     res.json({ success: true, pending_agents: db.pending_agents, agents: db.agents });
 });
 
-// YENİ MARŞRUT: Agent Silinməsi (Rədd edilməsi)
+// DELETE: Agent Silinməsi (Rədd edilməsi)
 app.delete("/api/agents/delete/:id", (req, res) => {
     const db = readDB();
     const agentId = Number(req.params.id);
 
-    // Təsdiq gözləyənlərdən sil
     db.pending_agents = db.pending_agents.filter(a => a.id !== agentId);
-    
-    // Təsdiqlənmişlərdən sil (ehtiyat üçün)
     db.agents = db.agents.filter(a => a.id !== agentId);
 
     writeDB(db);
@@ -253,7 +406,6 @@ app.post("/api/login", (req, res) => {
     const db = readDB();
     const { username, password } = req.body;
 
-    // Yalnız təsdiqlənmiş agentlər yoxlanılır
     const agent = db.agents.find(a => a.username === username && a.password === password);
     
     if (agent) {
@@ -263,7 +415,6 @@ app.post("/api/login", (req, res) => {
             role: agent.role 
         });
     } else {
-        // Əgər təsdiq gözləyənlər siyahısındadırsa, xüsusi mesaj ver
         const pending = db.pending_agents.find(a => a.username === username);
         if (pending) {
             return res.status(401).json({ success: false, error: "Qeydiyyatınız təsdiq gözləyir." });
