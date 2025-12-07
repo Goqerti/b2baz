@@ -25,8 +25,8 @@ const initialDB = {
             stars: 4,
             extraBedPricePerNight: 15,
             roomTypes: [
-                { id: 1, name: "Standard Double", pricePerNight: 50, isExtraBedAllowed: true }, // YENİ: isExtraBedAllowed
-                { id: 2, name: "Deluxe Double", pricePerNight: 70, isExtraBedAllowed: false } // YENİ: isExtraBedAllowed
+                { id: 1, name: "Standard Double", pricePerNight: 50, isExtraBedAllowed: true }, 
+                { id: 2, name: "Deluxe Double", pricePerNight: 70, isExtraBedAllowed: false } 
             ],
             mealPlans: [
                 { id: 1, name: "BB", pricePerPersonPerNight: 10 },
@@ -41,11 +41,9 @@ const initialDB = {
         { id: 3, name: "City Tour", price: 35 }
     ],
     reservations: [],
-    // Təsdiqlənmiş Agentlər (Login üçün)
     agents: [ 
         { id: 1, username: "agent", password: "password123", name: "Əsas Agent", company: "Default Company", role: "Agent" }
     ],
-    // Təsdiq Gözləyən Agentlər (Qeydiyyat üçün)
     pending_agents: [] 
 };
 
@@ -213,17 +211,17 @@ app.post("/api/hotels", (req, res) => {
 
     const id = db.hotels.length ? Math.max(...db.hotels.map(h => h.id)) + 1 : 1;
 
-    // YENİLƏNİB: isExtraBedAllowed qəbul edilir
-    roomTypes = (roomTypes || []).map((rt, i) => ({
-        id: i + 1,
-        name: rt.name,
+    // FİX: Obyektin olub-olmamasını yoxlayır, yoxsa boş massiv qaytarır.
+    roomTypes = (Array.isArray(roomTypes) ? roomTypes : []).map((rt, i) => ({
+        id: rt.id ? Number(rt.id) : i + 1,
+        name: rt.name || `Room ${i+1}`,
         pricePerNight: Number(rt.pricePerNight || 0),
         isExtraBedAllowed: rt.isExtraBedAllowed || false 
     }));
 
-    mealPlans = (mealPlans || []).map((mp, i) => ({
-        id: i + 1,
-        name: mp.name,
+    mealPlans = (Array.isArray(mealPlans) ? mealPlans : []).map((mp, i) => ({
+        id: mp.id ? Number(mp.id) : i + 1,
+        name: mp.name || `Meal ${i+1}`,
         pricePerPersonPerNight: Number(mp.pricePerPersonPerNight || 0)
     }));
 
@@ -239,7 +237,7 @@ app.post("/api/hotels", (req, res) => {
 
     writeDB(db);
 
-    res.json({ hotels: db.hotels, regions: db.regions });
+    res.json({ success: true, hotels: db.hotels, regions: db.regions });
 });
 
 // PUT: Hotel Yenilənməsi (UPDATE)
@@ -258,17 +256,17 @@ app.put("/api/hotels/:id", (req, res) => {
         return res.status(404).json({ error: "Hotel tapılmadı." });
     }
 
-    // YENİLƏNİB: isExtraBedAllowed qəbul edilir
-    roomTypes = (roomTypes || []).map((rt, i) => ({
-        id: i + 1,
-        name: rt.name,
+    // FİX: Obyektin olub-olmamasını yoxlayır.
+    roomTypes = (Array.isArray(roomTypes) ? roomTypes : []).map((rt, i) => ({
+        id: rt.id ? Number(rt.id) : i + 1,
+        name: rt.name || `Room ${i+1}`,
         pricePerNight: Number(rt.pricePerNight || 0),
         isExtraBedAllowed: rt.isExtraBedAllowed || false
     }));
 
-    mealPlans = (mealPlans || []).map((mp, i) => ({
-        id: i + 1,
-        name: mp.name,
+    mealPlans = (Array.isArray(mealPlans) ? mealPlans : []).map((mp, i) => ({
+        id: mp.id ? Number(mp.id) : i + 1,
+        name: mp.name || `Meal ${i+1}`,
         pricePerPersonPerNight: Number(mp.pricePerPersonPerNight || 0)
     }));
     
@@ -323,6 +321,109 @@ app.post("/api/reservations", (req, res) => {
     writeDB(db);
 
     res.json({ message: "Reservation saved successfully", id });
+});
+
+// PUT: Rezervasiyanın tam yenilənməsi (Admin üçün)
+app.put("/api/reservations/:id", (req, res) => {
+    const db = readDB();
+    const id = Number(req.params.id);
+    const updatedReservation = req.body; 
+
+    const reservationIndex = db.reservations.findIndex(r => r.id === id);
+    if (reservationIndex === -1) {
+        return res.status(404).json({ error: "Reservation tapılmadı." });
+    }
+
+    const currentRes = db.reservations[reservationIndex];
+
+    db.reservations[reservationIndex] = {
+        ...updatedReservation,
+        id: currentRes.id, 
+        date: currentRes.date, 
+        submittingAgentUsername: currentRes.submittingAgentUsername, 
+    };
+
+    writeDB(db);
+
+    res.json({ success: true, reservation: db.reservations[reservationIndex] });
+});
+
+
+// PUT: Rezervasiya Statusunun Yenilənməsi (Admin üçün)
+app.put("/api/reservations/status/:id", (req, res) => {
+    const db = readDB();
+    const id = Number(req.params.id);
+    const { status, changeRequest } = req.body; 
+
+    const reservationIndex = db.reservations.findIndex(r => r.id === id);
+    if (reservationIndex === -1) {
+        return res.status(404).json({ error: "Reservation tapılmadı." });
+    }
+    
+    const resv = db.reservations[reservationIndex];
+
+    // Statusu yoxla: Bu endpoint yalnız təsdiq/rədd və ya tarix sorğusu üçün istifadə olunur.
+    if (status === 'Confirmed' || status === 'Rejected') {
+        resv.status = status;
+        resv.changeRequest = null;
+    } else if (status === 'Date Change Requested' && changeRequest && changeRequest.newCheckIn && changeRequest.newCheckOut) {
+        resv.status = status;
+        resv.changeRequest = changeRequest;
+    } else {
+        return res.status(400).json({ error: "Yanlış status və ya məlumat." });
+    }
+    
+    writeDB(db);
+    res.json({ success: true, reservation: resv });
+});
+
+// PUT: Agent tərəfindən Tarix Dəyişikliyi Sorğusuna Cavab
+app.put("/api/reservations/respond_change/:id", (req, res) => {
+    const db = readDB();
+    const id = Number(req.params.id);
+    const { action } = req.body; 
+
+    const reservationIndex = db.reservations.findIndex(r => r.id === id);
+    if (reservationIndex === -1) {
+        return res.status(404).json({ error: "Reservation tapılmadı." });
+    }
+    
+    const resv = db.reservations[reservationIndex];
+
+    if (resv.status !== 'Date Change Requested' || !resv.changeRequest) {
+        return res.status(400).json({ error: "Hal-hazırda aktiv tarix dəyişikliyi sorğusu yoxdur." });
+    }
+
+    if (action === 'accept') {
+        resv.summary.checkIn = resv.changeRequest.newCheckIn;
+        resv.summary.checkOut = resv.changeRequest.newCheckOut;
+        resv.status = 'Confirmed';
+        resv.changeRequest = null;
+    } else if (action === 'reject') {
+        resv.status = 'Pending Admin'; 
+        resv.changeRequest = null;
+    } else {
+        return res.status(400).json({ error: "Yanlış cavab (accept/reject)." });
+    }
+    
+    writeDB(db);
+    res.json({ success: true, reservation: resv });
+});
+
+// DELETE: Rezervasiya Silinməsi (Admin və ya Agent)
+app.delete("/api/reservations/:id", (req, res) => {
+    const db = readDB();
+    const id = Number(req.params.id);
+
+    const initialLength = db.reservations.length;
+    db.reservations = db.reservations.filter(r => r.id !== id);
+
+    if (db.reservations.length === initialLength) {
+         return res.status(404).json({ error: "Reservation tapılmadı." });
+    }
+    
+    writeDB(db);
+    res.json({ success: true });
 });
 
 // ----------------------------------------------------------------------
@@ -412,7 +513,8 @@ app.post("/api/login", (req, res) => {
         res.json({ 
             success: true, 
             name: agent.name, 
-            role: agent.role 
+            role: agent.role,
+            username: agent.username 
         });
     } else {
         const pending = db.pending_agents.find(a => a.username === username);
