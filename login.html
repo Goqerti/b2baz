@@ -1,272 +1,292 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="az">
 <head>
     <meta charset="UTF-8">
-    <title>Agent Login / Register - B2B Hotels</title>
+    <title>B2B Agent Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- FONT -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
     <style>
         body {
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f4f8;
-            color: #374151;
+            font-family: "Inter", sans-serif;
+            background: linear-gradient(135deg, #e8efff, #f6f9ff);
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            overflow: hidden;
         }
+
+        /* BACKGROUND LIGHT BLURS */
+        .blur-light {
+            position: absolute;
+            width: 520px;
+            height: 520px;
+            background: #3b82f633;
+            filter: blur(160px);
+            animation: softMove 18s infinite alternate ease-in-out;
+            top: -140px;
+            left: -160px;
+        }
+        .blur-light.two {
+            width: 680px;
+            height: 680px;
+            background: #1e3a8a33;
+            bottom: -180px;
+            right: -160px;
+            animation-duration: 24s;
+        }
+
+        @keyframes softMove {
+            0% { transform: translate(0,0); }
+            100% { transform: translate(90px, 60px); }
+        }
+
+        /* ✈️ FLOATING REAL AIRPLANES (LOCAL IMAGE) */
+        .plane-bg {
+            position: absolute;
+            width: 80px;
+            opacity: 0.45;
+            animation: flyAcross 18s linear infinite;
+            top: 22%;
+            left: -150px;
+            z-index: 1;
+        }
+        .plane-bg.two {
+            width: 55px;
+            top: 60%;
+            opacity: 0.30;
+            animation-duration: 26s;
+        }
+
+        @keyframes flyAcross {
+            0% {
+                transform: translateX(0) rotate(5deg);
+            }
+            100% {
+                transform: translateX(120vw) rotate(5deg);
+            }
+        }
+
+        /* ✈️ FULLSCREEN TAKEOFF TRANSITION */
+        #planeTransition {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity .4s ease-out;
+            z-index: 9999;
+        }
+
+        #planeIcon {
+            width: 130px;
+            opacity: 0;
+            transform: scale(0.4) translateY(40px);
+            transition: transform 1s cubic-bezier(.15,.85,.32,1.2), opacity .4s ease-out;
+        }
+
+        .fly-active {
+            opacity: 1 !important;
+        }
+        .fly-active #planeIcon {
+            opacity: 1;
+            transform: scale(7) translateY(-320px) rotate(-4deg);
+        }
+
+        /* LOGIN CARD */
         .container {
-            background: #ffffff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 450px; /* Bir az genişləndi */
-            text-align: center;
-            border: 1px solid #e2e8f0;
             position: relative;
+            width: 100%;
+            max-width: 430px;
+            padding: 40px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.55);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 15px 45px rgba(0,0,0,0.12);
+            animation: fadeIn 0.7s ease-out;
+            z-index: 5;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(25px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
         h2 {
+            text-align: center;
             font-size: 26px;
-            color: #111827;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            color: #0f172a;
             font-weight: 700;
         }
         p {
-            color: #6b7280;
+            text-align: center;
+            font-size: 14px;
+            color: #475569;
             margin-bottom: 30px;
-            font-size: 15px;
         }
+
         label {
             display: block;
             text-align: left;
-            margin-bottom: 5px;
             font-weight: 600;
             font-size: 14px;
-            color: #1f2937;
+            color: #1e293b;
+            margin-bottom: 6px;
         }
-        input[type="text"], 
-        input[type="password"],
-        input[type="email"] {
+
+        input {
             width: 100%;
             padding: 12px;
-            margin-bottom: 20px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
+            margin-bottom: 18px;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
             font-size: 15px;
-            outline: none;
-            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.85);
+            transition: 0.25s ease;
         }
         input:focus {
             border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.18);
+            background: #fff;
         }
-        button[type="submit"] {
+
+        button {
             width: 100%;
-            padding: 14px;
-            background: #3b82f6;
-            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            color: #fff;
             font-weight: 700;
+            font-size: 15px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: 0.25s ease;
         }
-        button[type="submit"]:hover {
-            background: #2563eb;
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(37,99,235,0.35);
         }
-        .toggle-link {
-            margin-top: 15px;
-            font-size: 14px;
-            color: #3b82f6;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-        }
+
         #message {
-            margin-top: 20px;
-            padding: 10px;
-            border-radius: 6px;
+            margin-top: 18px;
+            padding: 12px;
+            border-radius: 10px;
+            display: none;
             font-size: 14px;
             font-weight: 600;
-            display: none;
-            text-align: left;
         }
         .error {
-            color: #ef4444;
-            background: #fef2f2;
+            background: #fee2e2;
             border: 1px solid #fca5a5;
+            color: #b91c1c;
         }
         .success {
-            color: #10b981;
             background: #d1fae5;
             border: 1px solid #34d399;
+            color: #065f46;
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        
-        <div id="loginView">
-            <h2>B2B Agent Daxilolması</h2>
-            <p>Məlumatlarınızı daxil edin (Test Agent: **agent/password123**)</p>
-            <form id="loginForm">
-                <div>
-                    <label for="username">İstifadəçi Adı</label>
-                    <input type="text" id="username" required>
-                </div>
-                <div>
-                    <label for="password">Şifrə</label>
-                    <input type="password" id="password" required>
-                </div>
-                <button type="submit">Daxil ol</button>
-            </form>
-            <a class="toggle-link" onclick="showView('register')">Qeydiyyatdan keç</a>
-        </div>
 
-        <div id="registerView" style="display: none;">
-            <h2>Agent Qeydiyyatı</h2>
-            <p>Təsdiq üçün administratora göndəriləcək məlumatları daxil edin.</p>
-            <form id="registerForm">
-                <div class="row">
-                    <div style="flex: 1;">
-                        <label for="regFirstName">Ad</label>
-                        <input type="text" id="regFirstName" required>
-                    </div>
-                    <div style="flex: 1;">
-                        <label for="regLastName">Soyad</label>
-                        <input type="text" id="regLastName" required>
-                    </div>
-                </div>
-                
-                <label for="regUsername">İstifadəçi Adı (Login üçün)</label>
-                <input type="text" id="regUsername" required>
+<!-- BLUR BACKGROUNDS -->
+<div class="blur-light"></div>
+<div class="blur-light two"></div>
 
-                <label for="regCompany">Şirkət</label>
-                <input type="text" id="regCompany" required>
+<!-- ✈️ FLOATING PLANES (LOCAL IMAGE) -->
+<img src="./assets/airplane.png" class="plane-bg">
+<img src="./assets/airplane.png" class="plane-bg two">
 
-                <label for="regPassword">Şifrə</label>
-                <input type="password" id="regPassword" required>
-                
-                <button type="submit">Qeydiyyatı Göndər</button>
-            </form>
-            <a class="toggle-link" onclick="showView('login')">Daxilolmaya qayıt</a>
-        </div>
+<!-- ✈️ FULLSCREEN TAKEOFF TRANSITION -->
+<div id="planeTransition">
+    <img src="./assets/airplane.png" id="planeIcon">
+</div>
 
-        <div id="message"></div>
-    </div>
+<!-- LOGIN CARD -->
+<div class="container">
+    <h2>B2B Agent Daxilolması</h2>
+    <p>Məlumatlarınızı daxil edin (Test: agent / password123)</p>
 
-    <script>
-        const messageEl = document.getElementById('message');
+    <form id="loginForm">
+        <label>İstifadəçi Adı</label>
+        <input type="text" id="username" required>
 
-        function showView(viewId) {
-            document.getElementById('loginView').style.display = 'none';
-            document.getElementById('registerView').style.display = 'none';
-            document.getElementById(viewId + 'View').style.display = 'block';
-            messageEl.style.display = 'none';
-        }
+        <label>Şifrə</label>
+        <input type="password" id="password" required>
 
-        // --- Login Logic ---
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            messageEl.textContent = 'Yoxlanılır...';
-            messageEl.className = '';
-            messageEl.style.display = 'block';
+        <button type="submit">Daxil ol</button>
+    </form>
 
-            fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
-            })
-            .then(response => response.json().then(data => ({ status: response.status, body: data })))
-            .then(result => {
-                if (result.status === 200 && result.body.success) {
-                    messageEl.textContent = 'Daxilolma uğurlu! Yönləndirilir...';
-                    messageEl.className = 'success';
-                    
-                    // Daxilolma məlumatlarını localStorage-da saxla
-                    localStorage.setItem('b2b_agent_auth', JSON.stringify({
-                        success: true,
-                        name: result.body.name,
-                        role: result.body.role,
-                        timestamp: Date.now()
-                    }));
+    <div id="message"></div>
+</div>
 
-                    // Yönləndirmə
-                    if (result.body.role === 'Admin') {
-                        setTimeout(() => { window.location.href = 'admin.html'; }, 500);
+<script>
+    const messageEl = document.getElementById('message');
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        messageEl.textContent = 'Yoxlanılır...';
+        messageEl.className = '';
+        messageEl.style.display = 'block';
+
+        fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        })
+        .then(response => response.json().then(data => ({ status: response.status, body: data })))
+        .then(result => {
+
+            if (result.status === 200 && result.body.success) {
+                messageEl.textContent = 'Daxilolma uğurlu! Uçuş başlayır... ✈️';
+                messageEl.className = 'success';
+
+                localStorage.setItem('b2b_agent_auth', JSON.stringify({
+                    success: true,
+                    name: result.body.name,
+                    role: result.body.role,
+                    username: username,
+                    timestamp: Date.now()
+                }));
+
+                // ✈️ START TAKEOFF ANIMATION
+                document.getElementById("planeTransition").classList.add("fly-active");
+
+                setTimeout(() => {
+                    const agentRole = result.body.role;
+                    if (agentRole === "Admin") {
+                        window.location.href = "admin.html";
                     } else {
-                        setTimeout(() => { window.location.href = 'index.html'; }, 500);
+                        window.location.href = "index.html";
                     }
-                } else {
-                    messageEl.textContent = result.body.error || 'İstifadəçi adı və ya şifrə yanlışdır.';
-                    messageEl.className = 'error';
-                }
-            })
-            .catch(error => {
-                console.error('Login error:', error);
-                messageEl.textContent = 'Server ilə əlaqə qurularkən xəta baş verdi.';
-                messageEl.className = 'error';
-            });
-        });
+                }, 950);
 
-        // --- Registration Logic ---
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const firstName = document.getElementById('regFirstName').value.trim();
-            const lastName = document.getElementById('regLastName').value.trim();
-            const username = document.getElementById('regUsername').value.trim();
-            const company = document.getElementById('regCompany').value.trim();
-            const password = document.getElementById('regPassword').value;
-
-            if (password.length < 6) {
-                messageEl.textContent = 'Şifrə ən azı 6 simvol olmalıdır.';
+            } else {
+                messageEl.textContent = result.body.error || 'İstifadəçi adı və ya şifrə yanlışdır.';
                 messageEl.className = 'error';
-                messageEl.style.display = 'block';
-                return;
             }
-            
-            messageEl.textContent = 'Qeydiyyat göndərilir...';
-            messageEl.className = '';
-            messageEl.style.display = 'block';
+        })
+        .catch(() => {
+            messageEl.textContent = 'Server ilə əlaqə qurularkən xəta baş verdi.';
+            messageEl.className = 'error';
+        });
+    });
+</script>
 
-            fetch('/api/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ firstName, lastName, username, company, password })
-            })
-            .then(response => response.json().then(data => ({ status: response.status, body: data })))
-            .then(result => {
-                if (result.status === 200 && result.body.success) {
-                    messageEl.textContent = result.body.message;
-                    messageEl.className = 'success';
-                    document.getElementById('registerForm').reset();
-                    
-                } else if (result.status === 409) {
-                    messageEl.textContent = result.body.error;
-                    messageEl.className = 'error';
-                } else {
-                    messageEl.textContent = result.body.error || 'Naməlum qeydiyyat xətası.';
-                    messageEl.className = 'error';
-                }
-            })
-            .catch(error => {
-                console.error('Registration error:', error);
-                messageEl.textContent = 'Server ilə əlaqə qurularkən xəta baş verdi.';
-                messageEl.className = 'error';
-            });
-        });
-        
-        // Ensure default view is Login
-        document.addEventListener('DOMContentLoaded', () => {
-            showView('login');
-        });
-    </script>
 </body>
 </html>
