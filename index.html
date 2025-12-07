@@ -5,97 +5,152 @@
   <title>B2B Booking Console</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    /* Global Styles & Base */
+    /* ===============================
+       GLOBAL PREMIUM NEUMORPHISM + GLASS UI
+       =============================== */
+
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f0f4f8; /* Açıq, yumşaq fon */
-      color: #1f2937;
-    }
-    .page {
-      max-width: 1500px; /* Daha geniş iş sahəsi */
-      margin: 30px auto 60px;
-      padding: 16px;
-    }
-    h1 {
-      font-size: 32px;
-      font-weight: 700;
-      margin-bottom: 5px;
+      background: radial-gradient(circle at top left, #e5ecff 0, #f5f7fb 45%, #eef2f7 100%);
       color: #111827;
     }
+
+    .page {
+      max-width: 1500px;
+      margin: 40px auto 50px;
+      padding: 0 20px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 5px;
+      color: #020617;
+      letter-spacing: -0.03em;
+      text-shadow: 0 2px 6px rgba(15,23,42,0.12);
+    }
+
     .subtitle {
-      font-size: 16px;
+      font-size: 15px;
       color: #6b7280;
       margin-bottom: 25px;
     }
-    
-    /* Card Container */
+
+    /* ===============================
+       GLASS / NEUMORPHIC CARDS
+       =============================== */
+
     .card {
-      background: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-      padding: 20px;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.7);
+      box-shadow:
+        8px 8px 22px rgba(15,23,42,0.12),
+        -6px -6px 16px rgba(255,255,255,0.9);
+      padding: 22px;
       margin-bottom: 20px;
-      border: 1px solid #e5e7eb;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        10px 10px 26px rgba(15,23,42,0.16),
+        -6px -6px 18px rgba(255,255,255,0.95);
+      background: rgba(255,255,255,0.9);
+    }
+
     .section-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: #111827;
-      margin: 25px 0 15px;
-      border-left: 4px solid #3b82f6; /* Accent color */
+      font-size: 17px;
+      font-weight: 800;
+      color: #020617;
+      margin: 22px 0 14px;
+      border-left: 4px solid #60a5fa;
       padding-left: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    
-    /* Forms & Inputs */
+
     label {
       display: block;
       font-size: 13px;
       font-weight: 600;
-      margin-bottom: 4px;
-      color: #374151;
+      margin-bottom: 6px;
+      color: #4b5563;
     }
+
+    /* ===============================
+       INPUTS & SELECTS
+       =============================== */
+
     input[type="text"],
     input[type="number"],
     input[type="date"],
     input[type="datetime-local"],
     select {
       width: 100%;
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid #d1d5db;
-      outline: none;
+      padding: 11px 13px;
+      border-radius: 14px;
+      border: none;
       font-size: 14px;
-      background: #ffffff;
-      transition: all 0.3s ease;
+      background: #e5e9f2;
+      box-shadow:
+        inset 3px 3px 7px rgba(15,23,42,0.12),
+        inset -3px -3px 7px rgba(255,255,255,0.9);
+      outline: none;
+      transition: box-shadow 0.2s ease, background 0.2s ease, transform 0.1s ease;
     }
-    input:focus, select:focus {
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+
+    input:focus,
+    select:focus {
+      background: #edf1fb;
+      box-shadow:
+        inset 2px 2px 6px rgba(15,23,42,0.16),
+        inset -2px -2px 6px rgba(255,255,255,1),
+        0 0 0 1px rgba(59,130,246,0.5),
+        0 0 12px rgba(59,130,246,0.35);
+      transform: translateY(-1px);
     }
+
+    input[type="number"]::-webkit-inner-spin-button {
+      opacity: 0.4;
+    }
+
+    /* GRID & LAYOUT HELPERS */
+
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
     }
+
     .row {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 16px;
     }
+
     .pill {
-      padding: 6px 14px;
+      padding: 7px 14px;
       border-radius: 999px;
-      background: #e0f2fe; /* Light blue */
-      font-size: 14px;
+      background: radial-gradient(circle at top left, #dbeafe 0, #e5f0ff 40%, #e0ecff 100%);
+      font-size: 13px;
       color: #0c4a6e;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-weight: 600;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      font-weight: 700;
+      box-shadow:
+        3px 3px 8px rgba(15,23,42,0.15),
+        -3px -3px 8px rgba(255,255,255,0.95);
     }
+
     .checkbox-row {
       display: flex;
       align-items: center;
@@ -103,285 +158,588 @@
       margin-top: 15px;
       font-size: 14px;
     }
+
     .checkbox-row input {
       margin: 0;
       accent-color: #3b82f6;
     }
 
-    /* Main Layout */
+    /* ===============================
+       MAIN GRID
+       =============================== */
+
     .main-content-grid {
-        display: grid;
-        grid-template-columns: 280px 1fr 350px; /* Filter | Main | Summary */
-        gap: 25px;
-        margin-top: 25px;
-    }
-    .sticky-sidebar {
-        position: sticky;
-        top: 20px;
-        height: fit-content;
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr) 340px;
+      gap: 24px;
+      margin-top: 24px;
     }
 
-    /* Filters */
-    .filter-column {
-      font-size: 14px;
+    @media (max-width: 1150px) {
+      .main-content-grid {
+        grid-template-columns: 1fr;
+      }
     }
+
+    .sticky-sidebar {
+      position: sticky;
+      top: 20px;
+      height: fit-content;
+    }
+
+    /* FILTERS */
+
     .filter-header {
       font-weight: 700;
-      margin-bottom: 10px;
-      color: #1f2937;
+      margin-bottom: 8px;
+      color: #111827;
+      font-size: 14px;
     }
+
     .filter-box {
-      border-radius: 8px;
-      border: 1px solid #e5e7eb;
-      background: #ffffff;
-      max-height: 200px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.8);
+      background: linear-gradient(145deg, rgba(238,242,255,0.8), rgba(255,255,255,0.95));
+      max-height: 220px;
       overflow-y: auto;
-      padding: 8px 12px;
+      padding: 10px 12px;
+      box-shadow:
+        inset 3px 3px 8px rgba(148,163,184,0.25),
+        inset -3px -3px 8px rgba(255,255,255,0.9);
     }
-    .filter-item, .hotel-item {
+
+    .filter-item,
+    .hotel-item {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 6px 0;
+      padding: 7px 6px;
       font-size: 14px;
       cursor: pointer;
+      border-radius: 10px;
+      transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
     }
+
+    .filter-item:hover,
+    .hotel-item:hover {
+      background: rgba(255,255,255,0.9);
+      box-shadow:
+        2px 2px 6px rgba(148,163,184,0.4),
+        -2px -2px 6px rgba(255,255,255,1);
+      transform: translateY(-1px);
+    }
+
     .hotel-name {
       flex: 1;
-      font-weight: 500;
+      font-weight: 600;
+      color: #111827;
     }
+
     .hotel-stars {
       font-size: 12px;
       color: #f59e0b;
       white-space: nowrap;
     }
+
     .tag {
       padding: 4px 10px;
       border-radius: 999px;
-      font-size: 12px;
-      background: #f3f4f6;
+      font-size: 11px;
+      background: rgba(15,23,42,0.04);
       color: #4b5563;
-      font-weight: 500;
+      font-weight: 600;
     }
-    
-    /* Hotel Blocks */
+
+    .tag.pending { background: #fff7e6; color: #b45309; }
+    .tag.confirmed { background: #dcfce7; color: #15803d; }
+    .tag.rejected { background: #fee2e2; color: #b91c1c; }
+    .tag.change { background: #dbeafe; color: #1d4ed8; }
+
+    /* HOTEL BLOCK */
+
     .hotel-block {
-      border: 1px solid #c7d2fe; /* Soft blue border */
-      background: #f8fafc; /* Very light background for contrast */
-      border-radius: 10px;
-      padding: 18px;
+      border: 1px solid rgba(226,232,240,0.9);
+      background: linear-gradient(145deg, #f3f4ff, #ffffff);
+      border-radius: 18px;
+      padding: 18px 18px 16px;
       margin-bottom: 20px;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+      box-shadow:
+        7px 7px 16px rgba(15,23,42,0.14),
+        -7px -7px 16px rgba(255,255,255,0.95);
     }
+
     .hotel-block-title {
       font-size: 18px;
-      font-weight: 700;
-      color: #1f2937;
+      font-weight: 800;
+      color: #020617;
+      margin-bottom: 6px;
     }
+
     .hotel-totals-line {
-      font-size: 15px;
-      margin-top: 15px;
-      padding-top: 15px;
-      border-top: 1px dashed #d1d5db;
+      font-size: 14px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed #cbd5e1;
       display: flex;
       justify-content: space-between;
       font-weight: 700;
-      color: #1d4ed8; /* Blue for subtotal */
+      color: #1d4ed8;
     }
 
-    /* Room Configuration */
+    /* ROOM CONFIG */
+
     .room-row {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       gap: 12px;
       margin-bottom: 10px;
-      padding: 10px;
-      border-radius: 8px;
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
+      padding: 10px 11px;
+      border-radius: 14px;
+      background: #e5e9f2;
+      border: none;
+      box-shadow:
+        inset 3px 3px 7px rgba(148,163,184,0.5),
+        inset -3px -3px 7px rgba(255,255,255,0.8);
     }
+
     .qty-controls {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      padding: 5px 10px;
+      padding: 7px 12px;
       border-radius: 999px;
-      border: 1px solid #9ca3af;
-      background: #f9fafb;
+      border: none;
+      background: #f3f4f6;
+      box-shadow:
+        inset 2px 2px 5px rgba(148,163,184,0.8),
+        inset -2px -2px 5px rgba(255,255,255,1);
+      font-size: 18px;
     }
+
     .qty-btn {
       border: none;
       background: transparent;
       cursor: pointer;
       font-size: 18px;
       line-height: 1;
-      color: #374151;
+      color: #4b5563;
+      padding: 0 4px;
+      transition: color 0.15s ease, transform 0.1s ease;
     }
+
+    .qty-btn:hover {
+      color: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
     .qty-value {
       min-width: 20px;
       text-align: center;
-      font-weight: 600;
-      color: #1f2937;
+      font-weight: 700;
+      color: #111827;
     }
+
     .room-remove {
       margin-left: auto;
-      color: #ef4444;
+      color: #f97373;
       font-size: 18px;
       background: none;
       border: none;
       cursor: pointer;
+      transition: transform 0.1s ease, color 0.15s ease;
     }
+
+    .room-remove:hover {
+      transform: scale(1.1);
+      color: #ef4444;
+    }
+
     .add-room-btn {
-      margin-top: 10px;
-      border: 1px solid #d1d5db;
-      padding: 8px 16px;
-      border-radius: 8px;
-      background: #f3f4f6;
+      margin-top: 6px;
+      border: none;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #e0f2fe, #eff6ff);
       font-size: 13px;
       cursor: pointer;
-      color: #4b5563;
-      font-weight: 600;
+      color: #1d4ed8;
+      font-weight: 700;
+      box-shadow:
+        3px 3px 9px rgba(148,163,184,0.7),
+        -3px -3px 9px rgba(255,255,255,1);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
+
+    .add-room-btn:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        4px 4px 10px rgba(148,163,184,0.9),
+        -4px -4px 10px rgba(255,255,255,1);
+    }
+
     .extra-bed-container {
-        display: none;
-        align-items: center;
-        gap: 5px;
-        font-size: 13px;
-        color: #10b981;
-        font-weight: 600;
+      display: none;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      color: #10b981;
+      font-weight: 700;
     }
+
     .extra-bed-container input[type="checkbox"] {
-        margin: 0;
-        accent-color: #10b981;
+      margin: 0;
+      accent-color: #10b981;
     }
-    
-    /* Operations */
+
+    /* OPERATIONS */
+
     .operations-list {
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
+
     .operation-item {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px;
-      border-radius: 8px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
+      padding: 10px 11px;
+      border-radius: 14px;
+      background: #eef2ff;
+      border: none;
       font-weight: 500;
       cursor: pointer;
+      box-shadow:
+        inset 2px 2px 5px rgba(148,163,184,0.6),
+        inset -2px -2px 5px rgba(255,255,255,1);
+      transition: transform 0.1s ease, box-shadow 0.15s ease, background 0.15s ease;
     }
-    
-    /* Totals Summary (Right Column) */
+
+    .operation-item:hover {
+      transform: translateY(-1px);
+      background: #e0ecff;
+      box-shadow:
+        3px 3px 9px rgba(148,163,184,0.7),
+        -3px -3px 9px rgba(255,255,255,1);
+    }
+
+    /* TOTALS CARD */
+
     .totals-card {
-        background: #111827; /* Dark background for emphasis */
-        color: #ffffff;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      background: radial-gradient(circle at top, rgba(15,23,42,0.98), rgba(15,23,42,0.92));
+      color: #f9fafb;
+      padding: 24px;
+      border-radius: 20px;
+      box-shadow:
+        10px 10px 26px rgba(15,23,42,0.7),
+        -6px -6px 18px rgba(148,163,184,0.25);
+      border: 1px solid rgba(148,163,184,0.5);
     }
+
     .totals-row {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 10px;
-      font-size: 16px;
+      margin-bottom: 9px;
+      font-size: 14px;
     }
+
     .totals-row strong {
-      font-weight: 700;
-    }
-    .grand {
-      font-size: 28px;
       font-weight: 800;
-      margin-top: 20px;
-      padding-top: 15px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      color: #34d399; /* Green accent for Grand Total */
     }
+
+    .grand {
+      font-size: 24px;
+      font-weight: 800;
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(148,163,184,0.4);
+      color: #34d399;
+    }
+
     #reserveBtn {
-        padding: 15px 16px; 
-        background: #10b981; 
-        font-size: 18px; 
-        font-weight: 700; 
-        border-radius: 8px; 
-        cursor: pointer; 
-        width: 100%; 
-        margin-top: 20px;
-        border: none;
-        color: white;
-        transition: background 0.3s;
+      padding: 14px 16px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      font-size: 16px;
+      font-weight: 800;
+      border-radius: 14px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 18px;
+      border: none;
+      color: white;
+      box-shadow:
+        0 8px 18px rgba(22,163,74,0.6);
+      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
     }
+
     #reserveBtn:disabled {
-        background: #6b7280;
-        cursor: not-allowed;
+      background: linear-gradient(135deg, #9ca3af, #6b7280);
+      box-shadow: none;
+      cursor: not-allowed;
     }
+
     #reserveBtn:not(:disabled):hover {
-        background: #059669;
+      transform: translateY(-2px);
+      box-shadow:
+        0 10px 24px rgba(22,163,74,0.75);
     }
 
-    /* Constraint Warning Style */
+    /* CONSTRAINT WARNING */
+
     .constraint-warning {
-        background: #fef2f2;
-        color: #b91c1c;
-        padding: 10px;
-        border-radius: 8px;
-        margin-bottom: 15px;
-        font-weight: 600;
-        display: none; /* Initially hidden */
+      background: #fef2f2;
+      color: #b91c1c;
+      padding: 10px 12px;
+      border-radius: 12px;
+      margin-top: 10px;
+      font-weight: 600;
+      border: 1px solid #fecaca;
+      display: none;
+      font-size: 13px;
     }
 
-    /* Modal Styles */
+    /* MODAL */
+
     #reservationModal > div {
-        max-width: 900px; 
+      max-width: 900px;
+      background: rgba(255,255,255,0.92) !important;
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-radius: 22px;
+      box-shadow:
+        14px 14px 32px rgba(15,23,42,0.4),
+        -10px -10px 28px rgba(255,255,255,0.9);
+      border: 1px solid rgba(199,210,254,0.9);
     }
+
     #reservationSummary {
-        background: #eff6ff; 
-        border: 1px solid #bfdbfe;
-        color: #1e40af;
-        padding: 18px;
-        border-radius: 10px;
+      background: linear-gradient(130deg, #e0ecff, #f1f5f9);
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+      padding: 18px;
+      border-radius: 14px;
     }
-    /* YENİ STİL */
+
     .summary-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 16px;
     }
+
+    @media (max-width: 900px) {
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .summary-grid h4 {
-        margin: 0 0 10px;
-        color: #1e40af;
-        font-size: 16px;
-        font-weight: 700;
+      margin: 0 0 10px;
+      color: #1e40af;
+      font-size: 15px;
+      font-weight: 800;
     }
+
     .summary-detail-row {
-        display: flex; 
-        justify-content: space-between; 
-        font-size: 15px; 
-        margin: 5px 0;
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      margin: 4px 0;
+      gap: 10px;
     }
+
     .summary-price-col {
-        border-left: 1px solid #bfdbfe; 
-        padding-left: 15px;
+      border-left: 1px solid #bfdbfe;
+      padding-left: 15px;
+    }
+
+    @media (max-width: 900px) {
+      .summary-price-col {
+        border-left: none;
+        border-top: 1px solid #bfdbfe;
+        padding-left: 0;
+        padding-top: 14px;
+        margin-top: 6px;
+      }
     }
 
     #confirmReserveBtn {
-        background: #1d4ed8; 
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      box-shadow:
+        0 8px 20px rgba(37,99,235,0.55);
+      border-radius: 14px;
     }
+
     #confirmReserveBtn:hover {
-        background: #2563eb; 
+      transform: translateY(-2px);
+      box-shadow:
+        0 10px 26px rgba(37,99,235,0.7);
     }
+
     .alert, .success {
-        padding: 12px;
-        border-radius: 8px;
-        font-weight: 600;
-        margin-top: 15px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      font-weight: 600;
+      margin-top: 12px;
+      font-size: 13px;
     }
+
     .alert {
-      background-color: #fef2f2; color: #b91c1c; border: 1px solid #fca5a5;
+      background-color: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
     }
+
     .success {
-      background-color: #d1fae5; color: #059669; border: 1px solid #34d399;
+      background-color: #dcfce7;
+      color: #15803d;
+      border: 1px solid #86efac;
+    }
+
+    /* TABS */
+
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e5e7eb;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      padding: 9px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: #6b7280;
+      transition: all 0.2s ease;
+      margin-bottom: -2px;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .tab-btn.active {
+      color: #1d4ed8;
+      border-bottom-color: #1d4ed8;
+      background: rgba(255,255,255,0.9);
+      box-shadow:
+        -2px -4px 8px rgba(255,255,255,1),
+        0 4px 10px rgba(148,163,184,0.25);
+    }
+
+    /* RESERVATION LIST */
+
+    .agent-res-header {
+      font-weight: 700;
+      padding: 12px 10px;
+      border-bottom: 2px solid #e5e7eb;
+      color: #111827;
+      background: rgba(248,250,252,0.9);
+    }
+
+    .agent-res-row {
+      display: grid;
+      grid-template-columns: 0.1fr 0.3fr 0.3fr 0.2fr 0.1fr;
+      padding: 11px 10px;
+      border-bottom: 1px solid #f3f4f6;
+      font-size: 13px;
+      cursor: pointer;
+      align-items: center;
+      transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.1s ease;
+    }
+
+    .agent-res-row:hover {
+      background: rgba(255,255,255,0.9);
+      box-shadow:
+        2px 2px 6px rgba(148,163,184,0.4),
+        -2px -2px 6px rgba(255,255,255,1);
+      transform: translateY(-1px);
+    }
+
+    .res-detail-item {
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 16px;
+      border: 1px solid #bfdbfe;
+      background: linear-gradient(145deg, #e5edff, #ffffff);
+      box-shadow:
+        5px 5px 14px rgba(148,163,184,0.6),
+        -5px -5px 14px rgba(255,255,255,1);
+      font-size: 14px;
+    }
+
+    .res-detail-item h4 {
+      margin-top: 0;
+      color: #1d4ed8;
+      font-weight: 800;
+    }
+
+    .res-actions button {
+      margin-right: 10px;
+      padding: 7px 13px;
+      font-size: 13px;
+      border-radius: 999px;
+      cursor: pointer;
+      border: none;
+      font-weight: 700;
+      box-shadow:
+        2px 2px 6px rgba(148,163,184,0.6),
+        -2px -2px 6px rgba(255,255,255,1);
+      transition: transform 0.1s ease, box-shadow 0.15s ease;
+    }
+
+    .res-actions button:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        3px 3px 7px rgba(148,163,184,0.8),
+        -3px -3px 7px rgba(255,255,255,1);
+    }
+
+    .res-actions .btn-accept { background: #10b981; color: white; }
+    .res-actions .btn-reject { background: #ef4444; color: white; }
+    .res-actions .btn-delete { background: #6b7280; color: white; }
+
+    /* SMALL ELEMENTS */
+
+    #agentInfo button {
+      padding: 7px 11px;
+      background: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow:
+        0 4px 10px rgba(248,113,113,0.55);
+      transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+    }
+
+    #agentInfo button:hover {
+      background: #dc2626;
+      transform: translateY(-1px);
+      box-shadow:
+        0 6px 14px rgba(248,113,113,0.7);
+    }
+
+    /* SCROLLBARS (LIGHT) */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5f5;
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #93c5fd;
     }
   </style>
 </head>
@@ -393,114 +751,139 @@
         <h1 style="margin: 0;">B2B Booking Console</h1>
         <div id="agentInfo" style="display: flex; align-items: center; gap: 15px; font-size: 15px; font-weight: 600;">
             <span id="agentNameDisplay" style="color: #1d4ed8;"></span>
-            <button onclick="logout()" style="padding: 8px 12px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer;">Çıxış</button>
+            <button onclick="logout()">Çıxış</button>
         </div>
     </div>
     <div class="subtitle">
       Çoxsaylı otel konfiqurasiyası, dəqiq qiymətləndirmə və dərhal rezervasiya imkanı.
     </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-view="booking" onclick="showAgentView('booking')">📝 Yeni Rezervasiya</button>
+        <button class="tab-btn" data-view="reservations" onclick="showAgentView('reservations')">🗓️ Rezervasiyalarım</button>
+    </div>
     
-    <div class="card">
-        <div class="section-title" style="margin-top: 0;">🗓️ Səyahət Tarixi & Qonaqlar</div>
-        <div class="row" style="flex-wrap: wrap; align-items: flex-end;">
-            <div style="flex:1; min-width: 150px;">
-                <label>Check-in</label>
-                <input type="date" id="checkIn" />
-            </div>
-            <div style="flex:1; min-width: 150px;">
-                <label>Check-out</label>
-                <input type="date" id="checkOut" />
-            </div>
-            <div style="flex:1; min-width: 100px;">
-                <label>Adults</label>
-                <input type="number" id="adults" min="1" value="2" />
-            </div>
-            <div style="flex:1; min-width: 100px;">
-                <label>Children</label>
-                <input type="number" id="children" min="0" value="0" />
-            </div>
-            <div style="min-width: 150px; margin-left: auto; display: flex; justify-content: flex-end;">
-                <div class="pill">
-                    Ümumi Gecə Müddəti: <span id="nights">0</span>
+    <div id="bookingView">
+        <div class="card">
+            <div class="section-title" style="margin-top: 0;">🗓️ Səyahət Tarixi & Qonaqlar</div>
+            <div class="row" style="flex-wrap: wrap; align-items: flex-end;">
+                <div style="flex:1; min-width: 150px;">
+                    <label>Check-in</label>
+                    <input type="date" id="checkIn" />
+                </div>
+                <div style="flex:1; min-width: 150px;">
+                    <label>Check-out</label>
+                    <input type="date" id="checkOut" />
+                </div>
+                <div style="flex:1; min-width: 100px;">
+                    <label>Adults</label>
+                    <input type="number" id="adults" min="1" value="2" />
+                </div>
+                <div style="flex:1; min-width: 100px;">
+                    <label>Children</label>
+                    <input type="number" id="children" min="0" value="0" />
+                </div>
+                <div style="min-width: 150px; margin-left: auto; display: flex; justify-content: flex-end;">
+                    <div class="pill">
+                        Ümumi Gecə Müddəti: <span id="nights">0</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
         </div>
 
-    <div class="main-content-grid">
-        
-        <div class="sticky-sidebar">
-            <div class="card" style="margin-bottom: 25px;">
-                <div class="section-title" style="margin-top: 0; margin-bottom: 15px; border-left-color: #9333ea;">🔍 Hotelləri Filtirlə</div>
-                
-                <div class="filter-header">Regionlar</div>
-                <div class="filter-box" id="regionsBox" style="margin-bottom: 20px;"></div>
+        <div class="main-content-grid">
+            
+            <div class="sticky-sidebar">
+                <div class="card" style="margin-bottom: 25px;">
+                    <div class="section-title" style="margin-top: 0; margin-bottom: 15px; border-left-color: #9333ea;">🔍 Hotelləri Filtirlə</div>
+                    
+                    <div class="filter-header">Regionlar</div>
+                    <div class="filter-box" id="regionsBox" style="margin-bottom: 20px;"></div>
 
-                <div class="filter-header">Ulduz Sayı</div>
-                <div class="filter-box" id="starsBox"></div>
+                    <div class="filter-header">Ulduz Sayı</div>
+                    <div class="filter-box" id="starsBox"></div>
+                </div>
             </div>
-        </div>
 
-        <div>
-            <div class="card">
-                <div class="section-title" style="margin-top: 0; border-left-color: #f59e0b;">🏨 Filterlənmiş Hotellərin Seçimi</div>
-                <div class="filter-box" id="hotelsBox" style="max-height: 250px; border: none; background: transparent; padding: 0;"></div>
+            <div>
+                <div class="card">
+                    <div class="section-title" style="margin-top: 0; border-left-color: #f59e0b;">🏨 Filterlənmiş Hotellərin Seçimi</div>
+                    <div class="filter-box" id="hotelsBox" style="max-height: 250px; border: none; background: transparent; padding: 0;"></div>
+                </div>
+                
+                <div id="constraintWarning" class="constraint-warning"></div>
+
+                <div class="section-title" style="margin-top: 25px;">⚙️ Seçilmiş Hotellərin Konfiqurasiyası</div>
+                <div id="hotelsCalcs">
+                    <p style="color: #6b7280; font-style: italic; font-size: 15px; padding-left: 15px;">Zəhmət olmasa, yuxarıdakı siyahıdan otel seçin.</p>
+                </div>
             </div>
             
-            <div id="constraintWarning" class="constraint-warning"></div>
+            <div class="sticky-sidebar">
+                <div class="totals-card">
+                    <div class="totals-row" style="font-size: 13px; font-weight: 500; margin-bottom: 15px; color: #9ca3af;">
+                        <span>Seçilmiş hotel sayı:</span>
+                        <span id="selectedHotelsCount" style="font-weight: 700;">0</span>
+                    </div>
 
-            <div class="section-title" style="margin-top: 25px;">⚙️ Seçilmiş Hotellərin Konfiqurasiyası</div>
-            <div id="hotelsCalcs">
-                <p style="color: #6b7280; font-style: italic; font-size: 15px; padding-left: 15px;">Zəhmət olmasa, yuxarıdakı siyahıdan otel seçin.</p>
-            </div>
-        </div>
-        
-        <div class="sticky-sidebar">
-            <div class="totals-card">
-                <div class="totals-row" style="font-size: 14px; font-weight: 500; margin-bottom: 15px; color: #9ca3af;">
-                    <span>Seçilmiş hotel sayı:</span>
-                    <span id="selectedHotelsCount" style="font-weight: 700;">0</span>
-                </div>
+                    <div class="totals-row">
+                        <span>Rooms subtotal (toplam)</span>
+                        <span id="roomsSubtotal">0 $</span>
+                    </div>
+                    <div class="totals-row">
+                        <span>Extra beds (toplam)</span>
+                        <span id="extraBedsTotal">0 $</span>
+                    </div>
+                    <div class="totals-row">
+                        <span>Meals (toplam)</span>
+                        <span id="mealsTotal">0 $</span>
+                    </div>
+                    
+                    <hr style="border-top: 1px solid rgba(148,163,184,0.4); margin: 10px 0;">
 
-                <div class="totals-row">
-                    <span>Rooms subtotal (toplam)</span>
-                    <span id="roomsSubtotal">0 $</span>
-                </div>
-                <div class="totals-row">
-                    <span>Extra beds (toplam)</span>
-                    <span id="extraBedsTotal">0 $</span>
-                </div>
-                <div class="totals-row">
-                    <span>Meals (toplam)</span>
-                    <span id="mealsTotal">0 $</span>
+                    <div class="totals-row">
+                        <strong>Hotels subtotal (cəmi)</strong>
+                        <strong id="hotelSubtotal">0 $</strong>
+                    </div>
+                    <div class="totals-row" style="margin-bottom: 20px;">
+                        <span>Operations (hamıya eyni)</span>
+                        <span id="operationsTotal">0 $</span>
+                    </div>
+                    
+                    <div class="grand">
+                        Grand Total: <span id="grandTotal">0 $</span>
+                    </div>
+                    
+                    <button id="reserveBtn" disabled>Rezervasiyanı Göndər</button>
                 </div>
                 
-                <hr style="border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 10px 0;">
-
-                <div class="totals-row">
-                    <strong>Hotels subtotal (cəmi)</strong>
-                    <strong id="hotelSubtotal">0 $</strong>
+                <div class="card" style="margin-top: 25px; padding: 18px;">
+                    <div class="section-title" style="margin-top: 0; margin-bottom: 12px; border-left-color: #f59e0b;">✈️ Operations / Transfer</div>
+                    <div class="operations-list" id="operationsContainer"></div>
                 </div>
-                <div class="totals-row" style="margin-bottom: 20px;">
-                    <span>Operations (hamıya eyni)</span>
-                    <span id="operationsTotal">0 $</span>
-                </div>
-                
-                <div class="grand">
-                    Grand Total: <span id="grandTotal">0 $</span>
-                </div>
-                
-                <button id="reserveBtn" disabled>Rezervasiyanı Göndər</button>
-            </div>
-            
-            <div class="card" style="margin-top: 25px; padding: 18px;">
-                <div class="section-title" style="margin-top: 0; margin-bottom: 12px; border-left-color: #f59e0b;">✈️ Operations / Transfer</div>
-                <div class="operations-list" id="operationsContainer"></div>
             </div>
         </div>
     </div>
-  </div>
+    
+    <div id="reservationsView" style="display: none;">
+        <div class="card" style="padding: 0;">
+            <div class="agent-res-header agent-res-row">
+                <div># ID</div>
+                <div>Tarix Aralığı</div>
+                <div>Hotellər</div>
+                <div>Status</div>
+                <div style="text-align: right;">Qiymət</div>
+            </div>
+            <div id="agentReservationsList">
+                <div style="padding: 20px; text-align: center; color: #6b7280;">Rezervasiya məlumatları yüklənir...</div>
+            </div>
+        </div>
+
+        <div id="agentReservationDetail" class="res-detail-item" style="display: none; margin-top: 25px;">
+        </div>
+    </div>
+
 
   <div id="reservationModal" style="
     position: fixed; 
@@ -508,23 +891,21 @@
     left: 0; 
     width: 100%; 
     height: 100%; 
-    background: rgba(0,0,0,0.7); 
+    background: rgba(15,23,42,0.6); 
     display: none; 
     justify-content: center; 
     align-items: center; 
     z-index: 100;
   ">
     <div style="
-      background: white; 
       padding: 24px; 
-      border-radius: 18px; 
       max-width: 900px; 
       width: 90%; 
       max-height: 90vh;
       overflow-y: auto;
       position: relative;
     ">
-      <h2 style="margin: 0 0 16px; font-size: 24px; color: #111827;">Rezervasiyanın Təsdiqlənməsi</h2>
+      <h2 style="margin: 0 0 16px; font-size: 22px; color: #111827;">Rezervasiyanın Təsdiqlənməsi</h2>
       <button onclick="closeReservationModal()" style="
         position: absolute; 
         top: 10px; 
@@ -536,39 +917,39 @@
         color: #6b7280;
       ">×</button>
 
-      <div id="reservationSummary" style="
-        background: #eff6ff; 
-        border: 1px solid #bfdbfe;
-        color: #1e40af;
-        padding: 18px; 
-        border-radius: 10px; 
-        margin-bottom: 20px; 
-        font-size: 15px;
-      "></div>
+      <div id="reservationSummary" style="margin-bottom: 20px; font-size: 15px;"></div>
       
       <form id="reservationForm">
         <div id="travelersForm">
           <div class="section-title" style="margin-top: 0; border-left-color: #3b82f6;">👤 Səyahətçi Məlumatları</div>
-          </div>
+        </div>
 
-        <hr style="margin: 20px 0;">
+        <hr style="margin: 20px 0; border: none; border-top: 1px solid #e5e7eb;">
 
         <div class="section-title" style="border-left-color: #f59e0b;">✈️ Uçuş Məlumatları (Flight Information)</div>
         <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 15px;">
           <div>
-            <label>Arrival Time (Gəliş vaxtı)</label>
-            <input type="datetime-local" id="flightArrival" name="flightArrival" />
+            <label>Arrival Date (Gəliş tarixi)</label>
+            <input type="date" id="flightArrivalDate" name="flightArrivalDate" />
           </div>
           <div>
-            <label>Departure Time (Gediş vaxtı)</label>
-            <input type="datetime-local" id="flightDeparture" name="flightDeparture" />
+            <label>Arrival Time (Gəliş vaxtı - Manual)</label>
+            <input type="text" id="flightArrivalTime" name="flightArrivalTime" placeholder="Məs: 12:18" />
+          </div>
+          
+          <div>
+            <label>Departure Date (Gediş tarixi)</label>
+            <input type="date" id="flightDepartureDate" name="flightDepartureDate" />
+          </div>
+          <div>
+            <label>Departure Time (Gediş vaxtı - Manual)</label>
+            <input type="text" id="flightDepartureTime" name="flightDepartureTime" placeholder="Məs: 12:18" />
           </div>
         </div>
         
         <button type="submit" id="confirmReserveBtn" style="
             border: none; 
             padding: 12px 16px; 
-            background: #1d4ed8; 
             color: white; 
             font-size: 16px; 
             font-weight: 700; 
@@ -601,8 +982,69 @@
     // --- End Login Control ---
     
     const TAX_RATE = 0; // VERGİ LƏĞV EDİLDİ: 0-a bərabərdir
-    let dbData = { regions: [], hotels: [], operations: [] };
+    let dbData = { regions: [], hotels: [], operations: [], reservations: [] };
+    const dateFormatter = new Intl.DateTimeFormat('az-AZ', { day: '2-digit', month: 'short', year: 'numeric' });
+    
+    // --- UTILITY FUNCTIONS ---
+    
+    function formatMoney(v) {
+      v = Math.round((v + Number.EPSILON) * 100) / 100;
+      return v.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + ' $';
+    }
 
+    function statusToTag(status) {
+        const statuses = {
+            'Pending Admin': '<span class="tag pending">Admin Gözləyir</span>',
+            'Confirmed': '<span class="tag confirmed">Təsdiqləndi</span>',
+            'Rejected': '<span class="tag rejected">Rədd edildi</span>',
+            'Date Change Requested': '<span class="tag change">Tarix Dəyişikliyi Sorğusu</span>',
+            'Date Change Accepted': '<span class="tag confirmed">Tarix Dəyişikliyi Qəbul</span>',
+            'Date Change Rejected': '<span class="tag rejected">Tarix Dəyişikliyi Rədd</span>'
+        };
+        return statuses[status] || `<span class="tag">${status}</span>`;
+    }
+
+    function generateTravelerForm(type, index) {
+        const id = `${type}${index}`;
+        const typeLabel = type === 'adult' ? 'Böyük (Adult)' : 'Uşaq (Child)';
+        const typeColor = type === 'adult' ? '#111827' : '#b91c1c';
+        const typeBg = type === 'adult' ? '#ffffff' : '#fef2f2';
+
+        return `
+            <div style="
+                border: 1px solid #d1d5db; 
+                padding: 12px; 
+                border-radius: 10px; 
+                margin-bottom: 10px;
+                background: ${typeBg};
+            ">
+                <div style="font-size: 14px; font-weight: 600; margin-bottom: 8px; color: ${typeColor};">
+                    ${typeLabel} \#${index + 1}
+                </div>
+                <div class="grid" style="grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label>Ad (First Name) *</label>
+                        <input type="text" name="travelerName_${id}" required>
+                    </div>
+                    <div>
+                        <label>Soyad (Last Name) *</label>
+                        <input type="text" name="travelerSurname_${id}" required>
+                    </div>
+                    <div>
+                        <label>Doğum günü (Date of Birth) *</label>
+                        <input type="date" name="travelerDOB_${id}" required>
+                    </div>
+                    <div>
+                        <label>Vətəndaşlıq (Nationality) *</label>
+                        <input type="text" name="travelerNationality_${id}" placeholder="AZ, TR, RU,..." required>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // --- DATA FETCHING & RENDERING (BOOKING VIEW) ---
+    
     function fetchData() {
       fetch('/api/data')
         .then(r => r.json())
@@ -752,6 +1194,11 @@
 
         const meta = document.createElement('div');
         meta.className = 'hotel-block-meta';
+        meta.style.display = 'flex';
+        meta.style.flexWrap = 'wrap';
+        meta.style.gap = '8px';
+        meta.style.marginTop = '4px';
+
         const region = dbData.regions.find(r => String(r.id) === String(hotel.regionId));
         const regionTag = document.createElement('span');
         regionTag.className = 'tag';
@@ -778,7 +1225,7 @@
         const roomsTitle = document.createElement('div');
         roomsTitle.style.fontSize = '14px';
         roomsTitle.style.fontWeight = '600';
-        roomsTitle.style.margin = '6px 0 6px';
+        roomsTitle.style.margin = '10px 0 6px';
         roomsTitle.textContent = 'Otaq Seçimi';
         body.appendChild(roomsTitle);
 
@@ -835,11 +1282,10 @@
       (hotel.roomTypes || []).forEach((rt, index) => {
         const opt = document.createElement('option');
         opt.value = rt.id;
-        // Əlavə məlumatı data attribute-da saxlamaq
         opt.setAttribute('data-extrabed', rt.isExtraBedAllowed ? 'true' : 'false');
         opt.textContent = rt.name + ' (' + rt.pricePerNight + ' $ / night)';
         if (index === 0 && !container.querySelector('.room-row')) {
-          opt.selected = true; // Əgər ilk otaq sırasıdırsa, ilk room type-ı avtomatik seç
+          opt.selected = true;
         }
         roomSelect.appendChild(opt);
       });
@@ -861,21 +1307,18 @@
       qtyControls.appendChild(qtyValue);
       qtyControls.appendChild(plusBtn);
       
-      // MƏLUMAT: Gecə sayını göstərən label (Gecələmə sayını + / - ilə idarə et)
       const nightLabel = document.createElement('span');
       nightLabel.textContent = ' Gecə';
       nightLabel.style.fontSize = '12px';
       nightLabel.style.color = '#4b5563';
       
-      // YENİ: Per-Room Extra Bed Checkbox
       const extraBedContainer = document.createElement('label');
       extraBedContainer.className = 'extra-bed-container';
-      extraBedContainer.style.display = 'none'; // Initial state
+      extraBedContainer.style.display = 'none';
       
       const extraBedInput = document.createElement('input');
       extraBedInput.type = 'checkbox';
       extraBedInput.className = 'extra-bed-checkbox';
-      // Listener delegation ilə bağlanır
       
       const extraBedLabel = document.createElement('span');
       extraBedLabel.textContent = 'Extra Bed';
@@ -890,12 +1333,11 @@
 
       row.appendChild(roomSelect);
       row.appendChild(qtyControls);
-      row.appendChild(nightLabel); // Yeni label əlavə edildi
-      row.appendChild(extraBedContainer); // YENİ: Extra Bed Control əlavə edildi
+      row.appendChild(nightLabel);
+      row.appendChild(extraBedContainer);
       row.appendChild(removeBtn);
       container.appendChild(row);
 
-      // Listenerlər indi burada bağlanır:
       roomSelect.addEventListener('change', function() {
           const selectedOption = this.options[this.selectedIndex];
           const isAllowed = selectedOption && selectedOption.getAttribute('data-extrabed') === 'true';
@@ -909,24 +1351,22 @@
           recalcTotals();
       });
       
-      // Otaq sayı dəyişikliyi üçün listenerlər:
       minusBtn.addEventListener('click', () => {
         const maxNights = getMaxNights();
         let v = parseInt(qtyValue.textContent || '0', 10);
         
         if (v > 1) {
           qtyValue.textContent = String(v - 1);
-          recalcTotals(); // Dərhal hesablanır
+          recalcTotals();
         }
       });
       plusBtn.addEventListener('click', () => {
         const maxNights = getMaxNights();
         let v = parseInt(qtyValue.textContent || '0', 10);
         
-        // Məhdudiyyət: Ümumi səyahət müddətini aşmamaq
         if (v < maxNights) {
             qtyValue.textContent = String(v + 1);
-            recalcTotals(); // Dərhal hesablanır
+            recalcTotals();
         } else if (maxNights > 0) {
              document.getElementById('constraintWarning').textContent = `⚠️ Xəta: Bu hoteldə seçilmiş gecələmə sayı (${v + 1}) ümumi səyahət müddətini (${maxNights}) aşır.`;
              document.getElementById('constraintWarning').style.display = 'block';
@@ -938,7 +1378,6 @@
         recalcTotals();
       });
       
-      // İlk yüklənmə zamanı görünmə vəziyyətini yoxlamaq
       if (roomSelect.value) {
           roomSelect.dispatchEvent(new Event('change'));
       }
@@ -952,7 +1391,6 @@
         return;
       }
       
-      // DÜZƏLİŞ: "Qidalanma yoxdur" seçimini əlavə et (Default seçim)
       const noMealLabel = document.createElement('label');
       noMealLabel.className = 'meal-item';
       const noMealInput = document.createElement('input');
@@ -1102,20 +1540,16 @@
             
             if (!rt) return; 
 
-            // Room Subtotal: Room Price * Nights At Hotel (Rooms = 1 nəzərdə tutulur)
             hotelRoomsSubtotal += rt.pricePerNight * nightsAtHotelRow;
 
-            // EXTRA BED (DÜZƏLİŞ)
             if (extraBedCb && extraBedCb.checked && extraBedPrice > 0) {
-               // Extra Bed Cost = Price Per Night * Nights At Row (Uşaq sayından asılı deyil)
                const eb = extraBedPrice * nightsAtHotelRow;
                totalExtraBeds += eb;
                hotelExtraBeds += eb;
             }
             
-            // Meals (Adults + Children * Nights At Hotel)
             const mealRadio = document.querySelector('input[name="mealPlan_h' + hotel.id + '"]:checked');
-            if (mealRadio && mealRadio.value !== '0') { // Əgər "Qidalanma yoxdur" seçilməyibsə
+            if (mealRadio && mealRadio.value !== '0') {
               const mealId = mealRadio.value;
               const mp = (hotel.mealPlans || []).find(m => String(m.id) === String(mealId));
               if (mp) {
@@ -1127,7 +1561,6 @@
         }
         
         const hotelSubtotal = hotelRoomsSubtotal + hotelMeals + hotelExtraBeds; 
-        const hotelTotalForDisplay = hotelSubtotal; 
 
         totalRoomsSubtotal += hotelRoomsSubtotal;
         totalMeals += hotelMeals;
@@ -1135,7 +1568,7 @@
         if (!getTotalsOnly) {
             const hotelTotalEl = document.getElementById('hotelTotal_h' + hotel.id);
             if (hotelTotalEl) {
-              hotelTotalEl.textContent = formatMoney(hotelTotalForDisplay); 
+              hotelTotalEl.textContent = formatMoney(hotelSubtotal); 
             }
         }
       });
@@ -1143,7 +1576,6 @@
       const totalHotelSubtotal = totalRoomsSubtotal + totalExtraBeds + totalMeals;
       const grandTotal = totalHotelSubtotal + operationsTotal;
 
-      // HESABLAMA NƏZARƏTİ: Ümumi gecə məhdudiyyəti
       let constraintViolated = false;
       if (maxNights > 0 && totalBookedNights !== maxNights) {
            document.getElementById('constraintWarning').textContent = `⚠️ Xəta: Cəmi ${totalBookedNights} gecə seçilib. Ümumi səyahət müddəti ${maxNights} gecədir. Qalan gecələri (Fərq: ${maxNights - totalBookedNights}) digər hotellərə əlavə edin.`;
@@ -1195,12 +1627,7 @@
       document.getElementById('operationsTotal').textContent = formatMoney(operationsTotal || 0);
       document.getElementById('grandTotal').textContent = formatMoney(grandTotal || 0);
     }
-
-    function formatMoney(v) {
-      v = Math.round((v + Number.EPSILON) * 100) / 100;
-      return v.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + ' $';
-    }
-
+    
     function getBookingSummary() {
         const checkIn = document.getElementById('checkIn').value;
         const checkOut = document.getElementById('checkOut').value;
@@ -1227,49 +1654,15 @@
             totalPrice: totals.grandTotal,
             totalTravelers: adults + children,
             hotelNames: hotelNames,
+            roomsSubtotal: totals.roomsSubtotal,
+            extraBedsTotal: totals.extraBedsTotal, 
+            mealsTotal: totals.mealsTotal,
             hotelSubtotal: totals.hotelSubtotal, 
             operationsTotal: totals.operationsTotal 
         };
     }
-
-    function generateTravelerForm(type, index) {
-        const id = `${type}${index}`;
-        const typeLabel = type === 'adult' ? 'Böyük (Adult)' : 'Uşaq (Child)';
-        const typeColor = type === 'adult' ? '#111827' : '#b91c1c';
-        const typeBg = type === 'adult' ? '#ffffff' : '#fef2f2';
-
-        return `
-            <div style="
-                border: 1px solid #d1d5db; 
-                padding: 12px; 
-                border-radius: 10px; 
-                margin-bottom: 10px;
-                background: ${typeBg};
-            ">
-                <div style="font-size: 14px; font-weight: 600; margin-bottom: 8px; color: ${typeColor};">
-                    ${typeLabel} \#${index + 1}
-                </div>
-                <div class="grid" style="grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px;">
-                    <div>
-                        <label>Ad (First Name) *</label>
-                        <input type="text" name="travelerName_${id}" required>
-                    </div>
-                    <div>
-                        <label>Soyad (Last Name) *</label>
-                        <input type="text" name="travelerSurname_${id}" required>
-                    </div>
-                    <div>
-                        <label>Doğum günü (Date of Birth) *</label>
-                        <input type="date" name="travelerDOB_${id}" required>
-                    </div>
-                    <div>
-                        <label>Vətəndaşlıq (Nationality) *</label>
-                        <input type="text" name="travelerNationality_${id}" placeholder="AZ, TR, RU,..." required>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
+    
+    // --- MODAL & RESERVATION SUBMISSION ---
 
     function openReservationModal() {
         const summary = getBookingSummary();
@@ -1282,7 +1675,6 @@
             return;
         }
 
-        // 1. Ümumi məlumatları göstər
         reservationSummaryEl.innerHTML = `
             <div class="summary-grid">
                 <div>
@@ -1322,7 +1714,7 @@
                     
                     <hr style="border: none; border-top: 2px solid #1e40af; margin: 15px 0;">
                     
-                    <div style="display: flex; justify-content: space-between; font-size: 22px; font-weight: 700; color: #ef4444;">
+                    <div style="display: flex; justify-content: space-between; font-size: 20px; font-weight: 700; color: #ef4444;">
                         <span>🚀 Yekun Total:</span>
                         <strong>${formatMoney(summary.totalPrice)}</strong>
                     </div>
@@ -1330,7 +1722,6 @@
             </div>
         `;
 
-        // 2. Səyahətçi formalarını yarat
         let formsHtml = '';
         for (let i = 0; i < summary.adults; i++) {
             formsHtml += generateTravelerForm('adult', i);
@@ -1341,16 +1732,21 @@
 
         travelersFormEl.innerHTML = `<div class="section-title" style="margin-top: 0; border-left-color: #3b82f6;">👤 Səyahətçi Məlumatları (${summary.totalTravelers} nəfər)</div>${formsHtml}`;
 
-        // 3. Modalı göstər və formu təmizlə
         document.getElementById('reservationMsg').textContent = '';
         document.getElementById('reservationForm').reset();
+        
+        document.getElementById('flightArrivalDate').value = '';
+        document.getElementById('flightArrivalTime').value = '';
+        document.getElementById('flightDepartureDate').value = '';
+        document.getElementById('flightDepartureTime').value = '';
+        
         modal.style.display = 'flex';
     }
 
     function closeReservationModal() {
         document.getElementById('reservationModal').style.display = 'none';
     }
-
+    
     function submitReservation(e) {
         e.preventDefault();
         const msgEl = document.getElementById('reservationMsg');
@@ -1393,16 +1789,22 @@
             return;
         }
 
+        const formatFlightDateTime = (date, time) => {
+            if (!date) return '';
+            return date + (time ? ' ' + time : '');
+        };
+        
         const flightInfo = {
-            arrival: data.flightArrival,
-            departure: data.flightDeparture
+            arrival: formatFlightDateTime(data.flightArrivalDate, data.flightArrivalTime),
+            departure: formatFlightDateTime(data.flightDepartureDate, data.flightDepartureTime)
         };
 
         const reservationPayload = {
             summary: summary,
             travelers: travelers,
             flightInfo: flightInfo,
-            dateBooked: new Date().toISOString()
+            dateBooked: new Date().toISOString(),
+            submittingAgentUsername: LOGGED_IN_AGENT.username
         };
 
         fetch('/api/reservations', {
@@ -1417,16 +1819,189 @@
             msgEl.className = 'success';
             setTimeout(() => {
                 closeReservationModal();
-                window.location.reload(); 
+                fetchAgentReservations();
+                showAgentView('reservations');
             }, 3000);
         })
         .catch(err => {
-            console.error(err);
+            console.error('Reservation error:', err);
             msgEl.textContent = '❌ Rezervasiya saxlanılarkən xəta: ' + (err.message || 'Server xətası');
             msgEl.className = 'alert';
         });
     }
 
+    // --- AGENT RESERVATIONS LOGIC ---
+    
+    function showAgentView(viewId) {
+        document.getElementById('bookingView').style.display = 'none';
+        document.getElementById('reservationsView').style.display = 'none';
+        
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`.tab-btn[data-view="${viewId}"]`).classList.add('active');
+
+        document.getElementById(viewId + 'View').style.display = 'block';
+
+        if (viewId === 'reservations') {
+            fetchAgentReservations();
+        }
+    }
+
+    function fetchAgentReservations() {
+        fetch('/api/data')
+        .then(r => r.json())
+        .then(data => {
+            dbData = data;
+            
+            const agentReservations = data.reservations.filter(res => 
+                res.submittingAgentUsername === LOGGED_IN_AGENT.username
+            );
+            
+            renderAgentReservations(agentReservations);
+        })
+        .catch(err => {
+            console.error('Error fetching agent reservations:', err);
+            document.getElementById('agentReservationsList').innerHTML = '<div style="padding: 20px; text-align: center; color: #b91c1c;">Rezervasiyaları yükləyərkən xəta baş verdi.</div>';
+        });
+    }
+
+    function renderAgentReservations(reservations) {
+        const list = document.getElementById('agentReservationsList');
+        list.innerHTML = '';
+        document.getElementById('agentReservationDetail').style.display = 'none';
+
+        if (!reservations || reservations.length === 0) {
+            list.innerHTML = '<div style="padding: 20px; text-align: center; color: #6b7280;">Heç bir rezervasiyanız yoxdur.</div>';
+            return;
+        }
+
+        reservations.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        reservations.forEach(res => {
+            const row = document.createElement('div');
+            row.className = 'agent-res-row';
+            row.onclick = () => showAgentReservationDetail(res);
+
+            const price = (res.summary?.totalPrice || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            row.innerHTML = `
+                <div>#${res.id}</div>
+                <div>${res.summary?.checkIn} → ${res.summary?.checkOut}</div>
+                <div>${res.summary?.hotelNames || '—'}</div>
+                <div>${statusToTag(res.status)}</div>
+                <div style="text-align: right;">${price} $</div>
+            `;
+            list.appendChild(row);
+        });
+    }
+
+    function showAgentReservationDetail(res) {
+        const detailBox = document.getElementById('agentReservationDetail');
+        detailBox.style.display = 'block';
+
+        const travelersHtml = (res.travelers || []).map((t, index) => {
+            const dob = t.dob ? dateFormatter.format(new Date(t.dob)) : '—';
+            return `<div style="margin-left: 15px; font-size: 13px;">${index + 1}. ${t.name} ${t.surname} (${t.type === 'adult' ? 'Böyük' : 'Uşaq'})</div>`;
+        }).join('');
+        
+        const changeRequest = res.changeRequest;
+        let changeRequestHtml = '';
+        if (res.status === 'Date Change Requested' && changeRequest) {
+            changeRequestHtml = `
+                <div style="margin-top: 15px; padding: 15px; border-radius: 8px; border: 1px solid #f59e0b; background: #fffbe6;">
+                    <h4>🔔 Admin Tarix Dəyişikliyi Təklif Edir</h4>
+                    <p style="margin: 5px 0;"><strong>Köhnə:</strong> ${res.summary.checkIn} → ${res.summary.checkOut}</p>
+                    <p style="margin: 5px 0;"><strong>Yeni:</strong> <span style="font-weight: 700; color: #1d4ed8;">${changeRequest.newCheckIn} → ${changeRequest.newCheckOut}</span></p>
+                    <p style="font-size: 13px; color: #4b5563;">Admin Qeydi: ${changeRequest.adminNote || '—'}</p>
+                    <div class="res-actions" style="margin-top: 15px;">
+                        <button class="btn-accept" onclick="respondToChangeRequest(${res.id}, 'accept')">✅ Qəbul Et</button>
+                        <button class="btn-reject" onclick="respondToChangeRequest(${res.id}, 'reject')">❌ Rədd Et</button>
+                    </div>
+                </div>
+            `;
+        } else if (res.status === 'Date Change Rejected') {
+            changeRequestHtml = `<div class="alert" style="margin-top: 15px;">❌ Tarix Dəyişikliyi Təklifi Rədd edildi.</div>`;
+        }
+
+        detailBox.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1d4ed8; padding-bottom: 10px; margin-bottom: 15px;">
+                <h4 style="margin: 0;">Rezervasiya #${res.id} ${statusToTag(res.status)}</h4>
+                <span style="font-size: 13px; color: #6b7280;">Qeyd Tarixi: ${dateFormatter.format(new Date(res.date))}</span>
+            </div>
+            
+            <div class="summary-grid">
+                <div>
+                    <strong>Tarix:</strong> ${res.summary.checkIn} → ${res.summary.checkOut} (${res.summary.nights} gecə)<br>
+                    <strong>Qonaqlar:</strong> ${res.summary.adults} Böyük, ${res.summary.children} Uşaq<br>
+                    <strong>Hotellər:</strong> ${res.summary.hotelNames}<br>
+                    <strong style="display: block; margin-top: 10px;">Uçuş:</strong> Gəliş: ${res.flightInfo?.arrival || '—'}
+                </div>
+                <div class="summary-price-col">
+                    <strong style="font-size: 20px; color: #ef4444;">Total: ${formatMoney(res.summary.totalPrice)}</strong><br>
+                    <span style="font-size: 13px; color: #4b5563;">Otaq/Meal: ${formatMoney(res.summary.roomsSubtotal + res.summary.mealsTotal)} + Extra Bed: ${formatMoney(res.summary.extraBedsTotal)} + Operations: ${formatMoney(res.summary.operationsTotal)}</span>
+                </div>
+            </div>
+
+            <h4 style="margin-top: 20px;">Səyahətçilər (${res.summary.totalTravelers} nəfər)</h4>
+            <div style="max-height: 120px; overflow-y: auto;">
+                ${travelersHtml}
+            </div>
+
+            ${changeRequestHtml}
+            
+            <div class="res-actions" style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #d1d5db;">
+                <p style="font-size: 12px; color: ${res.status === 'Confirmed' ? '#b91c1c' : '#6b7280'};">Yalnız təsdiqlənməmiş rezervasiyalar silinə bilər.</p>
+                <button class="btn-delete" onclick="deleteAgentReservation(${res.id})" ${res.status === 'Confirmed' ? 'disabled' : ''}>🗑️ Rezervasiyanı Sil</button>
+            </div>
+        `;
+    }
+
+    function respondToChangeRequest(id, action) {
+        const detailBox = document.getElementById('agentReservationDetail');
+        if (!confirm(`Tarix dəyişikliyini ${action === 'accept' ? 'Qəbul' : 'Rədd'} etmək istəyirsiniz?`)) return;
+
+        fetch(`/api/reservations/respond_change/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action })
+        })
+        .then(response => response.json().then(data => ({ status: response.status, body: data })))
+        .then(result => {
+            if (result.status === 200 && result.body.success) {
+                const successMsg = `<div class="success">✅ Tarix dəyişikliyi uğurla ${action === 'accept' ? 'Qəbul edildi' : 'Rədd edildi'}. Status: ${result.body.reservation.status}</div>`;
+                detailBox.innerHTML = successMsg + detailBox.innerHTML;
+                
+                fetchAgentReservations();
+            } else {
+                detailBox.innerHTML += `<div class="alert">❌ Xəta: ${result.body.error || 'Naməlum xəta'}</div>`;
+            }
+        })
+        .catch(err => {
+            detailBox.innerHTML += `<div class="alert">❌ Server ilə əlaqə xətası.</div>`;
+        });
+    }
+
+    function deleteAgentReservation(id) {
+        if (!confirm(`Rezervasiya #${id} silinəcək. Əminsiniz?`)) return;
+
+        const detailBox = document.getElementById('agentReservationDetail');
+        fetch(`/api/reservations/${id}`, { method: 'DELETE' })
+        .then(response => response.json().then(data => ({ status: response.status, body: data })))
+        .then(result => {
+            if (result.status === 200 && result.body.success) {
+                alert(`Rezervasiya #${id} uğurla silindi.`);
+                fetchAgentReservations();
+                detailBox.style.display = 'none';
+            } else {
+                alert(`Silinmə xətası: ${result.body.error || 'Naməlum xəta'}`);
+            }
+        })
+        .catch(err => {
+            alert('Server ilə əlaqə xətası.');
+        });
+    }
+    
+    
+    // --- Initial Load ---
     document.addEventListener('DOMContentLoaded', () => {
       fetchData();
 
@@ -1444,7 +2019,6 @@
           }
       });
       
-      // DÜZƏLİŞ: Extra Bed və Meal Radio-lar üçün Event Delegation (təmin edir ki, hər klik hesablasın)
       document.getElementById('hotelsCalcs').addEventListener('change', (e) => {
           if (e.target.classList.contains('extra-bed-checkbox') || e.target.type === 'radio') {
               recalcTotals();
@@ -1453,7 +2027,10 @@
       
       document.getElementById('reserveBtn').addEventListener('click', openReservationModal);
       document.getElementById('reservationForm').addEventListener('submit', submitReservation);
+      
+      showAgentView('booking');
     });
+
   </script>
 </body>
-</html> 
+</html>
