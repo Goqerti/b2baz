@@ -180,14 +180,18 @@
     }
     
     /* Room Type Inputs */
-    .room-type-row-inputs {
+    .room-type-row-inputs, .meal-plan-row-inputs {
         display: grid;
         grid-template-columns: 2fr 1fr 1fr 60px; /* Name, Price, Checkbox, Button */
         gap: 10px;
         align-items: center;
         margin-bottom: 10px;
     }
-    .room-type-row-inputs input, .room-type-row-inputs select {
+    .meal-plan-row-inputs {
+        grid-template-columns: 2fr 1fr 60px; /* Name, Price, Button */
+    }
+    .room-type-row-inputs input, .room-type-row-inputs select,
+    .meal-plan-row-inputs input, .meal-plan-row-inputs select {
         margin-bottom: 0 !important;
     }
     .room-type-checkbox-group {
@@ -255,26 +259,25 @@
         background: #fef2f2;
     }
     .btn-delete:hover { background: #fca5a5; }
-    .btn-save-inline, .btn-cancel-inline { 
-        padding: 5px 8px;
-        font-size: 11px;
-        font-weight: 600;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background 0.2s;
-        margin-left: 5px;
-    }
     .btn-save-inline { background: #10b981; color: white; }
     .btn-cancel-inline { background: #6b7280; color: white; }
     .list-item-content {
         flex-grow: 1;
     }
+    .inline-edit-group {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-grow: 1;
+    }
+    .inline-edit-group input {
+        margin-bottom: 0;
+    }
     
     .tag {
-      font-size: 11px;
-      padding: 4px 8px;
+      padding: 4px 10px;
       border-radius: 999px;
+      font-size: 11px;
       background: #e5e7eb;
       margin-left: 6px;
       font-weight: 500;
@@ -345,6 +348,7 @@
     .res-detail-box .actions .btn-confirm { background: #10b981; color: white; border: none; }
     .res-detail-box .actions .btn-reject { background: #ef4444; color: white; border: none; }
     .res-detail-box .actions .btn-change { background: #3b82f6; color: white; border: none; }
+    .res-detail-box .actions .btn-edit { background: #f59e0b; color: white; border: none; }
 
     /* Modal Styles */
     .modal-overlay {
@@ -354,10 +358,17 @@
     }
     .modal-content {
         background: white; padding: 30px; border-radius: 10px; 
-        width: 90%; max-width: 600px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        width: 90%; max-width: 800px; 
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         position: relative;
     }
     .modal-content h3 { border-left-color: #3b82f6; }
+    .traveler-edit-row {
+        border: 1px solid #e5e7eb; padding: 10px; border-radius: 8px; margin-bottom: 10px;
+    }
+    .traveler-edit-row input { margin-bottom: 8px; }
   </style>
 </head>
 <body>
@@ -382,10 +393,19 @@
     <div class="sidebar">
         <h1>Admin Console</h1>
         <div class="nav-group">
-            <div class="nav-item active" data-view="dashboard" onclick="showView('dashboard')">
-                <span style="font-size: 18px;">🏠</span> Dashboard
+            <div class="nav-item active" data-view="hotels">
+                <span style="font-size: 18px;">🏨</span> Hotellər
             </div>
-            <div class="nav-item" data-view="reservations" onclick="showView('reservations')">
+            <div class="nav-item" data-view="regions">
+                <span style="font-size: 18px;">🌎</span> Regionlar
+            </div>
+            <div class="nav-item" data-view="operations">
+                <span style="font-size: 18px;">✈️</span> Əməliyyatlar
+            </div>
+            <div class="nav-item" data-view="pending-agents">
+                <span style="font-size: 18px;">👤</span> Agent Təsdiqi
+            </div>
+            <div class="nav-item" data-view="reservations">
                 <span style="font-size: 18px;">📝</span> Rezervasiyalar
             </div>
         </div>
@@ -397,102 +417,101 @@
     <div class="page">
         <div class="header-info">
             <div>
-                <h2 id="viewTitle">Dashboard</h2>
-                <p id="viewSubtitle">Sistem üçün əsas məlumatları (hotellər, regionlar, əməliyyatlar) idarə edin.</p>
+                <h2 id="viewTitle">Hotellərin İdarə Edilməsi</h2>
+                <p id="viewSubtitle">Otaq tipləri, qidalanma planları və extra bed qiymətlərini idarə edin.</p>
             </div>
             <div id="agentInfo" class="user-info">
                 Agent: <span id="agentNameDisplay">Yüklənir...</span>
             </div>
         </div>
 
-        <div id="dashboardView" style="display: block;">
-            <div class="grid">
+        <div id="hotelsView" style="display: block;">
+            <div class="card">
+                <h3 id="hotelFormTitle">🏨 Yeni Hotel Əlavə Et</h3>
+                <div class="pill">Otaq tipləri, qidalanma planları və extra bed qiymətləri.</div>
+                <input type="hidden" id="hotelId" value="">
                 
-                <div style="grid-column: span 1;">
-                    <div class="card">
-                        <h3>🌎 Regionlar</h3>
-                        <div class="pill">Əsas coğrafi bölgələr</div>
-                        <label>Region adı</label>
-                        <input type="text" id="regionName" placeholder="Məs: Baku" />
-                        <button class="btn" id="addRegionBtn">Region əlavə et</button>
-                        <div id="regionMsg"></div>
-                        <div class="list" id="regionsList"></div>
+                <div class="grid" style="gap: 15px;">
+                    <div>
+                        <label>Hotel adı</label>
+                        <input type="text" id="hotelName" placeholder="Məs: Alba Hotel" />
                     </div>
-                    
-                    <div class="card" style="margin-top: 25px;">
-                        <h3>✈️ Əməliyyatlar / Xidmətlər</h3>
-                        <div class="pill">Transfer, tur və s. xidmət qiymətləri</div>
-                        <label>Operation adı</label>
-                        <input type="text" id="opName" placeholder="Məs: Airport → Hotel transfer" />
-                        <label>Qiymət ($)</label>
-                        <input type="number" id="opPrice" min="0" value="0" />
-                        <button class="btn" id="addOperationBtn">Operation əlavə et</button>
-                        <div id="opMsg"></div>
-                        <div class="list" id="operationsList"></div>
+                    <div>
+                        <label>Region</label>
+                        <select id="hotelRegionSelect">
+                            <option value="">Region seç...</option>
+                        </select>
                     </div>
-                    
-                    <div class="card" style="margin-top: 25px;">
-                        <h3>👤 Agent Təsdiqi Gözləyir</h3>
-                        <div class="pill" style="background: #fffbe6; color: #b45309;">Qeydiyyatdan keçmiş, təsdiqlənməmiş agentlər.</div>
-                        <div id="pendingAgentsList">
-                            <p style="color: #6b7280; font-style: italic; margin-top: 10px;">Gözləyən agent yoxdur.</p>
-                        </div>
+                    <div>
+                        <label>Ulduz</label>
+                        <select id="hotelStars">
+                            <option value="3">3 ★</option>
+                            <option value="4" selected>4 ★</option>
+                            <option value="5">5 ★</option>
+                        </select>
                     </div>
-                    
-                </div>
-
-                <div style="grid-column: span 2;">
-                    <div class="card">
-                        <h3>🏨 Hotellərin İdarə Edilməsi</h3>
-                        <div class="pill">Otaq tipləri, qidalanma planları və extra bed qiymətləri.</div>
-                        
-                        <div class="grid" style="gap: 15px;">
-                            <div>
-                                <label>Hotel adı</label>
-                                <input type="text" id="hotelName" placeholder="Məs: Alba Hotel" />
-                            </div>
-                            <div>
-                                <label>Region</label>
-                                <select id="hotelRegionSelect">
-                                    <option value="">Region seç...</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label>Ulduz</label>
-                                <select id="hotelStars">
-                                    <option value="3">3 ★</option>
-                                    <option value="4" selected>4 ★</option>
-                                    <option value="5">5 ★</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label>Extra bed / night ($)</label>
-                                <input type="number" id="extraBedPrice" min="0" value="0" />
-                            </div>
-                        </div>
-
-                        <div style="margin-top:25px;">
-                            <strong style="font-size:14px; display: block; margin-bottom: 5px;">Otaq Növləri (Room types)</strong>
-                            <div id="roomTypesAdmin"></div>
-                            <button type="button" class="btn-secondary" id="addRoomTypeAdminBtn">+ Room type əlavə et</button>
-                        </div>
-
-                        <div style="margin-top:25px;">
-                            <strong style="font-size:14px; display: block; margin-bottom: 5px;">Qidalanma Planları (Meal plans)</strong>
-                            <div id="mealPlansAdmin"></div>
-                            <button type="button" class="btn-secondary" id="addMealPlanAdminBtn">+ Meal plan əlavə et</button>
-                        </div>
-
-                        <button class="btn" id="saveHotelBtn" style="margin-top:30px;">Hotel yadda saxla</button>
-                        <div id="hotelMsg"></div>
-
-                        <div class="list" id="hotelsList"></div>
+                    <div>
+                        <label>Extra bed / night ($)</label>
+                        <input type="number" id="extraBedPrice" min="0" value="0" />
                     </div>
                 </div>
 
+                <div style="margin-top:25px;">
+                    <strong style="font-size:14px; display: block; margin-bottom: 5px;">Otaq Növləri (Room types)</strong>
+                    <div id="roomTypesAdmin"></div>
+                    <button type="button" class="btn-secondary" id="addRoomTypeAdminBtn">+ Room type əlavə et</button>
+                </div>
+
+                <div style="margin-top:25px;">
+                    <strong style="font-size:14px; display: block; margin-bottom: 5px;">Qidalanma Planları (Meal plans)</strong>
+                    <div id="mealPlansAdmin"></div>
+                    <button type="button" class="btn-secondary" id="addMealPlanAdminBtn">+ Meal plan əlavə et</button>
+                </div>
+
+                <button class="btn" id="saveHotelBtn" style="margin-top:30px;">Hotel yadda saxla</button>
+                <button class="btn-secondary" id="cancelEditBtn" style="margin-top:30px; display: none;">Redaktəni ləğv et</button>
+                <div id="hotelMsg"></div>
+
+                <div class="list" id="hotelsList"></div>
             </div>
         </div>
 
+        <div id="regionsView" style="display: none;">
+            <div class="card" style="max-width: 500px;">
+                <h3>🌎 Regionlar</h3>
+                <div class="pill">Əsas coğrafi bölgələr</div>
+                <label>Region adı</label>
+                <input type="text" id="regionName" placeholder="Məs: Baku" />
+                <button class="btn" id="addRegionBtn">Region əlavə et</button>
+                <div id="regionMsg"></div>
+                <div class="list" id="regionsList"></div>
+            </div>
+        </div>
+
+        <div id="operationsView" style="display: none;">
+            <div class="card" style="max-width: 500px;">
+                <h3>✈️ Əməliyyatlar / Xidmətlər</h3>
+                <div class="pill">Transfer, tur və s. xidmət qiymətləri</div>
+                <label>Operation adı</label>
+                <input type="text" id="opName" placeholder="Məs: Airport → Hotel transfer" />
+                <label>Qiymət ($)</label>
+                <input type="number" id="opPrice" min="0" value="0" />
+                <button class="btn" id="addOperationBtn">Operation əlavə et</button>
+                <div id="opMsg"></div>
+                <div class="list" id="operationsList"></div>
+            </div>
+        </div>
+
+        <div id="pending-agentsView" style="display: none;">
+            <div class="card" style="max-width: 500px;">
+                <h3>👤 Agent Təsdiqi Gözləyir</h3>
+                <div class="pill" style="background: #fffbe6; color: #b45309;">Qeydiyyatdan keçmiş, təsdiqlənməmiş agentlər.</div>
+                <div id="pendingAgentsList">
+                    <p style="color: #6b7280; font-style: italic; margin-top: 10px;">Gözləyən agent yoxdur.</p>
+                </div>
+            </div>
+        </div>
+        
         <div id="reservationsView" style="display: none;">
             <div class="card" style="padding: 0;">
                 <div class="res-header-grid">
@@ -517,7 +536,7 @@
     <div id="changeDateModal" class="modal-overlay" onclick="closeModal('changeDateModal')">
         <div class="modal-content" onclick="event.stopPropagation()">
             <span style="position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #6b7280;" onclick="closeModal('changeDateModal')">×</span>
-            <h3>📅 Tarix Dəyişikliyi Təklifi</h3>
+            <h3>📅 Tarix Dəyişikliyi Təklifi Göndər</h3>
             <form id="changeDateForm">
                 <input type="hidden" id="changeResId">
                 <label for="newCheckIn">Yeni Check-in tarixi</label>
@@ -526,8 +545,8 @@
                 <label for="newCheckOut">Yeni Check-out tarixi</label>
                 <input type="date" id="newCheckOut" required>
                 
-                <label for="adminNote">Agent üçün Qeyd (Max 250 simvol)</label>
-                <textarea id="adminNote" maxlength="250" rows="3"></textarea>
+                <label for="adminNote">Agent üçün Qeyd (Max 250 simvol) *</label>
+                <textarea id="adminNote" maxlength="250" rows="3" required></textarea>
                 
                 <div id="changeDateMsg" class="error" style="margin-top: 10px; display: none;"></div>
                 
@@ -535,246 +554,848 @@
             </form>
         </div>
     </div>
-
-  <script>
     
-    let dbData = { regions: [], hotels: [], operations: [], reservations: [], pending_agents: [] };
-    
-    // Yüklənmiş Agent adı
-    document.getElementById('agentNameDisplay').textContent = LOGGED_IN_AGENT.name + ' (' + LOGGED_IN_AGENT.role + ')';
-    
-    // API HELPERS
-    function formatMoney(v) {
-      v = Math.round((v + Number.EPSILON) * 100) / 100;
-      return v.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + ' $';
-    }
-
-    function statusToTag(status) {
-        const statuses = {
-            'Pending Admin': '<span class="tag pending">Gözləyir</span>',
-            'Confirmed': '<span class="tag confirmed">Təsdiqləndi</span>',
-            'Rejected': '<span class="tag rejected">Rədd edildi</span>',
-            'Date Change Requested': '<span class="tag change">Tarix dəyişikliyi</span>'
-        };
-        return statuses[status] || `<span class="tag">${status}</span>`;
-    }
-
-    // Modal Helpers
-    function closeModal(id) {
-        document.getElementById(id).style.display = 'none';
-        document.getElementById('changeDateMsg').style.display = 'none';
-    }
-    function handleActionResponse(response, type, action, msgEl) {
-        return response.json().then(data => {
-            if (response.ok && data.success) {
-                msgEl.textContent = `✅ ${type} uğurla ${action}.`;
-                msgEl.className = 'success';
-                fetchData(); 
-                return true;
-            } else {
-                throw new Error(data.error || `${type} ${action} edilərkən xəta baş verdi.`);
-            }
-        }).catch(err => {
-            msgEl.textContent = '❌ ' + err.message;
-            msgEl.className = 'error';
-            setTimeout(() => msgEl.textContent = '', 4000);
-            return false;
-        });
-    }
-
-    // --- Data Fetching and Rendering ---
-    
-    function fetchData() {
-      fetch('/api/data')
-        .then(r => r.json())
-        .then(data => {
-          dbData = data;
-          
-          // Dashboard Views
-          renderRegions(data.regions);
-          renderOperations(data.operations);
-          renderHotels(data.hotels, data.regions);
-          renderPendingAgents(data.pending_agents); 
-          
-          // Reservations View
-          renderReservations(data.reservations);
-        })
-        .catch(err => console.error('Error loading data', err));
-    }
-    
-    function showView(viewId) {
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-        document.querySelector(`.nav-item[data-view="${viewId}"]`).classList.add('active');
-
-        document.getElementById('dashboardView').style.display = 'none';
-        document.getElementById('reservationsView').style.display = 'none';
-
-        const view = document.getElementById(viewId + 'View');
-        const titleEl = document.getElementById('viewTitle');
-        const subtitleEl = document.getElementById('viewSubtitle');
-        
-        view.style.display = 'block';
-
-        if (viewId === 'dashboard') {
-            titleEl.textContent = 'Dashboard';
-            subtitleEl.textContent = 'Sistem üçün əsas məlumatları (hotellər, regionlar, əməliyyatlar) idarə edin.';
-        } else if (viewId === 'reservations') {
-            titleEl.textContent = 'Rezervasiyalar';
-            subtitleEl.textContent = 'Bütün agent rezervasiyalarının idarəetmə paneli.';
-            document.getElementById('reservationDetail').style.display = 'none';
-            // Reservasiya datası yenidən yüklənir
-            fetchData(); 
-        }
-    }
-    
-    // --- Reservation Rendering (ADMIN) ---
-
-    function renderReservations(reservations) {
-        const list = document.getElementById('reservationsList');
-        list.innerHTML = '';
-
-        if (!reservations || reservations.length === 0) {
-            list.innerHTML = '<div style="padding: 20px; text-align: center; color: #6b7280;">Hələ heç bir rezervasiya yoxdur.</div>';
-            return;
-        }
-        
-        reservations.sort((a, b) => new Date(b.date) - new Date(a.date)); 
-
-        reservations.forEach(res => {
-            const row = document.createElement('div');
-            row.className = 'res-item-row';
-            row.onclick = () => showReservationDetail(res);
+    <div id="editReservationModal" class="modal-overlay" onclick="closeModal('editReservationModal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span style="position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #6b7280;" onclick="closeModal('editReservationModal')">×</span>
+            <h3 id="editModalTitle">🛠️ Rezervasiya Redaktəsi #ID</h3>
             
-            const price = (res.summary?.totalPrice || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            <form id="editReservationForm">
+                <input type="hidden" id="editResId">
+                <input type="hidden" id="editResDate">
+                <input type="hidden" id="editResAgentUsername">
+                
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <div class="section-title" style="margin-top: 0; border-left-color: #10b981;">🗓️ Əsas Məlumatlar & Status</div>
+                        
+                        <label>Check-in</label>
+                        <input type="date" id="editCheckIn" name="checkIn" required>
+                        
+                        <label>Check-out</label>
+                        <input type="date" id="editCheckOut" name="checkOut" required>
+                        
+                        <div class="grid" style="grid-template-columns: 1fr 1fr;">
+                            <div>
+                                <label>Adults</label>
+                                <input type="number" id="editAdults" name="adults" min="1" required>
+                            </div>
+                            <div>
+                                <label>Children</label>
+                                <input type="number" id="editChildren" name="children" min="0" required>
+                            </div>
+                        </div>
+
+                        <label>Status</label>
+                        <select id="editStatus" name="status">
+                            <option value="Pending Admin">Pending Admin</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Rejected">Rejected</option>
+                            <option value="Date Change Requested">Date Change Requested</option>
+                            <option value="Date Change Accepted">Date Change Accepted</option>
+                            <option value="Date Change Rejected">Date Change Rejected</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <div class="section-title" style="margin-top: 0; border-left-color: #f59e0b;">✈️ Uçuş Məlumatları</div>
+                        <label>Arrival Time (Gəliş vaxtı)</label>
+                        <input type="text" id="editFlightArrival" name="flightArrival" placeholder="Məs: 2025-12-30 14:30" />
+                        
+                        <label>Departure Time (Gediş vaxtı)</label>
+                        <input type="text" id="editFlightDeparture" name="flightDeparture" placeholder="Məs: 2026-01-05 10:00" />
+
+                        <div style="margin-top: 25px; padding: 10px; background: #e0f2fe; border-radius: 6px;">
+                            <p style="font-size: 13px; color: #1d4ed8; font-weight: 600; margin: 0;">
+                                ⚠️ QEYD: Hotel & Otaq Detalları (Məs: Rooms Subtotal, HotelNames) avtomatik yenilənməyəcək. Redaktə etdiyiniz məlumatlar qiymət cədvəlinin üstünə yazılacaq.
+                            </p>
+                            <label style="margin-top: 10px;">Hotellərin adı (Redaktə üçün)</label>
+                            <input type="text" id="editHotelNames" name="hotelNames" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-title" style="border-left-color: #3b82f6;">👤 Səyahətçi Məlumatları (Ad, Soyad, DOB, Vətəndaşlıq)</div>
+                <div id="editTravelersContainer">
+                    </div>
+                
+                <div id="editMsg" class="error" style="margin-top: 15px; display: none;"></div>
+                
+                <button type="submit" class="btn" style="width: 100%; margin-top: 25px; background: #10b981;">Dəyişiklikləri Yadda Saxla</button>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        
+        let dbData = { regions: [], hotels: [], operations: [], reservations: [], pending_agents: [] };
+        let currentResId = null; 
+
+        // Yüklənmiş Agent adı
+        document.getElementById('agentNameDisplay').textContent = LOGGED_IN_AGENT.name + ' (' + LOGGED_IN_AGENT.role + ')';
+        
+        // API HELPERS
+        function formatMoney(v) {
+          v = Math.round((v + Number.EPSILON) * 100) / 100;
+          return v.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + ' $';
+        }
+
+        function statusToTag(status) {
+            const statuses = {
+                'Pending Admin': '<span class="tag pending">Gözləyir</span>',
+                'Confirmed': '<span class="tag confirmed">Təsdiqləndi</span>',
+                'Rejected': '<span class="tag rejected">Rədd edildi</span>',
+                'Date Change Requested': '<span class="tag change">Tarix Dəyişikliyi Gözləyir</span>',
+                'Date Change Accepted': '<span class="tag confirmed">Tarix Dəyişikliyi Qəbul</span>',
+                'Date Change Rejected': '<span class="tag rejected">Tarix Dəyişikliyi Rədd</span>'
+            };
+            return statuses[status] || `<span class="tag">${status}</span>`;
+        }
+
+        // Modal Helpers
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+            document.getElementById('changeDateMsg').style.display = 'none';
+            document.getElementById('editMsg').style.display = 'none';
+        }
+        function handleActionResponse(response, type, action, msgEl) {
+            return response.json().then(data => {
+                if (response.ok && data.success) {
+                    msgEl.textContent = `✅ ${type} uğurla ${action}.`;
+                    msgEl.className = 'success';
+                    fetchData(); 
+                    return true;
+                } else {
+                    throw new Error(data.error || `${type} ${action} edilərkən xəta baş verdi.`);
+                }
+            }).catch(err => {
+                msgEl.textContent = '❌ ' + err.message;
+                msgEl.className = 'error';
+                setTimeout(() => msgEl.textContent = '', 4000);
+                return false;
+            });
+        }
+
+        // --- View Switching ---
+        function showView(viewId) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.querySelector(`.nav-item[data-view="${viewId}"]`).classList.add('active');
+
+            // Hide all main view containers
+            document.getElementById('hotelsView').style.display = 'none';
+            document.getElementById('regionsView').style.display = 'none';
+            document.getElementById('operationsView').style.display = 'none';
+            document.getElementById('pending-agentsView').style.display = 'none';
+            document.getElementById('reservationsView').style.display = 'none';
+
+
+            const view = document.getElementById(viewId + 'View');
+            const titleEl = document.getElementById('viewTitle');
+            const subtitleEl = document.getElementById('viewSubtitle');
+            
+            view.style.display = 'block';
+
+            if (viewId === 'hotels') {
+                titleEl.textContent = 'Hotellərin İdarə Edilməsi';
+                subtitleEl.textContent = 'Otaq tipləri, qidalanma planları və extra bed qiymətlərini idarə edin.';
+                resetHotelForm();
+            } else if (viewId === 'regions') {
+                titleEl.textContent = 'Regionların İdarə Edilməsi';
+                subtitleEl.textContent = 'Yeni coğrafi bölgələr əlavə edin və mövcud olanları redaktə/silin.';
+            } else if (viewId === 'operations') {
+                titleEl.textContent = 'Əməliyyatların İdarə Edilməsi';
+                subtitleEl.textContent = 'Transfer, tur və digər əlavə xidmətlərin siyahısını redaktə/silin.';
+            } else if (viewId === 'pending-agents') {
+                titleEl.textContent = 'Agent Təsdiqi';
+                subtitleEl.textContent = 'Qeydiyyatdan keçmiş, təsdiqlənməmiş agentlərə icazə verin və ya rədd edin.';
+            } else if (viewId === 'reservations') {
+                titleEl.textContent = 'Rezervasiyalar';
+                subtitleEl.textContent = 'Bütün agent rezervasiyalarının idarəetmə paneli.';
+                document.getElementById('reservationDetail').style.display = 'none';
+                fetchData(); 
+            }
+        }
+        
+        // --- Data Fetching and Rendering ---
+        
+        function fetchData() {
+          fetch('/api/data')
+            .then(r => r.json())
+            .then(data => {
+              dbData = data;
+              
+              // Rendering functions must be defined before use
+              renderRegions(data.regions);
+              renderOperations(data.operations);
+              renderHotels(data.hotels, data.regions);
+              renderPendingAgents(data.pending_agents); 
+              
+              renderReservations(data.reservations);
+            })
+            .catch(err => console.error('Error loading data', err));
+        }
+        
+        // --- Hotel CRUD Logic ---
+        
+        // Otaq Tipi Inputu Yarat
+        function createRoomTypeInput(rt = {}) {
+            const id = rt.id || new Date().getTime(); // Yeni ID yaradılır
+            const container = document.getElementById('roomTypesAdmin');
+            const row = document.createElement('div');
+            row.className = 'room-type-row-inputs';
+            row.dataset.id = id;
             
             row.innerHTML = `
-                <div>#${res.id}</div>
-                <div>${res.submittingAgentUsername}</div>
-                <div>${res.summary?.checkIn.substring(5)} - ${res.summary?.checkOut.substring(5)}</div>
-                <div>${res.summary?.hotelNames || '—'}</div>
-                <div>${statusToTag(res.status)}</div>
-                <div class="res-amount">${price} $</div>
+                <input type="text" placeholder="Room adı (Məs: Standard)" value="${rt.name || ''}" class="room-name" required>
+                <input type="number" placeholder="Qiymət ($)" value="${rt.pricePerNight || 0}" min="0" class="room-price" required>
+                <div class="room-type-checkbox-group">
+                    <input type="checkbox" id="eb_allowed_${id}" class="room-eb-allowed" ${rt.isExtraBedAllowed ? 'checked' : ''}>
+                    <label for="eb_allowed_${id}" style="margin:0;">Extra Bed</label>
+                </div>
+                <button type="button" class="btn-action btn-delete" onclick="this.parentNode.remove()">Sil</button>
             `;
-            list.appendChild(row);
-        });
-    }
-
-    function showReservationDetail(res) {
-        const detailBox = document.getElementById('reservationDetail');
-        detailBox.style.display = 'block';
+            container.appendChild(row);
+        }
         
-        const travelersHtml = (res.travelers || []).map((t, index) => {
-            const dob = t.dob ? dateFormatter.format(new Date(t.dob)) : '—';
-            return `
-                <div style="margin-left: 15px; margin-bottom: 5px;">
-                    <strong>${index + 1}. ${t.name} ${t.surname} (${t.type})</strong> 
-                    <span style="color: #6b7280;">| DB: ${dob} | Vət: ${t.nationality}</span>
-                </div>`;
-        }).join('');
-        
-        const changeRequestInfo = res.status === 'Date Change Requested' && res.changeRequest
-            ? `<div style="margin-top: 15px; padding: 10px; border: 1px solid #3b82f6; border-radius: 6px; background: #e0f2fe;">
-                <strong>Tarix Dəyişikliyi Sorğusu:</strong><br>
-                Yeni Tarix: ${res.changeRequest.newCheckIn} → ${res.changeRequest.newCheckOut}<br>
-                Qeyd: ${res.changeRequest.adminNote}
-               </div>`
-            : '';
-
-        detailBox.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #fff; padding-bottom: 10px; margin-bottom: 10px;">
-                <h4 style="margin: 0;">Rezervasiya #${res.id} ${statusToTag(res.status)}</h4>
-                <span style="font-size: 11px; color: #6b7280;">Agent: ${res.submittingAgentUsername} | Qeyd: ${dateFormatter.format(new Date(res.date))}</span>
-            </div>
+        // Meal Plan Inputu Yarat
+        function createMealPlanInput(mp = {}) {
+            const id = mp.id || new Date().getTime(); // Yeni ID yaradılır
+            const container = document.getElementById('mealPlansAdmin');
+            const row = document.createElement('div');
+            row.className = 'meal-plan-row-inputs';
+            row.dataset.id = id;
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div>
-                    <strong>Səyahət:</strong> ${res.summary.checkIn} → ${res.summary.checkOut} (${res.summary.nights} gecə)<br>
-                    <strong>Qonaq:</strong> ${res.summary.adults} Böyük, ${res.summary.children} Uşaq<br>
-                    <strong>Hotellər:</strong> ${res.summary.hotelNames}<br>
-                    
-                    <strong style="display: block; margin-top: 10px;">Uçuş Məlumatları:</strong>
-                    Gəliş: ${res.flightInfo?.arrival?.replace('T', ' ') || '—'}<br>
-                    Gediş: ${res.flightInfo?.departure?.replace('T', ' ') || '—'}
+            row.innerHTML = `
+                <input type="text" placeholder="Plan adı (Məs: BB, AI)" value="${mp.name || ''}" class="meal-name" required>
+                <input type="number" placeholder="Qiymət ($)" value="${mp.pricePerPersonPerNight || 0}" min="0" class="meal-price" required>
+                <button type="button" class="btn-action btn-delete" onclick="this.parentNode.remove()">Sil</button>
+            `;
+            container.appendChild(row);
+        }
+        
+        function addRoomTypeInput() { createRoomTypeInput(); }
+        function addMealPlanInput() { createMealPlanInput(); }
+        
+        function editHotel(id) {
+            const hotel = dbData.hotels.find(h => h.id === id);
+            if (!hotel) return;
+
+            // 1. Formu doldur
+            document.getElementById('hotelId').value = hotel.id;
+            document.getElementById('hotelFormTitle').textContent = `🏨 "${hotel.name}" Redaktə Et`;
+            document.getElementById('hotelName').value = hotel.name;
+            document.getElementById('hotelRegionSelect').value = hotel.regionId;
+            document.getElementById('hotelStars').value = hotel.stars;
+            document.getElementById('extraBedPrice').value = hotel.extraBedPricePerNight;
+            document.getElementById('saveHotelBtn').textContent = 'Yenilə';
+            document.getElementById('cancelEditBtn').style.display = 'inline-block';
+            
+            // 2. Room Types və Meal Plans
+            document.getElementById('roomTypesAdmin').innerHTML = '';
+            hotel.roomTypes.forEach(rt => createRoomTypeInput(rt));
+            
+            document.getElementById('mealPlansAdmin').innerHTML = '';
+            hotel.mealPlans.forEach(mp => createMealPlanInput(mp));
+            
+            // Yönləndirmə
+            showView('hotels');
+        }
+        
+        function saveHotel() {
+            const id = document.getElementById('hotelId').value;
+            const hotelName = document.getElementById('hotelName').value.trim();
+            const regionId = document.getElementById('hotelRegionSelect').value;
+            const stars = document.getElementById('hotelStars').value;
+            const extraBedPrice = document.getElementById('extraBedPrice').value;
+            const msgEl = document.getElementById('hotelMsg');
+            
+            if (!hotelName || !regionId) {
+                msgEl.textContent = '❌ Hotel adı və region seçimi məcburidir.';
+                msgEl.className = 'error';
+                return;
+            }
+
+            const roomTypes = Array.from(document.querySelectorAll('#roomTypesAdmin .room-type-row-inputs')).map(row => ({
+                id: row.dataset.id.length < 8 ? Number(row.dataset.id) : undefined, 
+                name: row.querySelector('.room-name').value,
+                pricePerNight: row.querySelector('.room-price').value,
+                isExtraBedAllowed: row.querySelector('.room-eb-allowed').checked
+            }));
+
+            const mealPlans = Array.from(document.querySelectorAll('#mealPlansAdmin .meal-plan-row-inputs')).map(row => ({
+                id: row.dataset.id.length < 8 ? Number(row.dataset.id) : undefined, 
+                name: row.querySelector('.meal-name').value,
+                pricePerPersonPerNight: row.querySelector('.meal-price').value
+            }));
+            
+            const payload = {
+                name: hotelName,
+                regionId: regionId,
+                stars: stars,
+                extraBedPricePerNight: extraBedPrice,
+                roomTypes: roomTypes,
+                mealPlans: mealPlans
+            };
+
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? `/api/hotels/${id}` : '/api/hotels';
+
+            fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(response => handleActionResponse(response, 'Hotel', id ? 'yeniləndi' : 'əlavə edildi', msgEl))
+            .then(success => {
+                if (success) {
+                    resetHotelForm();
+                }
+            });
+        }
+
+        function resetHotelForm() {
+            document.getElementById('hotelId').value = '';
+            document.getElementById('hotelFormTitle').textContent = '🏨 Yeni Hotel Əlavə Et';
+            document.getElementById('hotelName').value = '';
+            document.getElementById('hotelRegionSelect').value = '';
+            document.getElementById('hotelStars').value = '4';
+            document.getElementById('extraBedPrice').value = '0';
+            document.getElementById('roomTypesAdmin').innerHTML = '';
+            document.getElementById('mealPlansAdmin').innerHTML = '';
+            document.getElementById('saveHotelBtn').textContent = 'Hotel yadda saxla';
+            document.getElementById('cancelEditBtn').style.display = 'none';
+            addRoomTypeInput(); 
+            addMealPlanInput(); 
+        }
+        
+        // --- Rendering Functions ---
+        
+        // REGIONS (INLINE EDIT İLƏ)
+        function renderRegions(regions) {
+            const list = document.getElementById('regionsList');
+            const select = document.getElementById('hotelRegionSelect');
+            list.innerHTML = '';
+            select.innerHTML = '<option value="">Region seç...</option>';
+            
+            regions.forEach(r => {
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                item.id = `region_item_${r.id}`;
+                
+                item.innerHTML = `
+                    <div class="list-item-content" id="region_content_${r.id}">
+                        <span id="region_name_display_${r.id}">${r.name}</span>
+                    </div>
+                    <div class="actions">
+                        <button class="btn-action btn-edit" data-id="${r.id}" onclick="startEditRegion(${r.id}, '${r.name}')">Redaktə</button>
+                        <button class="btn-action btn-delete" onclick="deleteItem('regions', ${r.id})">Sil</button>
+                    </div>
+                `;
+                list.appendChild(item);
+                
+                const option = document.createElement('option');
+                option.value = r.id;
+                option.textContent = r.name;
+                select.appendChild(option);
+            });
+        }
+        
+        function startEditRegion(id, name) {
+            const content = document.getElementById(`region_content_${id}`);
+            const actions = content.nextElementSibling;
+
+            content.innerHTML = `<input type="text" id="edit_region_name_${id}" value="${name}" style="flex-grow: 1; margin-bottom: 0;">`;
+            actions.innerHTML = `
+                <button class="btn-action btn-save-inline" onclick="saveEditRegion(${id})">Yadda Saxla</button>
+                <button class="btn-action btn-cancel-inline" onclick="fetchData()">Ləğv Et</button>
+            `;
+        }
+
+        function saveEditRegion(id) {
+            const name = document.getElementById(`edit_region_name_${id}`).value.trim();
+            const msgEl = document.getElementById('regionMsg');
+            
+            fetch(`/api/regions/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name })
+            })
+            .then(response => handleActionResponse(response, 'Region', 'yeniləndi', msgEl));
+        }
+
+        
+        // OPERATIONS (INLINE EDIT İLƏ)
+        function renderOperations(operations) {
+            const list = document.getElementById('operationsList');
+            list.innerHTML = '';
+            
+            operations.forEach(o => {
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                item.id = `op_item_${o.id}`;
+
+                item.innerHTML = `
+                    <div class="list-item-content" id="op_content_${o.id}">
+                        <strong><span id="op_name_display_${o.id}">${o.name}</span></strong> 
+                        <span class="tag change"><span id="op_price_display_${o.id}">${formatMoney(o.price)}</span></span>
+                    </div>
+                    <div class="actions">
+                        <button class="btn-action btn-edit" onclick="startEditOperation(${o.id}, '${o.name}', ${o.price})">Redaktə</button>
+                        <button class="btn-action btn-delete" onclick="deleteItem('operations', ${o.id})">Sil</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+        
+        function startEditOperation(id, name, price) {
+            const content = document.getElementById(`op_content_${id}`);
+            const actions = content.nextElementSibling;
+            
+            content.innerHTML = `
+                <input type="text" id="edit_op_name_${id}" value="${name}" placeholder="Ad" style="flex-grow: 1; width: 150px; margin-bottom: 0;">
+                <input type="number" id="edit_op_price_${id}" value="${price}" min="0" placeholder="Qiymət" style="width: 80px; margin-bottom: 0;">
+                <span style="font-size: 14px; margin-left: 5px;">$</span>
+            `;
+            actions.innerHTML = `
+                <button class="btn-action btn-save-inline" onclick="saveEditOperation(${id})">Yadda Saxla</button>
+                <button class="btn-action btn-cancel-inline" onclick="fetchData()">Ləğv Et</button>
+            `;
+        }
+
+        function saveEditOperation(id) {
+            const name = document.getElementById(`edit_op_name_${id}`).value.trim();
+            const price = Number(document.getElementById(`edit_op_price_${id}`).value);
+            const msgEl = document.getElementById('opMsg');
+            
+            fetch(`/api/operations/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, price })
+            })
+            .then(response => handleActionResponse(response, 'Operation', 'yeniləndi', msgEl));
+        }
+
+        // HOTELS
+        function renderHotels(hotels, regions) {
+            const list = document.getElementById('hotelsList');
+            list.innerHTML = '';
+            
+            hotels.forEach(h => {
+                const region = regions.find(r => r.id === h.regionId);
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                
+                let roomInfo = h.roomTypes.map(rt => `${rt.name} (${formatMoney(rt.pricePerNight)})`).join(', ');
+                
+                item.innerHTML = `
+                    <div class="list-item-content">
+                        <strong>${h.name}</strong> 
+                        <span class="tag">${h.stars}★</span>
+                        <span class="tag change">${region ? region.name : 'Unknown Region'}</span>
+                        <div style="font-size:11px; color:#6b7280; margin-top:2px;">
+                            Room Types: ${roomInfo}<br>
+                            Extra Bed: ${formatMoney(h.extraBedPricePerNight)} / night
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn-action btn-edit" data-hotel-id="${h.id}">Redaktə</button>
+                        <button class="btn-action btn-delete" onclick="deleteItem('hotels', ${h.id})">Sil</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+        
+        function renderPendingAgents(agents) {
+            const list = document.getElementById('pendingAgentsList');
+            list.innerHTML = '';
+            
+            if (agents.length === 0) {
+                list.innerHTML = '<p style="color: #6b7280; font-style: italic; margin-top: 10px;">Gözləyən agent yoxdur.</p>';
+                return;
+            }
+
+            agents.forEach(a => {
+                const item = document.createElement('div');
+                item.className = 'list-item';
+                item.innerHTML = `
+                    <div class="list-item-content">
+                        <strong>${a.name}</strong> (${a.username})
+                        <div style="font-size:11px; color:#6b7280;">${a.company}</div>
+                    </div>
+                    <div>
+                        <button class="btn-action btn-save-inline" onclick="confirmAgent(${a.id})">Təsdiqlə</button>
+                        <button class="btn-action btn-delete" onclick="deleteAgent(${a.id})">Rədd et</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function confirmAgent(id) {
+            if (!confirm(`Agent #${id} təsdiqlənəcək. Əminsiniz?`)) return;
+            fetch(`/api/agents/confirm/${id}`, { method: 'POST' })
+            .then(response => handleActionResponse(response, 'Agent', 'təsdiqləndi', document.getElementById('pendingAgentsList')));
+        }
+
+        function deleteAgent(id) {
+            if (!confirm(`Agent #${id} silinəcək (rədd ediləcək). Əminsiniz?`)) return;
+            fetch(`/api/agents/delete/${id}`, { method: 'DELETE' })
+            .then(response => handleActionResponse(response, 'Agent', 'silindi', document.getElementById('pendingAgentsList')));
+        }
+
+        // --- General CRUD for simple items (Regions, Operations) ---
+        document.getElementById('addRegionBtn').addEventListener('click', () => {
+            const name = document.getElementById('regionName').value;
+            fetch('/api/regions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name }) })
+            .then(response => handleActionResponse(response, 'Region', 'əlavə edildi', document.getElementById('regionMsg')))
+            .then(success => { if (success) document.getElementById('regionName').value = ''; });
+        });
+        
+        document.getElementById('addOperationBtn').addEventListener('click', () => {
+            const name = document.getElementById('opName').value;
+            const price = document.getElementById('opPrice').value;
+            fetch('/api/operations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, price }) })
+            .then(response => handleActionResponse(response, 'Operation', 'əlavə edildi', document.getElementById('opMsg')))
+            .then(success => { if (success) { document.getElementById('opName').value = ''; document.getElementById('opPrice').value = '0'; } });
+        });
+
+        function deleteItem(type, id) {
+            if (!confirm(`${type} #${id} silinəcək. Əminsiniz?`)) return;
+            fetch(`/api/${type}/${id}`, { method: 'DELETE' })
+            .then(response => handleActionResponse(response, type, 'silindi', document.getElementById('hotelMsg')));
+        }
+
+        // --- Reservation Logic ---
+        function renderReservations(reservations) {
+            const list = document.getElementById('reservationsList');
+            list.innerHTML = '';
+
+            if (!reservations || reservations.length === 0) {
+                list.innerHTML = '<div style="padding: 20px; text-align: center; color: #6b7280;">Hələ heç bir rezervasiya yoxdur.</div>';
+                return;
+            }
+            
+            reservations.sort((a, b) => new Date(b.date) - new Date(a.date)); 
+
+            reservations.forEach(res => {
+                const row = document.createElement('div');
+                row.className = 'res-item-row';
+                row.onclick = () => showReservationDetail(res);
+                
+                const price = (res.summary?.totalPrice || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                
+                row.innerHTML = `
+                    <div>#${res.id}</div>
+                    <div>${res.submittingAgentUsername}</div>
+                    <div>${res.summary?.checkIn.substring(5)} - ${res.summary?.checkOut.substring(5)}</div>
+                    <div>${res.summary?.hotelNames || '—'}</div>
+                    <div>${statusToTag(res.status)}</div>
+                    <div class="res-amount">${price} $</div>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        function showReservationDetail(res) {
+            const detailBox = document.getElementById('reservationDetail');
+            detailBox.style.display = 'block';
+            
+            const travelersHtml = (res.travelers || []).map((t, index) => {
+                const dob = t.dob ? dateFormatter.format(new Date(t.dob)) : '—';
+                return `
+                    <div style="margin-left: 15px; margin-bottom: 5px;">
+                        <strong>${index + 1}. ${t.name} ${t.surname} (${t.type})</strong> 
+                        <span style="color: #6b7280;">| DB: ${dob} | Vət: ${t.nationality}</span>
+                    </div>`;
+            }).join('');
+            
+            const changeRequestInfo = res.status === 'Date Change Requested' && res.changeRequest
+                ? `<div style="margin-top: 15px; padding: 10px; border: 1px solid #3b82f6; border-radius: 6px; background: #e0f2fe;">
+                    <strong>Tarix Dəyişikliyi Sorğusu:</strong><br>
+                    Yeni Tarix: ${res.changeRequest.newCheckIn} → ${res.changeRequest.newCheckOut}<br>
+                    Qeyd: ${res.changeRequest.adminNote}
+                </div>`
+                : '';
+
+            detailBox.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #fff; padding-bottom: 10px; margin-bottom: 10px;">
+                    <h4 style="margin: 0;">Rezervasiya #${res.id} ${statusToTag(res.status)}</h4>
+                    <span style="font-size: 11px; color: #6b7280;">Agent: ${res.submittingAgentUsername} | Qeyd: ${dateFormatter.format(new Date(res.date))}</span>
                 </div>
                 
-                <div>
-                    <strong style="color: #10b981;">Yekun Qiymət: ${formatMoney(res.summary.totalPrice)}</strong><br>
-                    <span style="color: #6b7280;">(Otaq/Meal: ${formatMoney(res.summary.roomsSubtotal + res.summary.mealsTotal)} + Extra Bed: ${formatMoney(res.summary.extraBedsTotal)} + Operations: ${formatMoney(res.summary.operationsTotal)})</span>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <strong>Səyahət:</strong> ${res.summary.checkIn} → ${res.summary.checkOut} (${res.summary.nights} gecə)<br>
+                        <strong>Qonaq:</strong> ${res.summary.adults} Böyük, ${res.summary.children} Uşaq<br>
+                        <strong>Hotellər:</strong> ${res.summary.hotelNames}<br>
+                        
+                        <strong style="display: block; margin-top: 10px;">Uçuş Məlumatları:</strong>
+                        Gəliş: ${res.flightInfo?.arrival || '—'}<br>
+                        Gediş: ${res.flightInfo?.departure || '—'}
+                    </div>
+                    
+                    <div>
+                        <strong style="color: #10b981;">Yekun Qiymət: ${formatMoney(res.summary.totalPrice)}</strong><br>
+                        <span style="color: #6b7280;">(Otaq/Meal: ${formatMoney(res.summary.roomsSubtotal + res.summary.mealsTotal)} + Extra Bed: ${formatMoney(res.summary.extraBedsTotal)} + Operations: ${formatMoney(res.summary.operationsTotal)})</span>
+                    </div>
                 </div>
-            </div>
 
-            <h4 style="margin-top: 20px; border-bottom: 1px solid #c7d2fe; padding-bottom: 5px;">Səyahətçilər (${res.summary.totalTravelers} nəfər)</h4>
-            <div style="max-height: 150px; overflow-y: auto;">
-                ${travelersHtml}
-            </div>
+                <h4 style="margin-top: 20px; border-bottom: 1px solid #c7d2fe; padding-bottom: 5px;">Səyahətçilər (${res.summary.totalTravelers} nəfər)</h4>
+                <div style="max-height: 150px; overflow-y: auto;">
+                    ${travelersHtml}
+                </div>
+                
+                ${changeRequestInfo}
+
+                <div class="actions">
+                    <button class="btn-edit" onclick="openEditReservationModal(dbData.reservations.find(r => r.id === ${res.id}))">🛠️ Redaktə Et</button>
+                    ${res.status === 'Pending Admin' ? `
+                        <button class="btn-confirm" onclick="updateReservationStatus(${res.id}, 'confirm', null)">✅ Təsdiqlə</button>
+                        <button class="btn-reject" onclick="updateReservationStatus(${res.id}, 'reject', null)">❌ Rədd Et</button>
+                        <button class="btn-change" onclick="openChangeDateModal(${res.id}, '${res.summary.checkIn}', '${res.summary.checkOut}')">📅 Tarix Dəyişikliyi Təklif Et</button>
+                    ` : res.status === 'Date Change Requested' ? `
+                        <p style="color: #1d4ed8; font-weight: 600;">Agent tərəfindən cavab gözlənilir.</p>
+                        <button class="btn-reject" onclick="updateReservationStatus(${res.id}, 'reject', null)">❌ Sorğunu Ləğv Et (Rədd et)</button>
+                    ` : res.status === 'Confirmed' ? `
+                        <p style="color: #10b981; font-weight: 600;">Bu rezervasiya təsdiqlənib.</p>
+                    ` : ''}
+                    <button class="btn-delete" onclick="deleteReservation(${res.id})" style="margin-left: auto;">🗑️ Rezervasiyanı Sil</button>
+                </div>
+            `;
+        }
+
+        function updateReservationStatus(id, action, data) {
+            const msgEl = document.getElementById('reservationDetail');
+            const endpoint = `/api/reservations/${action}/${id}`;
+            const method = action === 'delete' ? 'DELETE' : 'PUT';
+            const body = data ? JSON.stringify(data) : undefined;
             
-            ${changeRequestInfo}
+            if ((action === 'reject' || action === 'delete') && !confirm(`Rezervasiya #${id} ${action === 'delete' ? 'silinəcək' : 'rədd ediləcək'}. Əminsiniz?`)) return;
 
-            <div class="actions">
-                ${res.status === 'Pending Admin' ? `
-                    <button class="btn-confirm" onclick="updateReservationStatus(${res.id}, 'confirm', null)">✅ Təsdiqlə</button>
-                    <button class="btn-reject" onclick="updateReservationStatus(${res.id}, 'reject', null)">❌ Rədd Et</button>
-                    <button class="btn-change" onclick="openChangeDateModal(${res.id}, '${res.summary.checkIn}', '${res.summary.checkOut}')">📅 Tarix Dəyişikliyi Təklif Et</button>
-                ` : res.status === 'Date Change Requested' ? `
-                    <p style="color: #1d4ed8; font-weight: 600;">Agent tərəfindən cavab gözlənilir.</p>
-                ` : ''}
-                <button class="btn-delete" onclick="updateReservationStatus(${res.id}, 'delete', null)" style="margin-left: auto;">🗑️ Rezervasiyanı Sil</button>
-            </div>
-        `;
-    }
+            // Düzəliş: Admin status yoxlaması API-də olduğu üçün sadəcə statusu göndəririk
+            let statusAction = '';
+            if (action === 'confirm') statusAction = 'Confirmed';
+            else if (action === 'reject') statusAction = 'Rejected';
+            else if (action === 'request_change') statusAction = 'Date Change Requested';
 
-    function updateReservationStatus(id, action, data) {
-        const msgEl = document.getElementById('reservationDetail');
-        const endpoint = `/api/reservations/${action}/${id}`;
-        const method = action === 'delete' ? 'DELETE' : 'POST';
-        const body = data ? JSON.stringify(data) : undefined;
+            let finalBody = {};
+            if (statusAction) {
+                finalBody = { status: statusAction, changeRequest: data };
+            }
+
+            fetch(`/api/reservations/status/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(finalBody)
+            })
+            .then(res => handleActionResponse(res, `Rezervasiya #${id}`, 'yeniləndi', msgEl))
+            .then(success => {
+                if (success) closeModal('changeDateModal');
+            })
+            .catch(err => console.error(err));
+        }
         
-        if (action === 'delete' && !confirm(`Rezervasiya #${id} silinəcək. Əminsiniz?`)) return;
+        function deleteReservation(id) {
+            if (!confirm(`Rezervasiya #${id} silinəcək. Əminsiniz?`)) return;
+            
+            const detailBox = document.getElementById('reservationDetail');
+            fetch(`/api/reservations/${id}`, { method: 'DELETE' })
+            .then(res => handleActionResponse(res, `Rezervasiya #${id}`, 'silindi', detailBox))
+            .then(success => {
+                if (success) detailBox.style.display = 'none'; // Detal səhifəsini bağla
+            });
+        }
 
-        fetch(endpoint, {
-            method,
-            headers: { 'Content-Type': 'application/json' },
-            body: body
-        })
-        .then(res => handleActionResponse(res, `Rezervasiya #${id}`, 'yeniləndi', msgEl))
-        .then(success => {
-            if (success) closeModal('changeDateModal');
-        })
-        .catch(err => console.error(err));
-    }
-    
-    function openChangeDateModal(id, currentIn, currentOut) {
-        document.getElementById('changeResId').value = id;
-        document.getElementById('newCheckIn').value = currentIn;
-        document.getElementById('newCheckOut').value = currentOut;
-        document.getElementById('adminNote').value = '';
-        document.getElementById('changeDateModal').style.display = 'flex';
-    }
-
-    document.getElementById('changeDateForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const msgEl = document.getElementById('changeDateMsg');
-        const id = document.getElementById('changeResId').value;
         
-        const data = {
-            newCheckIn: document.getElementById('newCheckIn').value,
-            newCheckOut: document.getElementById('newCheckOut').value,
-            adminNote: document.getElementById('adminNote').value.trim()
-        };
-        
-        updateReservationStatus(id, 'request_change', data);
-    });
+        function openChangeDateModal(id, currentIn, currentOut) {
+            document.getElementById('changeResId').value = id;
+            document.getElementById('newCheckIn').value = currentIn;
+            document.getElementById('newCheckOut').value = currentOut;
+            document.getElementById('adminNote').value = '';
+            document.getElementById('changeDateModal').style.display = 'flex';
+        }
 
-    // --- Remaining functions (Agent Pending, Hotel CRUD etc.) are omitted for brevity but should be included ---
-    // Please ensure all other functions from your previous admin.html are present here.
-    
-    // Initial Load
-    document.addEventListener('DOMContentLoaded', () => {
-        // ... (All existing DOMContentLoaded listeners) ...
-        document.getElementById('agentNameDisplay').textContent = LOGGED_IN_AGENT.name + ' (' + LOGGED_IN_AGENT.role + ')';
-        fetchData();
-        showView('dashboard');
-    });
-</script>
+        document.getElementById('changeDateForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const msgEl = document.getElementById('changeDateMsg');
+            const id = document.getElementById('changeResId').value;
+            
+            const data = {
+                newCheckIn: document.getElementById('newCheckIn').value,
+                newCheckOut: document.getElementById('newCheckOut').value,
+                adminNote: document.getElementById('adminNote').value.trim()
+            };
+            
+            updateReservationStatus(id, 'request_change', data);
+        });
+
+        // --- TAM REDAKTƏ MODAL FUNKSİYALARI ---
+
+        function openEditReservationModal(res) {
+            if (!res) return;
+            
+            document.getElementById('editModalTitle').textContent = `🛠️ Rezervasiya Redaktəsi #${res.id}`;
+            document.getElementById('editResId').value = res.id;
+            document.getElementById('editResDate').value = res.date;
+            document.getElementById('editResAgentUsername').value = res.submittingAgentUsername;
+            
+            // 1. Ümumi Məlumatlar
+            document.getElementById('editCheckIn').value = res.summary.checkIn;
+            document.getElementById('editCheckOut').value = res.summary.checkOut;
+            document.getElementById('editAdults').value = res.summary.adults;
+            document.getElementById('editChildren').value = res.summary.children;
+            document.getElementById('editHotelNames').value = res.summary.hotelNames;
+            document.getElementById('editStatus').value = res.status;
+            
+            // 2. Uçuş Məlumatları (TYPE=TEXT İLƏ MANUAL GİRİŞ)
+            document.getElementById('editFlightArrival').value = res.flightInfo?.arrival || '';
+            document.getElementById('editFlightDeparture').value = res.flightInfo?.departure || '';
+
+            // 3. Səyahətçi Məlumatları
+            const travelersContainer = document.getElementById('editTravelersContainer');
+            travelersContainer.innerHTML = '';
+            
+            (res.travelers || []).forEach((t, index) => {
+                const travelerType = t.type === 'adult' ? 'Böyük' : 'Uşaq';
+                const row = document.createElement('div');
+                row.className = 'traveler-edit-row';
+                row.innerHTML = `
+                    <strong style="display:block; margin-bottom: 5px;">${travelerType} #${index + 1}</strong>
+                    <div class="grid" style="grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px;">
+                        <input type="text" placeholder="Ad" value="${t.name || ''}" class="traveler-name" required>
+                        <input type="text" placeholder="Soyad" value="${t.surname || ''}" class="traveler-surname" required>
+                        <input type="date" placeholder="Doğum günü" value="${t.dob || ''}" class="traveler-dob" required>
+                        <input type="text" placeholder="Vətəndaşlıq" value="${t.nationality || ''}" class="traveler-nationality" required>
+                        <input type="hidden" class="traveler-type" value="${t.type}">
+                    </div>
+                `;
+                travelersContainer.appendChild(row);
+            });
+
+            document.getElementById('editReservationModal').style.display = 'flex';
+        }
+
+        function submitReservationEdit(e) {
+            e.preventDefault();
+            const msgEl = document.getElementById('editMsg');
+            msgEl.style.display = 'none';
+
+            const id = document.getElementById('editResId').value;
+            const oldRes = dbData.reservations.find(r => String(r.id) === id);
+
+            // 1. Summary Məlumatlarını topla
+            const newCheckIn = document.getElementById('editCheckIn').value;
+            const newCheckOut = document.getElementById('editCheckOut').value;
+            const newAdults = Number(document.getElementById('editAdults').value);
+            const newChildren = Number(document.getElementById('editChildren').value);
+            
+            const nights = (new Date(newCheckOut) - new Date(newCheckIn)) / (1000 * 60 * 60 * 24);
+
+            if (nights <= 0 || nights % 1 !== 0) {
+                msgEl.textContent = '❌ Zəhmət olmasa, düzgün Check-in/Check-out tarixlərini daxil edin. Gecə sayı sıfır və ya mənfi ola bilməz.';
+                msgEl.className = 'error';
+                msgEl.style.display = 'block';
+                return;
+            }
+
+            const newSummary = {
+                ...oldRes.summary,
+                checkIn: newCheckIn,
+                checkOut: newCheckOut,
+                nights: nights,
+                adults: newAdults,
+                children: newChildren,
+                totalTravelers: newAdults + newChildren,
+                hotelNames: document.getElementById('editHotelNames').value.trim(),
+            };
+            
+            // 2. Travelers Məlumatlarını topla
+            const newTravelers = Array.from(document.querySelectorAll('#editTravelersContainer .traveler-edit-row')).map(row => ({
+                type: row.querySelector('.traveler-type').value,
+                name: row.querySelector('.traveler-name').value,
+                surname: row.querySelector('.traveler-surname').value,
+                dob: row.querySelector('.traveler-dob').value,
+                nationality: row.querySelector('.traveler-nationality').value,
+            }));
+            
+            // 3. Flight Info Məlumatlarını topla (RAW TEXT SƏTRİ)
+            const newFlightInfo = {
+                arrival: document.getElementById('editFlightArrival').value,
+                departure: document.getElementById('editFlightDeparture').value,
+            };
+            
+            const newStatus = document.getElementById('editStatus').value;
+            
+            const finalPayload = {
+                ...oldRes, 
+                summary: newSummary,
+                travelers: newTravelers,
+                flightInfo: newFlightInfo,
+                status: newStatus,
+                // ChangeRequest yalnız 'Date Change Requested' statusunda məna daşıyır
+                changeRequest: newStatus === 'Date Change Requested' ? oldRes.changeRequest : null
+            };
+
+            // Yenilənmiş payload-ı serverə göndər
+            fetch(`/api/reservations/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(finalPayload)
+            })
+            .then(response => handleActionResponse(response, `Rezervasiya #${id}`, 'tam redaktə edildi', msgEl))
+            .then(success => {
+                if (success) {
+                    setTimeout(() => {
+                        closeModal('editReservationModal');
+                        // Yenilənmiş detalı göstər
+                        const updatedRes = dbData.reservations.find(r => String(r.id) === id);
+                        showReservationDetail(updatedRes); 
+                    }, 1500);
+                } else {
+                    msgEl.style.display = 'block';
+                }
+            });
+        }
+        
+        // --- Event Listeners and Initial Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. Sidebar Navigasiyası Event Listener-lərini bağla
+            document.querySelectorAll('.nav-item').forEach(navItem => {
+                navItem.addEventListener('click', function() {
+                    const viewId = this.getAttribute('data-view');
+                    showView(viewId);
+                });
+            });
+
+            // 2. Hotel Form Event Listener-lərini bağla
+            document.getElementById('addRoomTypeAdminBtn').addEventListener('click', addRoomTypeInput);
+            document.getElementById('addMealPlanAdminBtn').addEventListener('click', addMealPlanInput);
+            document.getElementById('cancelEditBtn').addEventListener('click', resetHotelForm);
+            document.getElementById('saveHotelBtn').addEventListener('click', saveHotel);
+            
+            // 3. Hotel Siyahısından Redaktə düyməsi üçün delegation (DÜZƏLİŞ BURADADIR)
+            document.getElementById('hotelsList').addEventListener('click', function(e) {
+                if (e.target.classList.contains('btn-edit')) {
+                    const hotelId = Number(e.target.getAttribute('data-hotel-id'));
+                    editHotel(hotelId);
+                }
+            });
+
+            // 4. Edit Reservation Form listener
+            document.getElementById('editReservationForm').addEventListener('submit', submitReservationEdit);
+
+
+            // 5. Initial Load
+            resetHotelForm(); 
+            fetchData();
+            // Səhifə yüklənəndə default olaraq "Hotellər" view-u göstər
+            showView('hotels');
+        });
+        
+    </script>
 </body>
 </html>
