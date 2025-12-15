@@ -363,7 +363,13 @@
             if(data.success) {
                 // Success: Save Auth & Redirect
                 localStorage.setItem('b2b_agent_auth', JSON.stringify(data));
-                window.location.href = 'index.html';
+                
+                // DÜZƏLİŞ: Rola uyğun yönləndirmə (Admin -> admin.html, Agent -> index.html)
+                if (data.role === 'Admin') {
+                    window.location.href = 'admin.html';
+                } else {
+                    window.location.href = 'sehife.html';
+                }
             } else {
                 // Error
                 showMsg('error', data.message || texts[curLang].msgErrLogin, 'loginMsg');
