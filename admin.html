@@ -489,13 +489,24 @@
         </div>
 
         <div id="operationsView" style="display: none;">
-            <div class="card" style="max-width: 500px;">
-                <h3>✈️ Əməliyyatlar / Xidmətlər</h3>
-                <div class="pill">Transfer, tur və s. xidmət qiymətləri</div>
+            <div class="card" style="max-width: 600px;">
+                <h3>✈️ Əməliyyatlar / Transferlər</h3>
+                <div class="pill">Transfer və Tur qiymətləri (Sedan & Minivan)</div>
+                
                 <label>Operation adı</label>
-                <input type="text" id="opName" placeholder="Məs: Airport → Hotel transfer" />
-                <label>Qiymət ($)</label>
-                <input type="number" id="opPrice" min="0" value="0" />
+                <input type="text" id="opName" placeholder="Məs: Airport Transfer" />
+                
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div>
+                        <label>Sedan Qiyməti ($)</label>
+                        <input type="number" id="opPriceSedan" min="0" value="0" />
+                    </div>
+                    <div>
+                        <label>Minivan Qiyməti ($)</label>
+                        <input type="number" id="opPriceMinivan" min="0" value="0" />
+                    </div>
+                </div>
+
                 <button class="btn" id="addOperationBtn">Operation əlavə et</button>
                 <div id="opMsg"></div>
                 <div class="list" id="operationsList"></div>
@@ -925,7 +936,7 @@
         }
 
         
-        // OPERATIONS (INLINE EDIT İLƏ)
+        // OPERATIONS (INLINE EDIT İLƏ) - YENİLƏNİB!
         function renderOperations(operations) {
             const list = document.getElementById('operationsList');
             list.innerHTML = '';
@@ -937,11 +948,14 @@
 
                 item.innerHTML = `
                     <div class="list-item-content" id="op_content_${o.id}">
-                        <strong><span id="op_name_display_${o.id}">${o.name}</span></strong> 
-                        <span class="tag change"><span id="op_price_display_${o.id}">${formatMoney(o.price)}</span></span>
+                        <div style="margin-bottom:4px;"><strong><span id="op_name_display_${o.id}">${o.name}</span></strong></div>
+                        <div style="font-size:12px;">
+                            Sedan: <span class="tag change">${formatMoney(o.priceSedan || 0)}</span> | 
+                            Minivan: <span class="tag change">${formatMoney(o.priceMinivan || 0)}</span>
+                        </div>
                     </div>
                     <div class="actions">
-                        <button class="btn-action btn-edit" onclick="startEditOperation(${o.id}, '${o.name}', ${o.price})">Redaktə</button>
+                        <button class="btn-action btn-edit" onclick="startEditOperation(${o.id}, '${o.name}', ${o.priceSedan || 0}, ${o.priceMinivan || 0})">Redaktə</button>
                         <button class="btn-action btn-delete" onclick="deleteItem('operations', ${o.id})">Sil</button>
                     </div>
                 `;
@@ -949,14 +963,16 @@
             });
         }
         
-        function startEditOperation(id, name, price) {
+        function startEditOperation(id, name, priceSedan, priceMinivan) {
             const content = document.getElementById(`op_content_${id}`);
             const actions = content.nextElementSibling;
             
             content.innerHTML = `
-                <input type="text" id="edit_op_name_${id}" value="${name}" placeholder="Ad" style="flex-grow: 1; width: 150px; margin-bottom: 0;">
-                <input type="number" id="edit_op_price_${id}" value="${price}" min="0" placeholder="Qiymət" style="width: 80px; margin-bottom: 0;">
-                <span style="font-size: 14px; margin-left: 5px;">$</span>
+                <input type="text" id="edit_op_name_${id}" value="${name}" placeholder="Ad" style="width: 100%; margin-bottom: 5px;">
+                <div style="display:flex; gap:5px;">
+                    <input type="number" id="edit_op_sedan_${id}" value="${priceSedan}" min="0" placeholder="Sedan" style="width: 80px; margin-bottom: 0;">
+                    <input type="number" id="edit_op_minivan_${id}" value="${priceMinivan}" min="0" placeholder="Minivan" style="width: 80px; margin-bottom: 0;">
+                </div>
             `;
             actions.innerHTML = `
                 <button class="btn-action btn-save-inline" onclick="saveEditOperation(${id})">Yadda Saxla</button>
@@ -966,13 +982,14 @@
 
         function saveEditOperation(id) {
             const name = document.getElementById(`edit_op_name_${id}`).value.trim();
-            const price = Number(document.getElementById(`edit_op_price_${id}`).value);
+            const priceSedan = Number(document.getElementById(`edit_op_sedan_${id}`).value);
+            const priceMinivan = Number(document.getElementById(`edit_op_minivan_${id}`).value);
             const msgEl = document.getElementById('opMsg');
             
             fetch(`/api/operations/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, price })
+                body: JSON.stringify({ name, priceSedan, priceMinivan })
             })
             .then(response => handleActionResponse(response, 'Operation', 'yeniləndi', msgEl));
         }
@@ -1054,12 +1071,25 @@
             .then(success => { if (success) document.getElementById('regionName').value = ''; });
         });
         
+        // YENİLƏNMİŞ ADD BUTTON LISTENER
         document.getElementById('addOperationBtn').addEventListener('click', () => {
             const name = document.getElementById('opName').value;
-            const price = document.getElementById('opPrice').value;
-            fetch('/api/operations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, price }) })
+            const priceSedan = document.getElementById('opPriceSedan').value;
+            const priceMinivan = document.getElementById('opPriceMinivan').value;
+
+            fetch('/api/operations', { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify({ name, priceSedan, priceMinivan }) 
+            })
             .then(response => handleActionResponse(response, 'Operation', 'əlavə edildi', document.getElementById('opMsg')))
-            .then(success => { if (success) { document.getElementById('opName').value = ''; document.getElementById('opPrice').value = '0'; } });
+            .then(success => { 
+                if (success) { 
+                    document.getElementById('opName').value = ''; 
+                    document.getElementById('opPriceSedan').value = '0';
+                    document.getElementById('opPriceMinivan').value = '0'; 
+                } 
+            });
         });
 
         function deleteItem(type, id) {
@@ -1193,7 +1223,9 @@
             })
             .then(res => handleActionResponse(res, `Rezervasiya #${id}`, 'yeniləndi', msgEl))
             .then(success => {
-                if (success) closeModal('changeDateModal');
+                if (success) {
+                    closeModal('changeDateModal');
+                }
             })
             .catch(err => console.error(err));
         }
