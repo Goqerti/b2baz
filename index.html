@@ -6,31 +6,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     /* ===============================
-        GLOBAL PREMIUM NEUMORPHISM + GLASS UI
-        =============================== */
-
+       GLOBAL & NEUMORPHISM BASE
+       =============================== */
     * { box-sizing: border-box; }
-
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: radial-gradient(circle at top left, #e5ecff 0, #f5f7fb 45%, #eef2f7 100%);
-      color: #111827;
+      color: #1F2937;
     }
-
-    .page {
-      max-width: 1500px;
-      margin: 40px auto 50px;
-      padding: 0 20px;
-    }
-
-    h1 {
-      font-size: 32px; font-weight: 800; margin-bottom: 5px; color: #020617;
-      letter-spacing: -0.03em; text-shadow: 0 2px 6px rgba(15,23,42,0.12);
-    }
+    .page { max-width: 1500px; margin: 40px auto 50px; padding: 0 20px; }
+    h1 { font-size: 32px; font-weight: 800; margin-bottom: 5px; color: #020617; letter-spacing: -0.03em; }
     .subtitle { font-size: 15px; color: #6b7280; margin-bottom: 25px; }
 
-    /* CARDS */
+    /* --- CARDS & UI COMPONENTS --- */
     .card {
       background: rgba(255,255,255,0.7); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
       border-radius: 18px; border: 1px solid rgba(255,255,255,0.7);
@@ -40,19 +29,18 @@
     .card:hover { transform: translateY(-2px); box-shadow: 10px 10px 26px rgba(15,23,42,0.16), -6px -6px 18px rgba(255,255,255,0.95); background: rgba(255,255,255,0.9); }
 
     .section-title {
-      font-size: 17px; font-weight: 800; color: #020617; margin: 22px 0 14px;
-      border-left: 4px solid #60a5fa; padding-left: 12px; display: flex; align-items: center; gap: 8px;
+      font-size: 17px; font-weight: 800; color: #1F2937; margin: 22px 0 14px;
+      border-left: 4px solid #3b82f6; padding-left: 12px; display: flex; align-items: center; gap: 8px;
     }
 
     label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #4b5563; }
     input[type="text"], input[type="number"], input[type="date"], select {
       width: 100%; padding: 11px 13px; border-radius: 14px; border: none; font-size: 14px;
       background: #e5e9f2; box-shadow: inset 3px 3px 7px rgba(15,23,42,0.12), inset -3px -3px 7px rgba(255,255,255,0.9);
-      outline: none; transition: box-shadow 0.2s ease, background 0.2s ease, transform 0.1s ease;
+      outline: none; transition: all 0.2s ease;
     }
     input:focus, select:focus {
       background: #edf1fb; box-shadow: inset 2px 2px 6px rgba(15,23,42,0.16), inset -2px -2px 6px rgba(255,255,255,1), 0 0 0 1px rgba(59,130,246,0.5);
-      transform: translateY(-1px);
     }
 
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
@@ -62,21 +50,19 @@
       font-size: 13px; color: #0c4a6e; display: inline-flex; align-items: center; gap: 6px; font-weight: 700;
     }
 
-    /* LAYOUT */
+    /* LAYOUT & FILTERS */
     .main-content-grid { display: grid; grid-template-columns: 280px minmax(0, 1fr) 340px; gap: 24px; margin-top: 24px; }
     @media (max-width: 1150px) { .main-content-grid { grid-template-columns: 1fr; } }
     .sticky-sidebar { position: sticky; top: 20px; height: fit-content; }
 
-    /* FILTERS & HOTEL BLOCKS */
     .filter-box { border-radius: 16px; border: 1px solid rgba(255,255,255,0.8); background: linear-gradient(145deg, rgba(238,242,255,0.8), rgba(255,255,255,0.95)); max-height: 220px; overflow-y: auto; padding: 10px 12px; box-shadow: inset 3px 3px 8px rgba(148,163,184,0.25), inset -3px -3px 8px rgba(255,255,255,0.9); }
     .filter-item, .hotel-item { display: flex; align-items: center; gap: 10px; padding: 7px 6px; font-size: 14px; cursor: pointer; border-radius: 10px; transition: background 0.15s ease; }
     .filter-item:hover, .hotel-item:hover { background: rgba(255,255,255,0.9); }
-    
+
     .hotel-block { border: 1px solid rgba(226,232,240,0.9); background: linear-gradient(145deg, #f3f4ff, #ffffff); border-radius: 18px; padding: 18px; margin-bottom: 20px; box-shadow: 7px 7px 16px rgba(15,23,42,0.14), -7px -7px 16px rgba(255,255,255,0.95); }
     .hotel-block-title { font-size: 18px; font-weight: 800; color: #020617; margin-bottom: 6px; }
     .hotel-totals-line { font-size: 14px; margin-top: 14px; padding-top: 12px; border-top: 1px dashed #cbd5e1; display: flex; justify-content: space-between; font-weight: 700; color: #1d4ed8; }
-    
-    /* ROOM & QTY */
+
     .room-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 10px; padding: 10px 11px; border-radius: 14px; background: #e5e9f2; box-shadow: inset 3px 3px 7px rgba(148,163,184,0.5), inset -3px -3px 7px rgba(255,255,255,0.8); }
     .qty-controls { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 999px; background: #f3f4f6; box-shadow: inset 2px 2px 5px rgba(148,163,184,0.8), inset -2px -2px 5px rgba(255,255,255,1); }
     .qty-btn { border: none; background: transparent; cursor: pointer; font-size: 16px; color: #4b5563; font-weight: bold; width: 20px; }
@@ -85,112 +71,125 @@
     .add-room-btn { margin-top: 6px; border: none; padding: 9px 14px; border-radius: 999px; background: linear-gradient(135deg, #e0f2fe, #eff6ff); font-size: 13px; cursor: pointer; color: #1d4ed8; font-weight: 700; box-shadow: 3px 3px 9px rgba(148,163,184,0.7), -3px -3px 9px rgba(255,255,255,1); }
     .room-remove { margin-left: auto; color: #f97373; font-size: 18px; background: none; border: none; cursor: pointer; }
 
-    /* --- NEW OPERATIONS UI STYLES --- */
+    /* OPERATIONS UI */
     .op-master-controls { display: flex; gap: 10px; margin-bottom: 15px; }
-    .op-master-btn {
-        flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-        padding: 10px; background: #e2e8f0; border-radius: 12px; color: #64748b;
-        transition: all 0.2s; border: 2px solid transparent; cursor: default;
-    }
-    .op-master-btn.active-type {
-        background: #eff6ff; border-color: #3b82f6; color: #1e3a8a;
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
-    }
+    .op-master-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; background: #e2e8f0; border-radius: 12px; color: #64748b; transition: all 0.2s; border: 2px solid transparent; cursor: default; }
+    .op-master-btn.active-type { background: #eff6ff; border-color: #3b82f6; color: #1e3a8a; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
     .op-master-label { font-size: 12px; font-weight: 700; margin-bottom: 5px; text-transform: uppercase; }
     .op-master-actions { display: flex; align-items: center; gap: 8px; }
-    .op-master-action-btn {
-        width: 28px; height: 28px; border-radius: 50%; border: none;
-        background: #3b82f6; color: white; font-weight: bold; cursor: pointer;
-        display: flex; align-items: center; justify-content: center;
-        box-shadow: 0 2px 5px rgba(59,130,246,0.4);
-    }
+    .op-master-action-btn { width: 28px; height: 28px; border-radius: 50%; border: none; background: #3b82f6; color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(59,130,246,0.4); }
     .op-master-action-btn:hover { background: #2563eb; transform: scale(1.1); }
-    .op-master-action-btn:disabled { background: #94a3b8; cursor: not-allowed; box-shadow: none; transform: none; }
-    
-    .op-list-container {
-        display: flex; flex-direction: column; gap: 8px; 
-        max-height: 300px; overflow-y: auto;
-    }
-    .op-select-row {
-        padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0;
-        border-radius: 10px; cursor: pointer; transition: all 0.2s;
-        display: flex; justify-content: space-between; align-items: center;
-    }
+    .op-list-container { display: flex; flex-direction: column; gap: 8px; max-height: 300px; overflow-y: auto; }
+    .op-select-row { padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; cursor: pointer; transition: all 0.2s; display: flex; justify-content: space-between; align-items: center; }
     .op-select-row:hover { background: #f1f5f9; }
-    .op-select-row.selected {
-        background: #eff6ff; border-color: #3b82f6;
-        box-shadow: inset 4px 0 0 #3b82f6;
-    }
-    .op-checkbox {
-        width: 18px; height: 18px; border-radius: 4px; border: 2px solid #cbd5e1;
-        display: flex; align-items: center; justify-content: center; margin-right: 10px;
-        transition: all 0.2s;
-    }
-    .op-select-row.selected .op-checkbox {
-        background: #3b82f6; border-color: #3b82f6;
-    }
-    .op-checkbox::after {
-        content: '✓'; color: white; font-size: 12px; display: none;
-    }
+    .op-select-row.selected { background: #eff6ff; border-color: #3b82f6; box-shadow: inset 4px 0 0 #3b82f6; }
+    .op-checkbox { width: 18px; height: 18px; border-radius: 4px; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; margin-right: 10px; }
+    .op-select-row.selected .op-checkbox { background: #3b82f6; border-color: #3b82f6; }
+    .op-checkbox::after { content: '✓'; color: white; font-size: 12px; display: none; }
     .op-select-row.selected .op-checkbox::after { display: block; }
-
     .op-select-row-name { font-weight: 600; font-size: 14px; color: #334155; display:flex; align-items:center;}
     .op-select-row-prices { font-size: 11px; color: #64748b; text-align: right; }
-    
-    /* TOTALS & MODAL */
-    .totals-card { background: radial-gradient(circle at top, rgba(15,23,42,0.98), rgba(15,23,42,0.92)); color: #f9fafb; padding: 24px; border-radius: 20px; box-shadow: 10px 10px 26px rgba(15,23,42,0.7), -6px -6px 18px rgba(148,163,184,0.25); }
+
+    /* TOTALS CARD */
+    .totals-card { background: radial-gradient(circle at top, rgba(31,41,55,0.98), rgba(31,41,55,0.92)); color: #f9fafb; padding: 24px; border-radius: 20px; box-shadow: 10px 10px 26px rgba(15,23,42,0.7), -6px -6px 18px rgba(148,163,184,0.25); }
     .totals-row { display: flex; justify-content: space-between; margin-bottom: 9px; font-size: 14px; }
-    .grand { font-size: 24px; font-weight: 800; margin-top: 18px; padding-top: 14px; border-top: 1px solid rgba(148,163,184,0.4); color: #34d399; }
-    
-    #reserveBtn { padding: 14px 16px; background: linear-gradient(135deg, #22c55e, #16a34a); font-size: 16px; font-weight: 800; border-radius: 14px; cursor: pointer; width: 100%; margin-top: 18px; border: none; color: white; box-shadow: 0 8px 18px rgba(22,163,74,0.6); }
+    .grand { font-size: 24px; font-weight: 800; margin-top: 18px; padding-top: 14px; border-top: 1px solid rgba(148,163,184,0.4); color: #10B981; }
+
+    #reserveBtn { padding: 14px 16px; background: linear-gradient(135deg, #10B981, #059669); font-size: 16px; font-weight: 800; border-radius: 14px; cursor: pointer; width: 100%; margin-top: 18px; border: none; color: white; box-shadow: 0 8px 18px rgba(16,185,129,0.4); }
     #reserveBtn:disabled { background: linear-gradient(135deg, #9ca3af, #6b7280); box-shadow: none; cursor: not-allowed; }
-    
-    #reservationModal > div { max-width: 900px; background: rgba(255,255,255,0.92) !important; backdrop-filter: blur(22px); border-radius: 22px; box-shadow: 14px 14px 32px rgba(15,23,42,0.4); border: 1px solid rgba(199,210,254,0.9); }
-    .summary-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; }
 
     .tabs { display: flex; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb; gap: 4px; }
     .tab-btn { padding: 9px 16px; font-size: 14px; font-weight: 700; cursor: pointer; background: transparent; border: none; border-bottom: 2px solid transparent; color: #6b7280; margin-bottom: -2px; }
     .tab-btn.active { color: #1d4ed8; border-bottom-color: #1d4ed8; background: rgba(255,255,255,0.9); }
-    
-    /* UPDATED GRID FOR ACTIONS */
+
+    /* AGENT RES LIST */
     .agent-res-row, .agent-res-header { display: grid; grid-template-columns: 0.1fr 0.25fr 0.25fr 0.2fr 0.1fr 0.15fr 0.1fr; padding: 11px 10px; border-bottom: 1px solid #f3f4f6; font-size: 13px; cursor: pointer; align-items: center; gap: 5px; }
     .agent-res-row:hover { background: rgba(255,255,255,0.9); }
-    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-thumb { background: #cbd5f5; border-radius: 999px; }
-
-    /* EDIT BUTTONS */
     .action-btn { border: none; padding: 5px 8px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; margin-right: 4px; transition: transform 0.1s; }
     .action-btn:hover { transform: scale(1.05); }
     .edit-btn { background: #eff6ff; color: #1d4ed8; }
     .cancel-btn { background: #fef2f2; color: #b91c1c; }
+
+    /* MODAL & PREMIUM FORMS */
+    #reservationModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(31, 41, 55, 0.5); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: flex-start; z-index: 100; padding-top: 40px; padding-bottom: 40px; overflow-y: auto; }
+    .modal-content { background: #F9FAFB; width: 100%; max-width: 800px; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); border: 1px solid #E5E7EB; overflow: hidden; position: relative; margin-bottom: 40px; }
+    .modal-header { background: white; padding: 20px 30px; border-bottom: 1px solid #E5E7EB; display: flex; justify-content: space-between; align-items: center; }
+    .modal-title { font-size: 20px; font-weight: 800; color: #1F2937; margin: 0; }
+    .close-modal { background: none; border: none; font-size: 28px; color: #9CA3AF; cursor: pointer; line-height: 1; }
+    .close-modal:hover { color: #1F2937; }
+    .modal-body { padding: 30px; }
+    .summary-box { background: white; border-radius: 16px; padding: 20px; border: 1px solid #E5E7EB; margin-bottom: 25px; display: flex; flex-direction: row; gap: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+    .summary-left { flex: 1; }
+    .summary-right { min-width: 150px; text-align: right; display: flex; flex-direction: column; justify-content: center; border-left: 1px dashed #E5E7EB; padding-left: 20px; }
+    .sum-row { margin-bottom: 6px; font-size: 14px; color: #4B5563; display: flex; align-items: center; gap: 8px; }
+    .sum-icon { color: #6B7280; font-size: 16px; width: 20px; text-align: center; }
+    .sum-total-label { font-size: 12px; color: #6B7280; font-weight: 600; text-transform: uppercase; margin-bottom: 5px; }
+    .sum-total-price { font-size: 28px; font-weight: 800; color: #10B981; letter-spacing: -0.5px; }
+    .traveler-card { background: white; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #F3F4F6; padding: 20px; margin-bottom: 20px; transition: transform 0.2s; }
+    .traveler-card:hover { border-color: #E5E7EB; transform: translateY(-2px); }
+    .t-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #F3F4F6; padding-bottom: 10px; }
+    .t-icon { font-size: 18px; background: #eff6ff; color: #3b82f6; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+    .t-title { font-weight: 700; font-size: 15px; color: #1F2937; }
+    .form-group { margin-bottom: 5px; }
+    .modern-label { display: block; font-size: 12px; font-weight: 700; color: #374151; margin-bottom: 5px; margin-left: 2px; }
+    .modern-input { width: 100%; height: 48px; border-radius: 12px; border: 1px solid #E5E7EB; background: #F9FAFB; padding: 0 16px; font-size: 14px; color: #111827; outline: none; transition: all 0.2s; box-shadow: none; }
+    .modern-input:focus { background: white; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+    .modern-input::placeholder { color: #9CA3AF; }
+    details.flight-accordion { background: white; border-radius: 14px; border: 1px solid #E5E7EB; overflow: hidden; margin-top: 25px; }
+    details.flight-accordion summary { padding: 16px 20px; font-weight: 700; font-size: 15px; color: #1F2937; cursor: pointer; background: #F9FAFB; list-style: none; display: flex; align-items: center; gap: 10px; transition: background 0.2s; }
+    details.flight-accordion summary:hover { background: #f3f4f6; }
+    details.flight-accordion summary::-webkit-details-marker { display: none; }
+    details.flight-accordion[open] summary { border-bottom: 1px solid #E5E7EB; background: white; color: #3b82f6; }
+    .accordion-content { padding: 20px; background: white; }
+    .confirm-btn { width: 100%; height: 52px; margin-top: 30px; background: linear-gradient(135deg, #10B981, #059669); color: white; font-size: 16px; font-weight: 700; border: none; border-radius: 14px; cursor: pointer; box-shadow: 0 4px 15px rgba(16,185,129,0.3); transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .confirm-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(16,185,129,0.4); }
+    .microcopy { text-align: center; font-size: 12px; color: #9CA3AF; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 5px; }
+
+    /* LANGUAGE SWITCHER */
+    .lang-switcher select {
+        padding: 5px 10px; border-radius: 8px; border: 1px solid #cbd5e1;
+        background: white; font-weight: bold; font-size: 13px; color: #374151;
+        cursor: pointer; box-shadow: none; width: auto;
+    }
   </style>
 </head>
 <body>
   
   <div class="page">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <h1 style="margin: 0;">B2B Booking Console</h1>
+        <h1 style="margin: 0;" data-i18n="appTitle">B2B Booking Console</h1>
         <div id="agentInfo" style="display: flex; align-items: center; gap: 15px; font-size: 15px; font-weight: 600;">
+            <div class="lang-switcher">
+                <select id="languageSelect" onchange="changeLanguage(this.value)">
+                    <option value="en">🇺🇸 EN</option>
+                    <option value="ru">🇷🇺 RU</option>
+                </select>
+            </div>
             <span id="agentNameDisplay" style="color: #1d4ed8;"></span>
-            <button onclick="logout()" style="padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer;">Çıxış</button>
+            <button onclick="logout()" style="padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer;" data-i18n="logout">Logout</button>
         </div>
     </div>
-    <div class="subtitle">Çoxsaylı otel konfiqurasiyası, dəqiq qiymətləndirmə və dərhal rezervasiya imkanı.</div>
+    <div class="subtitle" data-i18n="appSubtitle">Advanced multi-hotel configuration, real-time pricing, and instant booking capabilities.</div>
 
     <div class="tabs">
-        <button class="tab-btn active" data-view="booking" onclick="showAgentView('booking')">📝 Yeni Rezervasiya</button>
-        <button class="tab-btn" data-view="reservations" onclick="showAgentView('reservations')">🗓️ Rezervasiyalarım</button>
+        <button class="tab-btn active" data-view="booking" onclick="showAgentView('booking')" data-i18n="tabNewBooking">📝 New Reservation</button>
+        <button class="tab-btn" data-view="reservations" onclick="showAgentView('reservations')" data-i18n="tabMyRes">🗓️ My Reservations</button>
     </div>
     
     <div id="bookingView">
         <div class="card">
-            <div class="section-title" style="margin-top: 0;">🗓️ Səyahət Tarixi & Qonaqlar</div>
+            <div class="section-title" style="margin-top: 0;" data-i18n="secTravelDate">🗓️ Travel Date & Guests</div>
             <div class="row" style="flex-wrap: wrap; align-items: flex-end;">
-                <div style="flex:1; min-width: 150px;"><label>Check-in</label><input type="date" id="checkIn" /></div>
-                <div style="flex:1; min-width: 150px;"><label>Check-out</label><input type="date" id="checkOut" /></div>
-                <div style="flex:1; min-width: 100px;"><label>Adults</label><input type="number" id="adults" min="1" value="2" /></div>
-                <div style="flex:1; min-width: 100px;"><label>Children</label><input type="number" id="children" min="0" value="0" /></div>
+                <div style="flex:1; min-width: 150px;"><label data-i18n="lblCheckIn">Check-in</label><input type="date" id="checkIn" /></div>
+                <div style="flex:1; min-width: 150px;"><label data-i18n="lblCheckOut">Check-out</label><input type="date" id="checkOut" /></div>
+                <div style="flex:1; min-width: 100px;"><label data-i18n="lblAdults">Adults</label><input type="number" id="adults" min="1" value="2" /></div>
+                <div style="flex:1; min-width: 100px;"><label data-i18n="lblChildren">Children</label><input type="number" id="children" min="0" value="0" /></div>
+                
+                <div style="flex:1; min-width: 120px;"><label data-i18n="lblResNum">Res. Number</label><input type="text" id="agentResNumber" data-i18n-ph="phOptional" placeholder="Optional" /></div>
+                <div style="flex:1; min-width: 120px;"><label data-i18n="lblFlightNo">Flight No</label><input type="text" id="agentFlightNumber" placeholder="J2-001" /></div>
+                
                 <div style="min-width: 150px; margin-left: auto; display: flex; justify-content: flex-end;">
-                    <div class="pill">Ümumi Gecə Müddəti: <span id="nights">0</span></div>
+                    <div class="pill"><span data-i18n="lblTotalNights">Total Nights:</span>&nbsp;<span id="nights">0</span></div>
                 </div>
             </div>
         </div>
@@ -198,49 +197,49 @@
         <div class="main-content-grid">
             <div class="sticky-sidebar">
                 <div class="card" style="margin-bottom: 25px;">
-                    <div class="section-title" style="margin-top: 0; margin-bottom: 15px; border-left-color: #9333ea;">🔍 Hotelləri Filtirlə</div>
-                    <div class="filter-header">Regionlar</div>
+                    <div class="section-title" style="margin-top: 0; margin-bottom: 15px; border-left-color: #9333ea;" data-i18n="secFilter">🔍 Filter Hotels</div>
+                    <div class="filter-header" data-i18n="lblRegions">Regions</div>
                     <div class="filter-box" id="regionsBox" style="margin-bottom: 20px;"></div>
-                    <div class="filter-header">Ulduz Sayı</div>
+                    <div class="filter-header" data-i18n="lblStars">Stars</div>
                     <div class="filter-box" id="starsBox"></div>
                 </div>
             </div>
 
             <div>
                 <div class="card">
-                    <div class="section-title" style="margin-top: 0; border-left-color: #f59e0b;">🏨 Filterlənmiş Hotellərin Seçimi</div>
+                    <div class="section-title" style="margin-top: 0; border-left-color: #f59e0b;" data-i18n="secFilteredHotels">🏨 Filtered Hotel Selection</div>
                     <div class="filter-box" id="hotelsBox" style="max-height: 250px; border: none; background: transparent; padding: 0;"></div>
                 </div>
                 
                 <div id="constraintWarning" class="constraint-warning" style="display:none; background: #fef2f2; color: #b91c1c; padding: 10px; border-radius: 12px; margin-top: 10px;"></div>
 
-                <div class="section-title" style="margin-top: 25px;">⚙️ Seçilmiş Hotellərin Konfiqurasiyası</div>
+                <div class="section-title" style="margin-top: 25px;" data-i18n="secConfig">⚙️ Selected Hotels Configuration</div>
                 <div id="hotelsCalcs">
-                    <p style="color: #6b7280; font-style: italic; font-size: 15px; padding-left: 15px;">Zəhmət olmasa, yuxarıdakı siyahıdan otel seçin.</p>
+                    <p style="color: #6b7280; font-style: italic; font-size: 15px; padding-left: 15px;" data-i18n="msgSelectHotel">Please select a hotel from the list above.</p>
                 </div>
             </div>
             
             <div class="sticky-sidebar">
                 <div class="totals-card">
-                    <div class="totals-row"><span>Selected Hotels:</span><span id="selectedHotelsCount" style="font-weight: 700;">0</span></div>
-                    <div class="totals-row"><span>Rooms</span><span id="roomsSubtotal">0 $</span></div>
-                    <div class="totals-row"><span>Extra beds</span><span id="extraBedsTotal">0 $</span></div>
-                    <div class="totals-row"><span>Meals</span><span id="mealsTotal">0 $</span></div>
+                    <div class="totals-row"><span data-i18n="sumSelected">Selected Hotels:</span><span id="selectedHotelsCount" style="font-weight: 700;">0</span></div>
+                    <div class="totals-row"><span data-i18n="sumRooms">Rooms</span><span id="roomsSubtotal">0 $</span></div>
+                    <div class="totals-row"><span data-i18n="sumExtra">Extra beds</span><span id="extraBedsTotal">0 $</span></div>
+                    <div class="totals-row"><span data-i18n="sumMeals">Meals</span><span id="mealsTotal">0 $</span></div>
                     <hr style="border-top: 1px solid rgba(148,163,184,0.4); margin: 10px 0;">
-                    <div class="totals-row"><strong>Hotels Total</strong><strong id="hotelSubtotal">0 $</strong></div>
+                    <div class="totals-row"><strong data-i18n="sumHotelsTotal">Hotels Total</strong><strong id="hotelSubtotal">0 $</strong></div>
                     <div class="totals-row" style="margin-bottom: 20px;">
-                        <span>Operations (Transfer)</span><span id="operationsTotal">0 $</span>
+                        <span data-i18n="sumOps">Operations (Transfer)</span><span id="operationsTotal">0 $</span>
                     </div>
-                    <div class="grand">Total: <span id="grandTotal">0 $</span></div>
-                    <button id="reserveBtn" disabled onclick="openReservationModal()">Rezervasiyanı Göndər</button>
+                    <div class="grand"><span data-i18n="sumTotal">Total:</span> <span id="grandTotal">0 $</span></div>
+                    <button id="reserveBtn" disabled onclick="openReservationModal()" data-i18n="btnSendRes">Send Reservation</button>
                 </div>
                 
                 <div class="card" style="margin-top: 25px; padding: 18px;">
-                    <div class="section-title" style="margin-top: 0; margin-bottom: 12px; border-left-color: #f59e0b;">✈️ Operations / Transfer</div>
+                    <div class="section-title" style="margin-top: 0; margin-bottom: 12px; border-left-color: #f59e0b;" data-i18n="secOps">✈️ Operations / Transfer</div>
                     
                     <div class="op-master-controls">
                         <div class="op-master-btn" id="masterSedanBtn">
-                            <div class="op-master-label">Sedan</div>
+                            <div class="op-master-label" data-i18n="lblSedan">Sedan</div>
                             <div class="op-master-actions">
                                 <button class="op-master-action-btn" onclick="adjustMasterQty('sedan', -1)">-</button>
                                 <span id="masterSedanVal" style="font-weight:700; min-width:15px; text-align:center;">0</span>
@@ -248,7 +247,7 @@
                             </div>
                         </div>
                         <div class="op-master-btn" id="masterMinivanBtn">
-                            <div class="op-master-label">Minivan</div>
+                            <div class="op-master-label" data-i18n="lblMinivan">Minivan</div>
                             <div class="op-master-actions">
                                 <button class="op-master-action-btn" onclick="adjustMasterQty('minivan', -1)">-</button>
                                 <span id="masterMinivanVal" style="font-weight:700; min-width:15px; text-align:center;">0</span>
@@ -257,7 +256,7 @@
                         </div>
                     </div>
                     
-                    <p style="font-size:12px; color:#6b7280; margin-bottom:8px;">Aşağıdan istədiyiniz transferləri seçin (Çoxlu seçim mümkündür), sonra sayını yuxarıdan tənzimləyin:</p>
+                    <p style="font-size:12px; color:#6b7280; margin-bottom:8px;" data-i18n="msgOpsInst">Select transfers below (Multiple allowed), then adjust quantity above:</p>
                     
                     <div class="op-list-container" id="operationsList"></div>
                     <div id="hiddenOperationsData" style="display:none;"></div>
@@ -268,67 +267,268 @@
     
     <div id="reservationsView" style="display: none;">
         <div class="card" style="padding: 0;">
-            <div class="agent-res-header"><div># ID</div><div>Tarix</div><div>Hotellər</div><div>Status</div><div style="text-align: right;">Qiymət</div><div>Redaktə</div><div>Ləğv</div></div>
+            <div class="agent-res-header">
+                <div># ID</div>
+                <div data-i18n="colDate">Date</div>
+                <div data-i18n="colHotels">Hotels</div>
+                <div data-i18n="colStatus">Status</div>
+                <div style="text-align: right;" data-i18n="colPrice">Price</div>
+                <div data-i18n="colEdit">Edit</div>
+                <div data-i18n="colCancel">Cancel</div>
+            </div>
             <div id="agentReservationsList"></div>
         </div>
-        <div id="agentReservationDetail" class="res-detail-item" style="display: none; margin-top: 25px;"></div>
     </div>
 
-  <div id="reservationModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.6); display: none; justify-content: center; align-items: center; z-index: 100;">
-    <div style="padding: 24px; max-width: 900px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative;">
-      <h2 style="margin: 0 0 16px; font-size: 22px;">Rezervasiyanın Təsdiqlənməsi</h2>
-      <button onclick="closeReservationModal()" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer;">×</button>
-      <div id="reservationSummary" style="margin-bottom: 20px;"></div>
-      <form id="reservationForm">
-        <div id="travelersForm"></div>
-        <hr style="margin: 20px 0; border: none; border-top: 1px solid #e5e7eb;">
-        <div class="section-title" style="border-left-color: #f59e0b;">✈️ Uçuş Məlumatları</div>
-        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 15px;">
-           <div style="grid-column: span 2;"><label>Reys Nömrəsi (Flight No)</label><input type="text" name="flightNumber" placeholder="Məs: J2-001" /></div>
-          <div><label>Gəliş Tarixi</label><input type="date" name="flightArrivalDate" /></div>
-          <div><label>Gəliş Vaxtı</label><input type="text" name="flightArrivalTime" placeholder="12:00" /></div>
-          <div><label>Gediş Tarixi</label><input type="date" name="flightDepartureDate" /></div>
-          <div><label>Gediş Vaxtı</label><input type="text" name="flightDepartureTime" placeholder="14:00" /></div>
-        </div>
-        <button type="submit" id="confirmReserveBtn" style="border: none; padding: 12px 16px; color: white; font-size: 16px; font-weight: 700; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 25px;">Rezervasiyanı Təsdiqlə</button>
-      </form>
+  <div id="reservationModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" data-i18n="modalTitle">Reservation Confirmation</h2>
+        <button onclick="closeReservationModal()" class="close-modal">×</button>
+      </div>
+      <div class="modal-body">
+        
+        <div id="reservationSummary"></div> 
+
+        <form id="reservationForm">
+          <div id="travelersForm"></div>
+          
+          <details class="flight-accordion">
+              <summary><span data-i18n="secFlightInfo">✈️ Flight Information (Optional)</span></summary>
+              <div class="accordion-content">
+                  <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+                      <div class="form-group"><label class="modern-label" data-i18n="lblArrDate">Arrival Date</label><input type="date" class="modern-input" name="flightArrivalDate" /></div>
+                      <div class="form-group"><label class="modern-label" data-i18n="lblArrTime">Arrival Time</label><select class="modern-input" name="flightArrivalTime" id="arrTimeSelect"></select></div>
+                      <div class="form-group"><label class="modern-label" data-i18n="lblDepDate">Departure Date</label><input type="date" class="modern-input" name="flightDepartureDate" /></div>
+                      <div class="form-group"><label class="modern-label" data-i18n="lblDepTime">Departure Time</label><select class="modern-input" name="flightDepartureTime" id="depTimeSelect"></select></div>
+                  </div>
+              </div>
+          </details>
+
+          <button type="submit" id="confirmReserveBtn" class="confirm-btn" data-i18n="btnConfirmRes">Confirm Reservation</button>
+          <div class="microcopy" data-i18n="msgSecure">🔒 All data is stored securely</div>
+        </form>
+      </div>
     </div>
   </div>
 
   <div id="editDetailsModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.6); display: none; justify-content: center; align-items: center; z-index: 102;">
       <div style="background: white; padding: 25px; border-radius: 16px; max-width: 700px; width: 90%; max-height: 90vh; overflow-y: auto;">
-          <h3 style="margin-top: 0; margin-bottom: 5px;">Tam Redaktə: Detallar</h3>
-          <p style="font-size: 13px; color: #666; margin-bottom: 20px;">Qonaqların məlumatlarını və uçuş detallarını yeniləyin.</p>
-          
+          <h3 style="margin-top: 0; margin-bottom: 5px;" data-i18n="modalEditTitle">Full Edit: Details</h3>
+          <p style="font-size: 13px; color: #666; margin-bottom: 20px;" data-i18n="msgEditDesc">Update guest information and flight details.</p>
           <input type="hidden" id="editDetailResId">
-          
           <div style="background: #f8fafc; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
-             <h4 style="margin:0 0 10px 0; font-size:14px;">Tarix Dəyişimi</h4>
+             <h4 style="margin:0 0 10px 0; font-size:14px;" data-i18n="secDateChange">Date Change</h4>
              <div class="grid" style="grid-template-columns: 1fr 1fr;">
-                <div><label>Check-in</label><input type="date" id="editDetailCheckIn"></div>
-                <div><label>Check-out</label><input type="date" id="editDetailCheckOut"></div>
+                <div><label data-i18n="lblCheckIn">Check-in</label><input type="date" id="editDetailCheckIn"></div>
+                <div><label data-i18n="lblCheckOut">Check-out</label><input type="date" id="editDetailCheckOut"></div>
              </div>
           </div>
-
           <div id="editTravelersContainer"></div>
-
-          <div class="section-title" style="font-size: 15px; margin-top: 20px;">✈️ Uçuş Məlumatları</div>
+          <div class="section-title" style="font-size: 15px; margin-top: 20px;" data-i18n="secFlightInfo">✈️ Flight Information</div>
           <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 10px;">
-             <div style="grid-column: span 2;"><label>Reys Nömrəsi</label><input type="text" id="editDetailFlightNo"></div>
-             <div><label>Gəliş Tarixi</label><input type="date" id="editDetailArrDate"></div>
-             <div><label>Gəliş Vaxtı</label><input type="text" id="editDetailArrTime"></div>
-             <div><label>Gediş Tarixi</label><input type="date" id="editDetailDepDate"></div>
-             <div><label>Gediş Vaxtı</label><input type="text" id="editDetailDepTime"></div>
+             <div style="grid-column: span 2;"><label data-i18n="lblFlightNo">Flight Number</label><input type="text" id="editDetailFlightNo"></div>
+             <div><label data-i18n="lblArrDate">Arrival Date</label><input type="date" id="editDetailArrDate"></div>
+             <div><label data-i18n="lblArrTime">Arrival Time</label><input type="text" id="editDetailArrTime"></div>
+             <div><label data-i18n="lblDepDate">Departure Date</label><input type="date" id="editDetailDepDate"></div>
+             <div><label data-i18n="lblDepTime">Departure Time</label><input type="text" id="editDetailDepTime"></div>
           </div>
-
           <div style="margin-top: 25px; display: flex; gap: 10px;">
-              <button onclick="closeEditDetailsModal()" style="flex: 1; padding: 12px; border: 1px solid #cbd5e1; background: white; border-radius: 8px; cursor: pointer;">Ləğv et</button>
-              <button onclick="submitEditDetails()" style="flex: 1; padding: 12px; border: none; background: #3b82f6; color: white; border-radius: 8px; font-weight: bold; cursor: pointer;">Yadda Saxla</button>
+              <button onclick="closeEditDetailsModal()" style="flex: 1; padding: 12px; border: 1px solid #cbd5e1; background: white; border-radius: 8px; cursor: pointer;" data-i18n="btnCancel">Cancel</button>
+              <button onclick="submitEditDetails()" style="flex: 1; padding: 12px; border: none; background: #3b82f6; color: white; border-radius: 8px; font-weight: bold; cursor: pointer;" data-i18n="btnSave">Save</button>
           </div>
       </div>
   </div>
 
   <script>
+    // --- TRANSLATION DICTIONARY ---
+    const translations = {
+        en: {
+            appTitle: "B2B Booking Console",
+            appSubtitle: "Advanced multi-hotel configuration, real-time pricing, and instant booking capabilities.",
+            logout: "Logout",
+            tabNewBooking: "📝 New Reservation",
+            tabMyRes: "🗓️ My Reservations",
+            secTravelDate: "🗓️ Travel Date & Guests",
+            lblCheckIn: "Check-in",
+            lblCheckOut: "Check-out",
+            lblAdults: "Adults",
+            lblChildren: "Children",
+            lblResNum: "Res. Number",
+            lblFlightNo: "Flight No",
+            lblTotalNights: "Total Nights:",
+            phOptional: "Optional",
+            secFilter: "🔍 Filter Hotels",
+            lblRegions: "Regions",
+            lblStars: "Stars",
+            secFilteredHotels: "🏨 Filtered Hotel Selection",
+            secConfig: "⚙️ Selected Hotels Configuration",
+            msgSelectHotel: "Please select a hotel from the list above.",
+            sumSelected: "Selected Hotels:",
+            sumRooms: "Rooms",
+            sumExtra: "Extra beds",
+            sumMeals: "Meals",
+            sumHotelsTotal: "Hotels Total",
+            sumOps: "Operations (Transfer)",
+            sumTotal: "Total:",
+            btnSendRes: "Send Reservation",
+            secOps: "✈️ Operations / Transfer",
+            lblSedan: "Sedan",
+            lblMinivan: "Minivan",
+            msgOpsInst: "Select transfers below (Multiple allowed), then adjust quantity above:",
+            colDate: "Date",
+            colHotels: "Hotels",
+            colStatus: "Status",
+            colPrice: "Price",
+            colEdit: "Edit",
+            colCancel: "Cancel",
+            modalTitle: "Reservation Confirmation",
+            secFlightInfo: "✈️ Flight Information (Optional)",
+            lblArrDate: "Arrival Date",
+            lblArrTime: "Arrival Time",
+            lblDepDate: "Departure Date",
+            lblDepTime: "Departure Time",
+            btnConfirmRes: "Confirm Reservation",
+            msgSecure: "🔒 All data is stored securely",
+            modalEditTitle: "Full Edit: Details",
+            msgEditDesc: "Update guest information and flight details.",
+            secDateChange: "Date Change",
+            btnCancel: "Cancel",
+            btnSave: "Save",
+            // JS Dynamic Strings
+            opNone: "No operations available.",
+            selRoom: "Select Room...",
+            nightMismatch: "⚠️ Night mismatch: Trip is {n} nights, but {b} nights booked.",
+            resSuccess: "Reservation successful! ID: ",
+            loading: "Loading...",
+            noResFound: "No reservations found.",
+            statusPending: "Pending",
+            statusConfirmed: "Confirmed",
+            statusCancelled: "Cancelled",
+            statusEdit: "Edited",
+            statusCancelReq: "Cancel Requested",
+            alertCancel: "Are you sure you want to cancel this reservation?",
+            alertSent: "Cancel request sent!",
+            alertSaved: "Changes saved!",
+            lblTotalAmount: "Total Amount",
+            lblName: "Name",
+            lblSurname: "Surname",
+            lblDob: "Date of Birth",
+            lblNat: "Nationality",
+            phName: "Enter Name",
+            phSurname: "Enter Surname",
+            phNat: "e.g. USA",
+            lblAdult: "Adult",
+            lblChild: "Child"
+        },
+        ru: {
+            appTitle: "B2B Консоль Бронирования",
+            appSubtitle: "Расширенная конфигурация отелей, цены в реальном времени и мгновенное бронирование.",
+            logout: "Выйти",
+            tabNewBooking: "📝 Новое Бронирование",
+            tabMyRes: "🗓️ Мои Бронирования",
+            secTravelDate: "🗓️ Даты и Гости",
+            lblCheckIn: "Заезд",
+            lblCheckOut: "Выезд",
+            lblAdults: "Взрослые",
+            lblChildren: "Дети",
+            lblResNum: "Номер Резерва",
+            lblFlightNo: "Номер Рейса",
+            lblTotalNights: "Всего Ночей:",
+            phOptional: "Необязательно",
+            secFilter: "🔍 Фильтр Отелей",
+            lblRegions: "Регионы",
+            lblStars: "Звезды",
+            secFilteredHotels: "🏨 Выбор Отелей",
+            secConfig: "⚙️ Конфигурация Выбранных Отелей",
+            msgSelectHotel: "Пожалуйста, выберите отель из списка выше.",
+            sumSelected: "Выбрано отелей:",
+            sumRooms: "Номера",
+            sumExtra: "Доп. кровати",
+            sumMeals: "Питание",
+            sumHotelsTotal: "Итого Отели",
+            sumOps: "Операции (Трансфер)",
+            sumTotal: "Итого:",
+            btnSendRes: "Отправить Бронирование",
+            secOps: "✈️ Операции / Трансфер",
+            lblSedan: "Седан",
+            lblMinivan: "Минивэн",
+            msgOpsInst: "Выберите трансферы ниже (можно несколько), затем настройте количество выше:",
+            colDate: "Дата",
+            colHotels: "Отели",
+            colStatus: "Статус",
+            colPrice: "Цена",
+            colEdit: "Ред.",
+            colCancel: "Отмена",
+            modalTitle: "Подтверждение Бронирования",
+            secFlightInfo: "✈️ Информация о рейсе (Опционально)",
+            lblArrDate: "Дата Прибытия",
+            lblArrTime: "Время Прибытия",
+            lblDepDate: "Дата Вылета",
+            lblDepTime: "Время Вылета",
+            btnConfirmRes: "Подтвердить Бронирование",
+            msgSecure: "🔒 Все данные надежно защищены",
+            modalEditTitle: "Полное Редактирование",
+            msgEditDesc: "Обновите информацию о гостях и деталях рейса.",
+            secDateChange: "Изменение Дат",
+            btnCancel: "Отмена",
+            btnSave: "Сохранить",
+            // JS Dynamic Strings
+            opNone: "Операции недоступны.",
+            selRoom: "Выберите Номер...",
+            nightMismatch: "⚠️ Несоответствие ночей: Поездка {n} ночей, забронировано {b}.",
+            resSuccess: "Бронирование успешно! ID: ",
+            loading: "Загрузка...",
+            noResFound: "Бронирования не найдены.",
+            statusPending: "Ожидание",
+            statusConfirmed: "Подтверждено",
+            statusCancelled: "Отменено",
+            statusEdit: "Отредактировано",
+            statusCancelReq: "Запрос Отмены",
+            alertCancel: "Вы уверены, что хотите отменить это бронирование?",
+            alertSent: "Запрос на отмену отправлен!",
+            alertSaved: "Изменения сохранены!",
+            lblTotalAmount: "Общая Сумма",
+            lblName: "Имя",
+            lblSurname: "Фамилия",
+            lblDob: "Дата Рождения",
+            lblNat: "Гражданство",
+            phName: "Введите Имя",
+            phSurname: "Введите Фамилию",
+            phNat: "напр. Россия",
+            lblAdult: "Взрослый",
+            lblChild: "Ребенок"
+        }
+    };
+
+    let currentLang = localStorage.getItem('b2b_lang') || 'en';
+    
+    function t(key) { return translations[currentLang][key] || key; }
+
+    function changeLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('b2b_lang', lang);
+        updateTexts();
+    }
+
+    function updateTexts() {
+        // Update Static HTML
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            el.textContent = t(el.getAttribute('data-i18n'));
+        });
+        document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+            el.placeholder = t(el.getAttribute('data-i18n-ph'));
+        });
+        document.getElementById('languageSelect').value = currentLang;
+        
+        // Update Dynamic Components if they exist
+        renderOperations();
+        recalcTotals(); // Update warning messages
+        if(document.getElementById('reservationsView').style.display === 'block') loadMyRes();
+    }
+
+    // --- EXISTING LOGIC BELOW (UPDATED WITH TRANSLATION CALLS) ---
+
     const LOGGED_IN_AGENT = JSON.parse(localStorage.getItem('b2b_agent_auth'));
     if (!LOGGED_IN_AGENT || !LOGGED_IN_AGENT.success) window.location.href = 'login.html'; 
     else document.getElementById('agentNameDisplay').textContent = LOGGED_IN_AGENT.name;
@@ -345,223 +545,83 @@
     function renderOperations() {
       const listContainer = document.getElementById('operationsList');
       const hiddenContainer = document.getElementById('hiddenOperationsData');
-      
-      listContainer.innerHTML = '';
-      hiddenContainer.innerHTML = ''; 
-      
-      if (!dbData.operations || dbData.operations.length === 0) {
-        listContainer.innerHTML = '<span style="font-size:13px;color:#6b7280; font-style: italic;">Əməliyyat yoxdur.</span>';
-        return;
-      }
-      
+      listContainer.innerHTML = ''; hiddenContainer.innerHTML = ''; 
+      if (!dbData.operations || dbData.operations.length === 0) { listContainer.innerHTML = `<span style="font-size:13px;color:#6b7280; font-style: italic;">${t('opNone')}</span>`; return; }
       dbData.operations.forEach(op => {
         const isSelected = selectedOpIds.has(op.id);
-        const row = document.createElement('div');
-        row.className = `op-select-row ${isSelected ? 'selected' : ''}`;
+        const row = document.createElement('div'); row.className = `op-select-row ${isSelected ? 'selected' : ''}`;
         row.onclick = () => toggleOperation(op.id);
-        
-        row.innerHTML = `
-            <div class="op-select-row-name">
-                <div class="op-checkbox"></div>
-                ${op.name}
-            </div>
-            <div class="op-select-row-prices">
-                S: ${op.priceSedan}$ | M: ${op.priceMinivan}$
-                <div id="vis_qty_${op.id}" style="color:#10b981; font-weight:bold; height:15px; margin-top:2px;">
-                    ${isSelected && (globalSedanCount > 0 || globalMinivanCount > 0) ? `${globalSedanCount} Sedan, ${globalMinivanCount} Minivan` : ''}
-                </div>
-            </div>
-        `;
+        row.innerHTML = `<div class="op-select-row-name"><div class="op-checkbox"></div>${op.name}</div><div class="op-select-row-prices">S: ${op.priceSedan}$ | M: ${op.priceMinivan}$<div id="vis_qty_${op.id}" style="color:#10b981; font-weight:bold; height:15px; margin-top:2px;">${isSelected && (globalSedanCount > 0 || globalMinivanCount > 0) ? `${globalSedanCount} ${t('lblSedan')}, ${globalMinivanCount} ${t('lblMinivan')}` : ''}</div></div>`;
         listContainer.appendChild(row);
-
-        const wrapper = document.createElement('div');
-        wrapper.id = `hidden_op_wrap_${op.id}`;
-        
-        const sedanInp = document.createElement('span'); 
-        sedanInp.id = `op_${op.id}_sedan`;
-        sedanInp.className = 'op-qty-input';
-        sedanInp.dataset.price = op.priceSedan;
-        sedanInp.dataset.opName = op.name;
-        sedanInp.dataset.type = 'Sedan';
-        sedanInp.textContent = isSelected ? globalSedanCount : '0'; 
-        
-        const minivanInp = document.createElement('span');
-        minivanInp.id = `op_${op.id}_minivan`;
-        minivanInp.className = 'op-qty-input';
-        minivanInp.dataset.price = op.priceMinivan;
-        minivanInp.dataset.opName = op.name;
-        minivanInp.dataset.type = 'Minivan';
-        minivanInp.textContent = isSelected ? globalMinivanCount : '0';
-        
-        wrapper.appendChild(sedanInp);
-        wrapper.appendChild(minivanInp);
-        hiddenContainer.appendChild(wrapper);
+        const wrapper = document.createElement('div'); wrapper.id = `hidden_op_wrap_${op.id}`;
+        const sedanInp = document.createElement('span'); sedanInp.id = `op_${op.id}_sedan`; sedanInp.className = 'op-qty-input'; sedanInp.dataset.price = op.priceSedan; sedanInp.dataset.opName = op.name; sedanInp.dataset.type = 'Sedan'; sedanInp.textContent = isSelected ? globalSedanCount : '0'; 
+        const minivanInp = document.createElement('span'); minivanInp.id = `op_${op.id}_minivan`; minivanInp.className = 'op-qty-input'; minivanInp.dataset.price = op.priceMinivan; minivanInp.dataset.opName = op.name; minivanInp.dataset.type = 'Minivan'; minivanInp.textContent = isSelected ? globalMinivanCount : '0';
+        wrapper.appendChild(sedanInp); wrapper.appendChild(minivanInp); hiddenContainer.appendChild(wrapper);
       });
-      
       document.getElementById('masterSedanVal').textContent = globalSedanCount;
       document.getElementById('masterMinivanVal').textContent = globalMinivanCount;
-      
-      if (selectedOpIds.size > 0) {
-          document.getElementById('masterSedanBtn').classList.add('active-type');
-          document.getElementById('masterMinivanBtn').classList.add('active-type');
-      } else {
-          document.getElementById('masterSedanBtn').classList.remove('active-type');
-          document.getElementById('masterMinivanBtn').classList.remove('active-type');
-      }
-    }
+      // Update Master Labels
+      document.querySelector('#masterSedanBtn .op-master-label').textContent = t('lblSedan');
+      document.querySelector('#masterMinivanBtn .op-master-label').textContent = t('lblMinivan');
 
-    function toggleOperation(id) {
-        if (selectedOpIds.has(id)) { selectedOpIds.delete(id); } else { selectedOpIds.add(id); }
-        renderOperations(); recalcTotals();
+      if (selectedOpIds.size > 0) { document.getElementById('masterSedanBtn').classList.add('active-type'); document.getElementById('masterMinivanBtn').classList.add('active-type'); } 
+      else { document.getElementById('masterSedanBtn').classList.remove('active-type'); document.getElementById('masterMinivanBtn').classList.remove('active-type'); }
     }
+    function toggleOperation(id) { if (selectedOpIds.has(id)) { selectedOpIds.delete(id); } else { selectedOpIds.add(id); } renderOperations(); recalcTotals(); }
+    function adjustMasterQty(type, delta) { if (selectedOpIds.size === 0) { alert(t('msgOpsInst')); return; } if (type === 'sedan') { const newVal = globalSedanCount + delta; if (newVal >= 0) globalSedanCount = newVal; } else if (type === 'minivan') { const newVal = globalMinivanCount + delta; if (newVal >= 0) globalMinivanCount = newVal; } renderOperations(); recalcTotals(); }
 
-    function adjustMasterQty(type, delta) {
-        if (selectedOpIds.size === 0) { alert("Zəhmət olmasa aşağıdan ən azı bir transfer istiqaməti seçin."); return; }
-        if (type === 'sedan') { const newVal = globalSedanCount + delta; if (newVal >= 0) globalSedanCount = newVal; } 
-        else if (type === 'minivan') { const newVal = globalMinivanCount + delta; if (newVal >= 0) globalMinivanCount = newVal; }
-        renderOperations(); recalcTotals();
-    }
-
-    function fetchData() {
-      fetch('/api/data').then(r => r.json()).then(data => {
-          dbData = data;
-          renderRegions(); renderStars(); renderHotelsFilter(); renderOperations(); 
-        }).catch(console.error);
-    }
-    
-    function renderRegions() {
-      const box = document.getElementById('regionsBox'); box.innerHTML = '';
-      dbData.regions.forEach(r => {
-        const lbl = document.createElement('label'); lbl.className = 'filter-item';
-        lbl.innerHTML = `<input type="checkbox" name="regionFilter" value="${r.id}" onchange="onFilterChange()"> ${r.name}`;
-        box.appendChild(lbl);
-      });
-    }
-    function renderStars() {
-      const box = document.getElementById('starsBox'); box.innerHTML = '';
-      [2,3,4,5].forEach(s => {
-        const lbl = document.createElement('label'); lbl.className = 'filter-item';
-        lbl.innerHTML = `<input type="checkbox" name="starFilter" value="${s}" onchange="onFilterChange()"> ${s}★`;
-        box.appendChild(lbl);
-      });
-    }
+    function fetchData() { fetch('/api/data').then(r => r.json()).then(data => { dbData = data; renderRegions(); renderStars(); renderHotelsFilter(); renderOperations(); populateTimeSelects(); updateTexts(); }).catch(console.error); }
+    function renderRegions() { const box = document.getElementById('regionsBox'); box.innerHTML = ''; dbData.regions.forEach(r => { const lbl = document.createElement('label'); lbl.className = 'filter-item'; lbl.innerHTML = `<input type="checkbox" name="regionFilter" value="${r.id}" onchange="onFilterChange()"> ${r.name}`; box.appendChild(lbl); }); }
+    function renderStars() { const box = document.getElementById('starsBox'); box.innerHTML = ''; [2,3,4,5].forEach(s => { const lbl = document.createElement('label'); lbl.className = 'filter-item'; lbl.innerHTML = `<input type="checkbox" name="starFilter" value="${s}" onchange="onFilterChange()"> ${s}★`; box.appendChild(lbl); }); }
     function onFilterChange() { renderHotelsFilter(); renderHotelBlocks(); recalcTotals(); }
-    
-    function filterHotels() {
-       const regs = Array.from(document.querySelectorAll('input[name="regionFilter"]:checked')).map(e=>e.value);
-       const stars = Array.from(document.querySelectorAll('input[name="starFilter"]:checked')).map(e=>e.value);
-       return dbData.hotels.filter(h => (regs.length===0 || regs.includes(String(h.regionId))) && (stars.length===0 || stars.includes(String(h.stars))));
-    }
-    function renderHotelsFilter() {
-        const box = document.getElementById('hotelsBox'); box.innerHTML = '';
-        filterHotels().forEach(h => {
-            const lbl = document.createElement('label'); lbl.className = 'hotel-item';
-            lbl.innerHTML = `<input type="checkbox" name="hotelFilter" value="${h.id}" onchange="renderHotelBlocks();recalcTotals()"> <span class="hotel-name">${h.name}</span> <span class="hotel-stars">${'★'.repeat(h.stars)}</span>`;
-            box.appendChild(lbl);
-        });
-    }
+    function filterHotels() { const regs = Array.from(document.querySelectorAll('input[name="regionFilter"]:checked')).map(e=>e.value); const stars = Array.from(document.querySelectorAll('input[name="starFilter"]:checked')).map(e=>e.value); return dbData.hotels.filter(h => (regs.length===0 || regs.includes(String(h.regionId))) && (stars.length===0 || stars.includes(String(h.stars)))); }
+    function renderHotelsFilter() { const box = document.getElementById('hotelsBox'); box.innerHTML = ''; filterHotels().forEach(h => { const lbl = document.createElement('label'); lbl.className = 'hotel-item'; lbl.innerHTML = `<input type="checkbox" name="hotelFilter" value="${h.id}" onchange="renderHotelBlocks();recalcTotals()"> <span class="hotel-name">${h.name}</span> <span class="hotel-stars">${'★'.repeat(h.stars)}</span>`; box.appendChild(lbl); }); }
     function renderHotelBlocks() {
         const container = document.getElementById('hotelsCalcs'); container.innerHTML = '';
         const selectedIds = Array.from(document.querySelectorAll('input[name="hotelFilter"]:checked')).map(e=>e.value);
         document.getElementById('selectedHotelsCount').textContent = selectedIds.length;
-        if(selectedIds.length === 0) { container.innerHTML = '<p style="color:#6b7280;font-style:italic;font-size:15px;padding-left:15px;">Zəhmət olmasa hotel seçin.</p>'; return; }
+        if(selectedIds.length === 0) { container.innerHTML = `<p style="color:#6b7280;font-style:italic;font-size:15px;padding-left:15px;">${t('msgSelectHotel')}</p>`; return; }
         selectedIds.forEach(id => {
             const h = dbData.hotels.find(x => String(x.id) === id); if(!h) return;
             const div = document.createElement('div'); div.className = 'hotel-block';
-            div.innerHTML = `<div class="hotel-block-title">${h.name} <span class="tag">Extra: ${h.extraBedPricePerNight}$</span></div>
-                             <div id="rooms_h${h.id}"></div>
-                             <div style="margin-top:10px;"><button class="add-room-btn" onclick="addRoom(${h.id})">+ Otaq tipi</button></div>
-                             <div id="meals_h${h.id}" style="margin-top:15px;"></div>
-                             <div class="hotel-totals-line"><span>Subtotal:</span> <span id="hotelTotal_h${h.id}">0 $</span></div>`;
-            container.appendChild(div);
-            renderMeals(h); addRoom(h.id);
+            div.innerHTML = `<div class="hotel-block-title">${h.name} <span class="tag">Extra: ${h.extraBedPricePerNight}$</span></div><div id="rooms_h${h.id}"></div><div style="margin-top:10px;"><button class="add-room-btn" onclick="addRoom(${h.id})">+ Room</button></div><div id="meals_h${h.id}" style="margin-top:15px;"></div><div class="hotel-totals-line"><span>Subtotal:</span> <span id="hotelTotal_h${h.id}">0 $</span></div>`;
+            container.appendChild(div); renderMeals(h); addRoom(h.id);
         });
     }
     function addRoom(hotelId) {
         const h = dbData.hotels.find(x => x.id === hotelId);
         const div = document.createElement('div'); div.className = 'room-row';
-        let opts = `<option value="">Otaq seç...</option>` + h.roomTypes.map(r => `<option value="${r.id}" data-price="${r.pricePerNight}" data-eb="${r.isExtraBedAllowed}">${r.name} (${r.pricePerNight}$)</option>`).join('');
-        div.innerHTML = `<select class="room-type-select" onchange="recalcTotals()">${opts}</select>
-                         <div class="qty-controls"><button type="button" class="qty-btn" onclick="adjQty(this,-1)">—</button><span class="qty-value">1</span><button type="button" class="qty-btn" onclick="adjQty(this,1)">+</button></div>
-                         <label class="extra-bed-container" style="display:none; margin-left:10px; font-size:13px; font-weight:700; color:#10b981;"><input type="checkbox" class="extra-bed-checkbox" onchange="recalcTotals()"> Extra Bed</label>
-                         <button type="button" class="room-remove" onclick="this.parentElement.remove();recalcTotals()">×</button>`;
+        let opts = `<option value="">${t('selRoom')}</option>` + h.roomTypes.map(r => `<option value="${r.id}" data-price="${r.pricePerNight}" data-eb="${r.isExtraBedAllowed}">${r.name} (${r.pricePerNight}$)</option>`).join('');
+        div.innerHTML = `<select class="room-type-select" onchange="recalcTotals()">${opts}</select><div class="qty-controls"><button type="button" class="qty-btn" onclick="adjQty(this,-1)">—</button><span class="qty-value">1</span><button type="button" class="qty-btn" onclick="adjQty(this,1)">+</button></div><label class="extra-bed-container" style="display:none; margin-left:10px; font-size:13px; font-weight:700; color:#10b981;"><input type="checkbox" class="extra-bed-checkbox" onchange="recalcTotals()"> Extra Bed</label><button type="button" class="room-remove" onclick="this.parentElement.remove();recalcTotals()">×</button>`;
         document.getElementById(`rooms_h${hotelId}`).appendChild(div);
-        div.querySelector('select').addEventListener('change', function() {
-            const opt = this.options[this.selectedIndex];
-            div.querySelector('.extra-bed-container').style.display = (opt.dataset.eb === 'true') ? 'flex' : 'none';
-        });
+        div.querySelector('select').addEventListener('change', function() { const opt = this.options[this.selectedIndex]; div.querySelector('.extra-bed-container').style.display = (opt.dataset.eb === 'true') ? 'flex' : 'none'; });
     }
-    function adjQty(btn, delta) {
-        const span = btn.parentElement.querySelector('.qty-value');
-        let v = parseInt(span.textContent) + delta;
-        if(v < 1) v = 1; span.textContent = v; recalcTotals();
-    }
-    function renderMeals(h) {
-        const c = document.getElementById(`meals_h${h.id}`);
-        c.innerHTML = `<div style="font-weight:600;font-size:14px;margin-bottom:5px;">Meal Plan:</div>
-                       <label style="margin-right:10px;display:inline-flex;gap:5px;"><input type="radio" name="meal_${h.id}" value="0" checked onchange="recalcTotals()"> None</label>` +
-                       h.mealPlans.map(m => `<label style="margin-right:10px;display:inline-flex;gap:5px;"><input type="radio" name="meal_${h.id}" value="${m.pricePerPersonPerNight}" onchange="recalcTotals()"> ${m.name} (${m.pricePerPersonPerNight}$)</label>`).join('');
-    }
-    function getMaxNights() {
-        const d1 = new Date(document.getElementById('checkIn').value);
-        const d2 = new Date(document.getElementById('checkOut').value);
-        if(d1 && d2 && d2 > d1) {
-            const n = Math.round((d2-d1)/(1000*60*60*24));
-            document.getElementById('nights').textContent = n; return n;
-        }
-        document.getElementById('nights').textContent = 0; return 0;
-    }
+    function adjQty(btn, delta) { const span = btn.parentElement.querySelector('.qty-value'); let v = parseInt(span.textContent) + delta; if(v < 1) v = 1; span.textContent = v; recalcTotals(); }
+    function renderMeals(h) { const c = document.getElementById(`meals_h${h.id}`); c.innerHTML = `<div style="font-weight:600;font-size:14px;margin-bottom:5px;">Meal Plan:</div><label style="margin-right:10px;display:inline-flex;gap:5px;"><input type="radio" name="meal_${h.id}" value="0" checked onchange="recalcTotals()"> None</label>` + h.mealPlans.map(m => `<label style="margin-right:10px;display:inline-flex;gap:5px;"><input type="radio" name="meal_${h.id}" value="${m.pricePerPersonPerNight}" onchange="recalcTotals()"> ${m.name} (${m.pricePerPersonPerNight}$)</label>`).join(''); }
+    function getMaxNights() { const d1 = new Date(document.getElementById('checkIn').value); const d2 = new Date(document.getElementById('checkOut').value); if(d1 && d2 && d2 > d1) { const n = Math.round((d2-d1)/(1000*60*60*24)); document.getElementById('nights').textContent = n; return n; } document.getElementById('nights').textContent = 0; return 0; }
     function recalcTotals() {
-        const nights = getMaxNights();
-        const pax = parseInt(document.getElementById('adults').value||0) + parseInt(document.getElementById('children').value||0);
-        let rTot = 0, ebTot = 0, mTot = 0, opTot = 0;
-        let totalBookedNights = 0;
-
-        document.querySelectorAll('.op-qty-input').forEach(el => {
-            opTot += parseInt(el.textContent) * parseFloat(el.dataset.price);
-        });
-
+        const nights = getMaxNights(); const pax = parseInt(document.getElementById('adults').value||0) + parseInt(document.getElementById('children').value||0);
+        let rTot = 0, ebTot = 0, mTot = 0, opTot = 0; let totalBookedNights = 0;
+        document.querySelectorAll('.op-qty-input').forEach(el => { opTot += parseInt(el.textContent) * parseFloat(el.dataset.price); });
         document.querySelectorAll('.hotel-block').forEach(hb => {
-            const hid = hb.querySelector('.add-room-btn').getAttribute('onclick').match(/\d+/)[0];
-            const h = dbData.hotels.find(x => String(x.id) === hid);
-            let thisHTot = 0;
-            hb.querySelectorAll('.room-row').forEach(rr => {
-                const sel = rr.querySelector('select');
-                if(sel.value) {
-                   const price = parseFloat(sel.options[sel.selectedIndex].dataset.price);
-                   const q = parseInt(rr.querySelector('.qty-value').textContent);
-                   const eb = rr.querySelector('.extra-bed-checkbox').checked ? h.extraBedPricePerNight : 0;
-                   rTot += price * q; ebTot += eb * q; thisHTot += (price + eb) * q; totalBookedNights += q;
-                }
-            });
-            const mPrice = parseFloat(document.querySelector(`input[name="meal_${hid}"]:checked`)?.value || 0);
-            if(mPrice > 0) {
-                 let hotelNights = 0;
-                 hb.querySelectorAll('.room-row').forEach(rr => { if(rr.querySelector('select').value) hotelNights += parseInt(rr.querySelector('.qty-value').textContent); });
-                 const mealCost = mPrice * pax * hotelNights; mTot += mealCost; thisHTot += mealCost;
-            }
+            const hid = hb.querySelector('.add-room-btn').getAttribute('onclick').match(/\d+/)[0]; const h = dbData.hotels.find(x => String(x.id) === hid); let thisHTot = 0;
+            hb.querySelectorAll('.room-row').forEach(rr => { const sel = rr.querySelector('select'); if(sel.value) { const price = parseFloat(sel.options[sel.selectedIndex].dataset.price); const q = parseInt(rr.querySelector('.qty-value').textContent); const eb = rr.querySelector('.extra-bed-checkbox').checked ? h.extraBedPricePerNight : 0; rTot += price * q; ebTot += eb * q; thisHTot += (price + eb) * q; totalBookedNights += q; } });
+            const mPrice = parseFloat(document.querySelector(`input[name="meal_${hid}"]:checked`)?.value || 0); if(mPrice > 0) { let hotelNights = 0; hb.querySelectorAll('.room-row').forEach(rr => { if(rr.querySelector('select').value) hotelNights += parseInt(rr.querySelector('.qty-value').textContent); }); const mealCost = mPrice * pax * hotelNights; mTot += mealCost; thisHTot += mealCost; }
             document.getElementById(`hotelTotal_h${hid}`).textContent = formatMoney(thisHTot);
         });
-        document.getElementById('roomsSubtotal').textContent = formatMoney(rTot);
-        document.getElementById('extraBedsTotal').textContent = formatMoney(ebTot);
-        document.getElementById('mealsTotal').textContent = formatMoney(mTot);
-        document.getElementById('hotelSubtotal').textContent = formatMoney(rTot + ebTot + mTot);
-        document.getElementById('operationsTotal').textContent = formatMoney(opTot);
-        document.getElementById('grandTotal').textContent = formatMoney(rTot + ebTot + mTot + opTot);
-        
-        const btn = document.getElementById('reserveBtn');
-        const warning = document.getElementById('constraintWarning');
-        if(nights > 0 && totalBookedNights !== nights) {
-            warning.style.display = 'block'; warning.textContent = `⚠️ Gecə sayı uyğunsuzluğu: Səyahət ${nights} gecədir, amma ${totalBookedNights} gecəlik otaq seçilib.`;
-            btn.disabled = true;
-        } else {
-            warning.style.display = 'none'; btn.disabled = (totalBookedNights === 0);
-        }
+        document.getElementById('roomsSubtotal').textContent = formatMoney(rTot); document.getElementById('extraBedsTotal').textContent = formatMoney(ebTot); document.getElementById('mealsTotal').textContent = formatMoney(mTot); document.getElementById('hotelSubtotal').textContent = formatMoney(rTot + ebTot + mTot); document.getElementById('operationsTotal').textContent = formatMoney(opTot); document.getElementById('grandTotal').textContent = formatMoney(rTot + ebTot + mTot + opTot);
+        const btn = document.getElementById('reserveBtn'); const warning = document.getElementById('constraintWarning');
+        if(nights > 0 && totalBookedNights !== nights) { 
+            warning.style.display = 'block'; 
+            warning.textContent = t('nightMismatch').replace('{n}', nights).replace('{b}', totalBookedNights);
+            btn.disabled = true; 
+        } else { warning.style.display = 'none'; btn.disabled = (totalBookedNights === 0); }
     }
     
-    // SUBMIT
     function getSummary() {
         return {
+            agentResNumber: document.getElementById('agentResNumber').value,
+            flightNumber: document.getElementById('agentFlightNumber').value,
             checkIn: document.getElementById('checkIn').value, checkOut: document.getElementById('checkOut').value,
             nights: document.getElementById('nights').textContent, adults: document.getElementById('adults').value, children: document.getElementById('children').value,
             totalPrice: parseFloat(document.getElementById('grandTotal').textContent.replace(' $','').replace(/,/g,'')),
@@ -569,17 +629,66 @@
             operationsInfo: Array.from(document.querySelectorAll('.op-qty-input')).filter(e=>parseInt(e.textContent)>0).map(e=> `${e.dataset.opName} (${e.dataset.type} x ${e.textContent})`).join(', ')
         };
     }
+
+    function populateTimeSelects() {
+        const selects = [document.getElementById('arrTimeSelect'), document.getElementById('depTimeSelect')];
+        let opts = '<option value="">--:--</option>';
+        for(let h=0; h<24; h++) { for(let m=0; m<60; m+=15) { const time = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`; opts += `<option value="${time}">${time}</option>`; } }
+        selects.forEach(s => s.innerHTML = opts);
+    }
+
+    // --- NEW MODAL LOGIC ---
     function openReservationModal() {
         const s = getSummary();
-        document.getElementById('reservationSummary').innerHTML = `<div class="summary-grid"><div><strong>Hotel:</strong> ${s.hotelNames}<br><strong>Tarix:</strong> ${s.checkIn} - ${s.checkOut} (${s.nights} gecə)<br><strong>Qonaq:</strong> ${s.adults} Ad, ${s.children} Chd</div><div class="summary-price-col"><strong>Operations:</strong> ${s.operationsInfo || 'None'}<br><strong style="font-size:20px;color:#10b981">Total: ${formatMoney(s.totalPrice)}</strong></div></div>`;
+        const summaryDiv = document.getElementById('reservationSummary');
+        
+        const opsLine = (!s.operationsInfo || s.operationsInfo === '') ? '' : `<div class="sum-row"><span class="sum-icon">🚐</span> ${s.operationsInfo}</div>`;
+        const resLine = (!s.agentResNumber) ? '' : `<div class="sum-row"><span class="sum-icon">🔖</span> Ref: <b>${s.agentResNumber}</b></div>`;
+        const flightLine = (!s.flightNumber) ? '' : `<div class="sum-row"><span class="sum-icon">✈️</span> Flight: <b>${s.flightNumber}</b></div>`;
+
+        summaryDiv.innerHTML = `
+          <div class="summary-box">
+             <div class="summary-left">
+                <div class="sum-row" style="color:#1F2937; font-weight:700; font-size:16px; margin-bottom:12px;">
+                   <span class="sum-icon">🏨</span> ${s.hotelNames}
+                </div>
+                <div class="sum-row"><span class="sum-icon">📅</span> ${s.checkIn} — ${s.checkOut} (${s.nights} nights)</div>
+                <div class="sum-row"><span class="sum-icon">👥</span> ${s.adults} Ad, ${s.children} Chd</div>
+                ${resLine}
+                ${flightLine}
+                ${opsLine}
+             </div>
+             <div class="summary-right">
+                <div class="sum-total-label">${t('lblTotalAmount')}</div>
+                <div class="sum-total-price">${formatMoney(s.totalPrice)}</div>
+             </div>
+          </div>
+        `;
+
         const tf = document.getElementById('travelersForm'); tf.innerHTML = '';
-        for(let i=0; i<parseInt(s.adults); i++) tf.innerHTML += genTravelerInputs('Adult', i);
-        for(let i=0; i<parseInt(s.children); i++) tf.innerHTML += genTravelerInputs('Child', i);
+        for(let i=0; i<parseInt(s.adults); i++) tf.innerHTML += genTravelerCard(t('lblAdult'), i);
+        for(let i=0; i<parseInt(s.children); i++) tf.innerHTML += genTravelerCard(t('lblChild'), i);
+        
         document.getElementById('reservationModal').style.display = 'flex';
     }
-    function genTravelerInputs(type, i) {
-        return `<div style="margin-bottom:10px;padding:10px;border:1px solid #eee;border-radius:8px;"><strong>${type} ${i+1}</strong><div class="grid" style="grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;margin-top:5px;"><input placeholder="Name" name="tName_${type}_${i}" required><input placeholder="Surname" name="tSurname_${type}_${i}" required><input type="date" name="tDob_${type}_${i}" required><input placeholder="Nationality" name="tNat_${type}_${i}" required></div></div>`;
+
+    function genTravelerCard(type, i) {
+        return `
+        <div class="traveler-card">
+            <div class="t-card-header">
+                <div class="t-icon">${type === t('lblAdult') ? '👤' : '👶'}</div>
+                <div class="t-title">${type} ${i+1}</div>
+            </div>
+            <div class="grid" style="grid-template-columns: 1fr 1fr; gap:12px;">
+                <div class="form-group"><label class="modern-label">${t('lblName')}</label><input class="modern-input" placeholder="${t('phName')}" name="tName_${type}_${i}" required></div>
+                <div class="form-group"><label class="modern-label">${t('lblSurname')}</label><input class="modern-input" placeholder="${t('phSurname')}" name="tSurname_${type}_${i}" required></div>
+                <div class="form-group"><label class="modern-label">${t('lblDob')}</label><input type="date" class="modern-input" name="tDob_${type}_${i}" required></div>
+                <div class="form-group"><label class="modern-label">${t('lblNat')}</label><input class="modern-input" placeholder="${t('phNat')}" name="tNat_${type}_${i}" required></div>
+            </div>
+        </div>
+        `;
     }
+
     function closeReservationModal() { document.getElementById('reservationModal').style.display = 'none'; }
     
     document.getElementById('reservationForm').onsubmit = (e) => {
@@ -593,191 +702,70 @@
             summary: { ...s, totalTravelers: travelers.length, roomsSubtotal:0, mealsTotal:0, extraBedsTotal:0, operationsTotal:0, hotelSubtotal:0 }, 
             travelers, 
             flightInfo: { 
-                flightNumber: fd.get('flightNumber'), // NEW: Saving Flight Number
+                flightNumber: s.flightNumber,
                 arrival: fd.get('flightArrivalDate')+' '+fd.get('flightArrivalTime'), 
                 departure: fd.get('flightDepartureDate')+' '+fd.get('flightDepartureTime') 
             }, 
             submittingAgentUsername: LOGGED_IN_AGENT.username,
-            status: 'Gözləmədə' 
+            status: t('statusPending')
         };
         
-        fetch('/api/reservations', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) }).then(r=>r.json()).then(res => { if(res.id) { alert('Rezervasiya uğurlu! ID: '+res.id); closeReservationModal(); showAgentView('reservations'); } else alert('Xəta!'); });
+        fetch('/api/reservations', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) }).then(r=>r.json()).then(res => { if(res.id) { alert(t('resSuccess')+res.id); closeReservationModal(); showAgentView('reservations'); } else alert('Error!'); });
     };
 
     function showAgentView(v) { document.getElementById('bookingView').style.display = (v==='booking')?'block':'none'; document.getElementById('reservationsView').style.display = (v==='reservations')?'block':'none'; document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.view===v)); if(v==='reservations') loadMyRes(); }
     
-    // UPDATED: loadMyRes with Edit & Cancel Logic
     function loadMyRes() {
-        const list = document.getElementById('agentReservationsList'); 
-        list.innerHTML = '<div style="padding:20px;text-align:center;">Yüklənir...</div>';
-        
+        const list = document.getElementById('agentReservationsList'); list.innerHTML = `<div style="padding:20px;text-align:center;">${t('loading')}</div>`;
         fetch('/api/data').then(r => r.json()).then(d => {
             const myRes = d.reservations.filter(r => r.submittingAgentUsername === LOGGED_IN_AGENT.username);
             list.innerHTML = '';
-            
-            if (myRes.length === 0) {
-                list.innerHTML = '<div style="padding:20px;text-align:center;color:#666;">Heç bir rezervasiya tapılmadı.</div>';
-                return;
-            }
-
+            if (myRes.length === 0) { list.innerHTML = `<div style="padding:20px;text-align:center;color:#666;">${t('noResFound')}</div>`; return; }
             myRes.forEach(r => { 
-                const isEditable = (r.status === 'Gözləmədə' || r.status === 'Pending' || r.status === undefined || r.status.includes('Tarix Dəyiş'));
-                
-                // EDIT BUTTON
-                const editBtnHtml = isEditable 
-                    ? `<button class="action-btn edit-btn" onclick="openEditDetailsModal('${r.id}')">✏️ Redaktə</button>` 
-                    : `<span style="font-size:11px; color:#999;">-</span>`;
-                
-                // CANCEL BUTTON
-                const cancelBtnHtml = isEditable
-                    ? `<button class="action-btn cancel-btn" onclick="cancelReservation('${r.id}')">❌ Ləğv</button>`
-                    : `<span style="font-size:11px; color:#999;">-</span>`;
+                const rawStatus = r.status || 'Pending';
+                // Try to translate status if possible
+                let displayStatus = rawStatus;
+                if(rawStatus === 'Gözləmədə' || rawStatus === 'Pending') displayStatus = t('statusPending');
+                else if(rawStatus.includes('Təsd') || rawStatus === 'Confirmed') displayStatus = t('statusConfirmed');
+                else if(rawStatus.includes('Ləğv') || rawStatus === 'Cancelled') displayStatus = t('statusCancelled');
+                else if(rawStatus.includes('Redaktə') || rawStatus === 'Edited') displayStatus = t('statusEdit');
 
-                const div = document.createElement('div'); 
-                div.className = 'agent-res-row'; 
-                
-                div.innerHTML = `
-                    <div>#${r.id}</div>
-                    <div>${r.summary.checkIn} <br> <span style="font-size:11px;color:#666;">${r.summary.nights} gecə</span></div>
-                    <div style="font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${r.summary.hotelNames}</div>
-                    <div>
-                        <span style="padding:3px 8px; border-radius:10px; font-size:11px; font-weight:bold; 
-                        background:${r.status?.includes('Təsd') ? '#dcfce7' : (r.status?.includes('Ləğv') ? '#fee2e2' : '#fef9c3')}; 
-                        color:${r.status?.includes('Təsd') ? '#166534' : (r.status?.includes('Ləğv') ? '#991b1b' : '#854d0e')};">
-                        ${r.status || 'Gözləmədə'}
-                        </span>
-                    </div>
-                    <div style="text-align:right; font-weight:bold;">${formatMoney(r.summary.totalPrice)}</div>
-                    <div style="text-align:center;">${editBtnHtml}</div>
-                    <div style="text-align:center;">${cancelBtnHtml}</div>
-                `; 
+                const isEditable = (rawStatus === 'Gözləmədə' || rawStatus === 'Pending' || rawStatus.includes('Tarix') || rawStatus === t('statusPending'));
+                const editBtnHtml = isEditable ? `<button class="action-btn edit-btn" onclick="openEditDetailsModal('${r.id}')">✏️ ${t('colEdit')}</button>` : `<span style="font-size:11px; color:#999;">-</span>`;
+                const cancelBtnHtml = isEditable ? `<button class="action-btn cancel-btn" onclick="cancelReservation('${r.id}')">❌ ${t('colCancel')}</button>` : `<span style="font-size:11px; color:#999;">-</span>`;
+                const div = document.createElement('div'); div.className = 'agent-res-row'; 
+                div.innerHTML = `<div>#${r.id}</div><div>${r.summary.checkIn} <br> <span style="font-size:11px;color:#666;">${r.summary.nights} nights</span></div><div style="font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${r.summary.hotelNames}</div><div><span style="padding:3px 8px; border-radius:10px; font-size:11px; font-weight:bold; background:${displayStatus === t('statusConfirmed') ? '#dcfce7' : (displayStatus === t('statusCancelled') ? '#fee2e2' : '#fef9c3')}; color:${displayStatus === t('statusConfirmed') ? '#166534' : (displayStatus === t('statusCancelled') ? '#991b1b' : '#854d0e')};">${displayStatus}</span></div><div style="text-align:right; font-weight:bold;">${formatMoney(r.summary.totalPrice)}</div><div style="text-align:center;">${editBtnHtml}</div><div style="text-align:center;">${cancelBtnHtml}</div>`; 
                 list.appendChild(div); 
             });
         });
     }
 
-    // --- FULL EDIT LOGIC ---
     function openEditDetailsModal(id) {
         fetch('/api/data').then(r => r.json()).then(data => {
-            const res = data.reservations.find(r => r.id == id);
-            if (!res) return;
-
+            const res = data.reservations.find(r => r.id == id); if (!res) return;
             document.getElementById('editDetailResId').value = res.id;
-            
-            // Set Dates
-            document.getElementById('editDetailCheckIn').value = res.summary.checkIn;
-            document.getElementById('editDetailCheckOut').value = res.summary.checkOut;
-            
-            // Generate Traveler Inputs
-            const cont = document.getElementById('editTravelersContainer');
-            cont.innerHTML = '';
-            if (res.travelers && res.travelers.length > 0) {
-                res.travelers.forEach((t, i) => {
-                    cont.innerHTML += `
-                        <div style="margin-bottom:10px; border-bottom:1px dashed #e2e8f0; padding-bottom:10px;">
-                            <div style="font-weight:bold; font-size:12px; margin-bottom:5px;">${t.type} ${i+1}</div>
-                            <div class="grid" style="grid-template-columns:1fr 1fr 1fr 1fr; gap:5px;">
-                                <input class="edit-tr-input" data-idx="${i}" data-field="name" value="${t.name}" placeholder="Name">
-                                <input class="edit-tr-input" data-idx="${i}" data-field="surname" value="${t.surname}" placeholder="Surname">
-                                <input class="edit-tr-input" data-idx="${i}" data-field="dob" type="date" value="${t.dob}">
-                                <input class="edit-tr-input" data-idx="${i}" data-field="nationality" value="${t.nationality}" placeholder="Nat">
-                            </div>
-                        </div>
-                    `;
-                });
-            } else {
-                cont.innerHTML = '<p>Qonaq məlumatı yoxdur.</p>';
-            }
-
-            // Set Flight Info
-            if (res.flightInfo) {
-                document.getElementById('editDetailFlightNo').value = res.flightInfo.flightNumber || '';
-                
-                const arr = (res.flightInfo.arrival || '').split(' ');
-                document.getElementById('editDetailArrDate').value = arr[0] || '';
-                document.getElementById('editDetailArrTime').value = arr[1] || '';
-                
-                const dep = (res.flightInfo.departure || '').split(' ');
-                document.getElementById('editDetailDepDate').value = dep[0] || '';
-                document.getElementById('editDetailDepTime').value = dep[1] || '';
-            }
-
+            document.getElementById('editDetailCheckIn').value = res.summary.checkIn; document.getElementById('editDetailCheckOut').value = res.summary.checkOut;
+            const cont = document.getElementById('editTravelersContainer'); cont.innerHTML = '';
+            if (res.travelers && res.travelers.length > 0) { res.travelers.forEach((t, i) => { cont.innerHTML += `<div style="margin-bottom:10px; border-bottom:1px dashed #e2e8f0; padding-bottom:10px;"><div style="font-weight:bold; font-size:12px; margin-bottom:5px;">${t.type} ${i+1}</div><div class="grid" style="grid-template-columns:1fr 1fr 1fr 1fr; gap:5px;"><input class="edit-tr-input" data-idx="${i}" data-field="name" value="${t.name}" placeholder="${t('phName')}"><input class="edit-tr-input" data-idx="${i}" data-field="surname" value="${t.surname}" placeholder="${t('phSurname')}"><input class="edit-tr-input" data-idx="${i}" data-field="dob" type="date" value="${t.dob}"><input class="edit-tr-input" data-idx="${i}" data-field="nationality" value="${t.nationality}" placeholder="${t('phNat')}"></div></div>`; }); } 
+            else { cont.innerHTML = '<p>No traveler info.</p>'; }
+            if (res.flightInfo) { document.getElementById('editDetailFlightNo').value = res.flightInfo.flightNumber || ''; const arr = (res.flightInfo.arrival || '').split(' '); document.getElementById('editDetailArrDate').value = arr[0] || ''; document.getElementById('editDetailArrTime').value = arr[1] || ''; const dep = (res.flightInfo.departure || '').split(' '); document.getElementById('editDetailDepDate').value = dep[0] || ''; document.getElementById('editDetailDepTime').value = dep[1] || ''; }
             document.getElementById('editDetailsModal').style.display = 'flex';
         });
     }
-
-    function closeEditDetailsModal() {
-        document.getElementById('editDetailsModal').style.display = 'none';
-    }
-
+    function closeEditDetailsModal() { document.getElementById('editDetailsModal').style.display = 'none'; }
     function submitEditDetails() {
         const id = document.getElementById('editDetailResId').value;
-        
         fetch('/api/data').then(r => r.json()).then(data => {
-            const reservation = data.reservations.find(r => r.id == id);
-            if (!reservation) return;
-
-            // Update Dates
-            reservation.summary.checkIn = document.getElementById('editDetailCheckIn').value;
-            reservation.summary.checkOut = document.getElementById('editDetailCheckOut').value;
-             const d1 = new Date(reservation.summary.checkIn);
-            const d2 = new Date(reservation.summary.checkOut);
-            const nights = Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
-            reservation.summary.nights = nights > 0 ? nights : 0;
-
-            // Update Travelers
-            const inputs = document.querySelectorAll('.edit-tr-input');
-            inputs.forEach(inp => {
-                const idx = inp.dataset.idx;
-                const field = inp.dataset.field;
-                if (reservation.travelers[idx]) {
-                    reservation.travelers[idx][field] = inp.value;
-                }
-            });
-
-            // Update Flight Info
-            reservation.flightInfo = {
-                flightNumber: document.getElementById('editDetailFlightNo').value,
-                arrival: document.getElementById('editDetailArrDate').value + ' ' + document.getElementById('editDetailArrTime').value,
-                departure: document.getElementById('editDetailDepDate').value + ' ' + document.getElementById('editDetailDepTime').value
-            };
-
-            reservation.status = 'Redaktə Edildi (Gözləmədə)';
-
-            // Send PUT
-            fetch(`/api/reservations/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(reservation)
-            }).then(() => {
-                alert('Dəyişikliklər yadda saxlanıldı!');
-                closeEditDetailsModal();
-                loadMyRes();
-            });
+            const reservation = data.reservations.find(r => r.id == id); if (!reservation) return;
+            reservation.summary.checkIn = document.getElementById('editDetailCheckIn').value; reservation.summary.checkOut = document.getElementById('editDetailCheckOut').value;
+             const d1 = new Date(reservation.summary.checkIn); const d2 = new Date(reservation.summary.checkOut); const nights = Math.round((d2 - d1) / (1000 * 60 * 60 * 24)); reservation.summary.nights = nights > 0 ? nights : 0;
+            const inputs = document.querySelectorAll('.edit-tr-input'); inputs.forEach(inp => { const idx = inp.dataset.idx; const field = inp.dataset.field; if (reservation.travelers[idx]) { reservation.travelers[idx][field] = inp.value; } });
+            reservation.flightInfo = { flightNumber: document.getElementById('editDetailFlightNo').value, arrival: document.getElementById('editDetailArrDate').value + ' ' + document.getElementById('editDetailArrTime').value, departure: document.getElementById('editDetailDepDate').value + ' ' + document.getElementById('editDetailDepTime').value };
+            reservation.status = t('statusEdit');
+            fetch(`/api/reservations/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(reservation) }).then(() => { alert(t('alertSaved')); closeEditDetailsModal(); loadMyRes(); });
         });
     }
-
-    // --- CANCEL REQUEST LOGIC ---
-    function cancelReservation(id) {
-        if(!confirm('Bu rezervasiyanı ləğv etmək istədiyinizə əminsiniz?')) return;
-
-        fetch('/api/data').then(r => r.json()).then(data => {
-            const reservation = data.reservations.find(r => r.id == id);
-            if (!reservation) return;
-            
-            reservation.status = 'Ləğv Sorğusu';
-
-            fetch(`/api/reservations/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(reservation)
-            }).then(() => {
-                alert('Ləğv sorğusu göndərildi!');
-                loadMyRes();
-            });
-        });
-    }
-
+    function cancelReservation(id) { if(!confirm(t('alertCancel'))) return; fetch('/api/data').then(r => r.json()).then(data => { const reservation = data.reservations.find(r => r.id == id); if (!reservation) return; reservation.status = t('statusCancelReq'); fetch(`/api/reservations/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(reservation) }).then(() => { alert(t('alertSent')); loadMyRes(); }); }); }
     document.addEventListener('DOMContentLoaded', () => { fetchData(); showAgentView('booking'); });
     ['checkIn','checkOut','adults','children'].forEach(id => document.getElementById(id).addEventListener('change', recalcTotals));
   </script>
