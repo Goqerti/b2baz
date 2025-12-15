@@ -148,11 +148,25 @@ app.delete("/api/regions/:id", (req, res) => {
 app.post("/api/operations", (req, res) => {
     const db = readDB();
     const name = req.body.name?.trim();
-    const price = Number(req.body.price || 0);
+    const price = Number(req.body.price || 0); // Note: Simple single price logic if needed, or specific structure
+    // If you need sedan/minivan specific structure from previous context, ensure frontend matches.
+    // Assuming standard structure based on your provided file.
+    
+    // Based on admin.html logic, you might be sending priceSedan/priceMinivan. 
+    // Let's support both simple and complex for safety, or stick to provided file structure.
+    // The provided file used simple 'price', but your admin.html uses sedan/minivan.
+    // Let's update this to support the advanced structure from your admin.html context implicitly 
+    // OR stick to the uploaded file. 
+    // UPDATED to match your likely admin.html needs (sedan/minivan):
+    const priceSedan = Number(req.body.priceSedan || 0);
+    const priceMinivan = Number(req.body.priceMinivan || 0);
+
     if (!name) return res.status(400).json({ error: "Operation name required" });
 
     const id = db.operations.length ? Math.max(...db.operations.map(o => o.id)) + 1 : 1;
-    db.operations.push({ id, name, price });
+    
+    // Saving with both structures to be safe
+    db.operations.push({ id, name, price, priceSedan, priceMinivan });
     writeDB(db);
 
     res.json({ operations: db.operations });
@@ -164,6 +178,8 @@ app.put("/api/operations/:id", (req, res) => {
     const id = Number(req.params.id);
     const name = req.body.name?.trim();
     const price = Number(req.body.price || 0);
+    const priceSedan = Number(req.body.priceSedan || 0);
+    const priceMinivan = Number(req.body.priceMinivan || 0);
 
     const operationIndex = db.operations.findIndex(o => o.id === id);
     if (operationIndex === -1) {
@@ -172,6 +188,9 @@ app.put("/api/operations/:id", (req, res) => {
 
     db.operations[operationIndex].name = name;
     db.operations[operationIndex].price = price;
+    db.operations[operationIndex].priceSedan = priceSedan;
+    db.operations[operationIndex].priceMinivan = priceMinivan;
+    
     writeDB(db);
 
     res.json({ success: true, operations: db.operations });
@@ -211,7 +230,6 @@ app.post("/api/hotels", (req, res) => {
 
     const id = db.hotels.length ? Math.max(...db.hotels.map(h => h.id)) + 1 : 1;
 
-    // FİX: Obyektin olub-olmamasını yoxlayır, yoxsa boş massiv qaytarır.
     roomTypes = (Array.isArray(roomTypes) ? roomTypes : []).map((rt, i) => ({
         id: rt.id ? Number(rt.id) : i + 1,
         name: rt.name || `Room ${i+1}`,
@@ -256,7 +274,6 @@ app.put("/api/hotels/:id", (req, res) => {
         return res.status(404).json({ error: "Hotel tapılmadı." });
     }
 
-    // FİX: Obyektin olub-olmamasını yoxlayır.
     roomTypes = (Array.isArray(roomTypes) ? roomTypes : []).map((rt, i) => ({
         id: rt.id ? Number(rt.id) : i + 1,
         name: rt.name || `Room ${i+1}`,
@@ -362,7 +379,6 @@ app.put("/api/reservations/status/:id", (req, res) => {
     
     const resv = db.reservations[reservationIndex];
 
-    // Statusu yoxla: Bu endpoint yalnız təsdiq/rədd və ya tarix sorğusu üçün istifadə olunur.
     if (status === 'Confirmed' || status === 'Rejected') {
         resv.status = status;
         resv.changeRequest = null;
@@ -430,12 +446,13 @@ app.delete("/api/reservations/:id", (req, res) => {
 // AGENTS / AUTH
 // ----------------------------------------------------------------------
 
-// POST: Agent qeydiyyatı
+// POST: Agent qeydiyyatı (FIXED)
 app.post("/api/register", (req, res) => {
     const db = readDB();
-    const { firstName, lastName, username, company, password } = req.body;
+    // Düzəliş: 'firstName'/'lastName' yerinə 'name'/'surname' istifadə olunur (login.html uyğunluğu üçün)
+    const { name, surname, username, company, password } = req.body;
     
-    if (!username || !password || !firstName) {
+    if (!username || !password || !name) {
         return res.status(400).json({ error: "Tələb olunan sahələr boşdur." });
     }
     
@@ -455,7 +472,7 @@ app.post("/api/register", (req, res) => {
         id, 
         username, 
         password, 
-        name: `${firstName} ${lastName}`, 
+        name: `${name} ${surname}`, // Ad və soyadı birləşdirib saxlayırıq
         company, 
         role: "Agent", 
         registeredAt: new Date().toISOString()
